@@ -10,6 +10,7 @@ import Combine
 // MARK: - ViewModel
 @MainActor
 class BlockAdsViewModel: ObservableObject {
+    
     enum BlockingState {
         case enabled
         case disabled
@@ -30,13 +31,7 @@ class BlockAdsViewModel: ObservableObject {
         } else {
             cancelBlockingTask()
         }
-        //        if isEnabled {
-        //            turnOffBlocking()
-        //        } else {
-        //            turnOnBlocking()
-        //        }
     }
-    
     
     private func toggleAllBlocking() {
         animate()
@@ -47,9 +42,6 @@ class BlockAdsViewModel: ObservableObject {
                 await MainActor.run {
                     withAnimation(.bouncy(duration: 0.3)) {
                         isEnabled.toggle()
-//                        circleRotation = 0
-//                        waveHeight = 0
-//                        waveProgress = 0
                         isProcess = false
                     }
                     resetAnimations()
@@ -72,10 +64,7 @@ class BlockAdsViewModel: ObservableObject {
             waveProgress = 1.0
         }
         
-//        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-        withAnimation(.linear(duration: 2.0)) {
-            circleRotation = 360
-        }
+        circleRotation = 360
     }
     
     func cancelBlockingTask() {
@@ -153,7 +142,7 @@ struct BlockAdsView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "power")
                         .font(.system(size: 40, weight: .medium))
-                        .foregroundStyle(viewModel.isEnabled ? .white : .tm.error)
+                        .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .white)
                     
                     Text(viewModel.isEnabled ? "Выключить" : "Включить")
                         .font(.system(size: 16, weight: .medium))
@@ -177,18 +166,18 @@ struct BlockAdsView: View {
         WaveShape(waveCount: 6, waveHeight: viewModel.waveHeight, progress: viewModel.waveProgress)
             .fill(
                 LinearGradient(
-                    colors: [.tm.container, .tm.container.opacity(0.8)],
+                    colors: viewModel.isProcess ? [.tm.accentSecondary.opacity(0.4), .tm.accentTertiary.opacity(0.4)] : [.tm.container, .tm.container.opacity(0.8)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .frame(width: 160, height: 160)
             .rotationEffect(.degrees(viewModel.circleRotation))
-            .opacity(viewModel.isProcess ? 0.4 : 1)
+            .opacity(viewModel.isProcess ? 0 : 1)
     }
     
     var otherCircles: some View {
-        ForEach(0..<5) { index in
+        ForEach(1..<7) { index in
             makeWaveCircle(duration: 2 + Double(index) / 4, opacity: Double(index) / 8, rotationVector: index % 2 == 0)
         }
     }
