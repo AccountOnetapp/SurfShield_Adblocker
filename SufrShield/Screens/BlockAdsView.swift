@@ -25,12 +25,16 @@ class BlockAdsViewModel: ObservableObject {
     private var blockingTask: Task<Void, Never>?
     
     func toggleBlocking() {
-        toggleAllBlocking()
-//        if isEnabled {
-//            turnOffBlocking()
-//        } else {
-//            turnOnBlocking()
-//        }
+        if !isProcess {
+            toggleAllBlocking()
+        } else {
+            cancelBlockingTask()
+        }
+        //        if isEnabled {
+        //            turnOffBlocking()
+        //        } else {
+        //            turnOnBlocking()
+        //        }
     }
     
     
@@ -41,13 +45,14 @@ class BlockAdsViewModel: ObservableObject {
             
             if !Task.isCancelled {
                 await MainActor.run {
-                    withAnimation {
-//                        isEnabled.toggle()
+                    withAnimation(.bouncy(duration: 0.3)) {
+                        isEnabled.toggle()
 //                        circleRotation = 0
-                        waveHeight = 0
-                        waveProgress = 0
-//                        isProcess = false
+//                        waveHeight = 0
+//                        waveProgress = 0
+                        isProcess = false
                     }
+                    resetAnimations()
                 }
             }
         }
@@ -59,15 +64,16 @@ class BlockAdsViewModel: ObservableObject {
             isProcess = true
         }
         
-        withAnimation(.easeInOut(duration: 0.9)) {
-            waveHeight = 2
-        }
+        // Animation not working
+        waveHeight = 2
+        
         
         withAnimation(.easeInOut(duration: 1.0)) {
             waveProgress = 1.0
         }
         
-        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+//        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+        withAnimation(.linear(duration: 2.0)) {
             circleRotation = 360
         }
     }
@@ -79,6 +85,7 @@ class BlockAdsViewModel: ObservableObject {
             circleRotation = 0
             isProcess = false
         }
+        resetAnimations()
     }
     
     private func resetAnimations() {
@@ -88,8 +95,8 @@ class BlockAdsViewModel: ObservableObject {
         
         withTransaction(transaction) {
             circleRotation = 0
+            waveHeight = 0
             waveProgress = 0
-            isProcess = false
         }
     }
 }
@@ -113,7 +120,7 @@ struct BlockAdsView: View {
             VStack {
                 Spacer()
                 
-//                blockAdsButton
+                blockAdsButton
                 
                 Spacer()
                 
@@ -122,7 +129,7 @@ struct BlockAdsView: View {
                     Text("Блокировка рекламы")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.tm.title)
+                        .foregroundStyle(.tm.accentTertiary)
                     
                     Text("Нажмите кнопку для активации блокировки рекламы во всех приложениях")
                         .font(.body)
@@ -154,8 +161,7 @@ struct BlockAdsView: View {
                         .multilineTextAlignment(.center)
                 }
             )
-            .scaleEffect(viewModel.isProcess ? 0.9 : 1.0)
-//            .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
+            .scaleEffect(viewModel.isProcess ? 0.97 : 1.0)
             .onTapGesture {
                 viewModel.toggleBlocking()
             }
@@ -163,7 +169,6 @@ struct BlockAdsView: View {
                 otherCircles
                     .opacity(viewModel.isProcess ? 1 : 0)
             )
-//            .shadow(color: viewModel.isEnabled ? .tm.accentTertiary.opacity(0.3) : .tm.accentTertiary.opacity(0.3), radius: 20, x: 0, y: 10)
         
     }
     
@@ -178,19 +183,18 @@ struct BlockAdsView: View {
                 )
             )
             .frame(width: 160, height: 160)
-            .rotationEffect(.degrees(viewModel.circleRotation)) // Вращение
-//            .animation(.linear(duration: 2.5), value: viewModel.circleRotation)
-            .animation(.bouncy(duration: 0.3) , value: viewModel.waveHeight)
+            .rotationEffect(.degrees(viewModel.circleRotation))
+            .opacity(viewModel.isProcess ? 0.4 : 1)
     }
     
     var otherCircles: some View {
         ForEach(0..<5) { index in
-            makeWaveCircle(duration: 2 + Double(index))
+            makeWaveCircle(duration: 2 + Double(index) / 4, opacity: Double(index) / 8, rotationVector: index % 2 == 0)
         }
     }
     
-    func makeWaveCircle(duration: Double) -> some View {
-        WaveShape(waveCount: 6, waveHeight: 2, progress: 1.0)
+    func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool) -> some View {
+        WaveShape(waveCount: 6, waveHeight: 2, progress: viewModel.waveProgress)
             .fill(
                 LinearGradient(
                     colors: [.tm.accentSecondary.opacity(0.6), .tm.accentTertiary.opacity(0.6)],
@@ -199,10 +203,10 @@ struct BlockAdsView: View {
                 )
             )
             .frame(width: waveSize, height: waveSize)
-            .rotationEffect(.degrees(viewModel.circleRotation))
-            .opacity(0.8)
+            .rotationEffect(.degrees(rotationVector ? -viewModel.circleRotation : viewModel.circleRotation))
+            .opacity(opacity)
             .animation(.linear(duration: duration), value: viewModel.circleRotation)
-//            .shadow(color: .tm.accentSecondary.opacity(0.2), radius: 15, x: 0, y: 8)
+            .shadow(color: .tm.accentSecondary.opacity(0.1), radius: 40, x: 0, y: 0)
     }
 }
 
