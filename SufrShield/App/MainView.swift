@@ -14,7 +14,7 @@ struct MainView: View {
         NavigationStack(path: $coordinator.mainPath) {
             TabBarView()
                 .navigationDestination(for: Screen.self) { screen in
-//                    coordinator.build(screen: screen)
+                    coordinator.build(screen: screen)
                 }
         }
     }
