@@ -22,8 +22,17 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isEnabled: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
+    @Published var rulesCount: Int = 0
+    @Published var lastUpdateTime: Date = Date()
     
     private var blockingTask: Task<Void, Never>?
+    
+    init() {
+        // Загружаем текущий статус блокировки
+//        isEnabled = RuleConverterBridge.isAdBlockingEnabled()
+//        rulesCount = RuleConverterBridge.getRulesCount()
+        lastUpdateTime = Date()
+    }
     
     func toggleBlocking() {
         if !isProcess {
@@ -43,12 +52,20 @@ class BlockAdsViewModel: ObservableObject {
                     withAnimation(.bouncy(duration: 0.3)) {
                         isEnabled.toggle()
                         isProcess = false
+                        
+                        // Обновляем статус блокировки в системе
+//                        RuleConverterBridge.setAdBlockingEnabled(isEnabled)
+//                        
+//                        // Обновляем информацию о правилах
+//                        rulesCount = RuleConverterBridge.getRulesCount()
+                        lastUpdateTime = Date()
                     }
                     resetAnimations()
                 }
             }
         }
     }
+
     
     private func animate() {
         
@@ -58,7 +75,6 @@ class BlockAdsViewModel: ObservableObject {
         
         // Animation not working
         waveHeight = 2
-        
         
         withAnimation(.easeInOut(duration: 1.0)) {
             waveProgress = 1.0
@@ -104,11 +120,9 @@ struct BlockAdsView: View {
         ZStack {
             // Анимированный фон с градиентом
             LinearGradient(
-                colors:
-                    viewModel.isEnabled 
-                ? [Color.tm.background, Color.tm.background.opacity(0.8), Color.tm.accentSecondary.opacity(0.1)]
-                : [Color.tm.background, Color.tm.background.opacity(0.8)]
-                ,
+                colors: viewModel.isEnabled 
+                    ? [Color.tm.background, Color.tm.background.opacity(0.8), Color.tm.accentSecondary.opacity(0.1)]
+                    : [Color.tm.background, Color.tm.background.opacity(0.8)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -128,12 +142,6 @@ struct BlockAdsView: View {
                 // Улучшенное описание с анимацией
                 VStack(spacing: 20) {
                     HStack(spacing: 12) {
-//                        Image(systemName: "shield.checkered")
-//                            .font(.title)
-//                            .foregroundStyle(.tm.accentSecondary)
-//                            .rotationEffect(.degrees(viewModel.isEnabled ? 0 : 360))
-//                            .animation(.spring(duration: 0.6), value: viewModel.isEnabled)
-                        
                         Text("Blocking advertising")
                             .font(.title2)
                             .fontWeight(.bold)
@@ -147,6 +155,77 @@ struct BlockAdsView: View {
                         .padding(.horizontal, 32)
                         .opacity(viewModel.isProcess ? 0.6 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
+                    
+                    // Информация о правилах блокировки
+                    VStack(spacing: 8) {
+                        HStack {
+                            Image(systemName: "list.bullet")
+                                .font(.caption)
+                                .foregroundStyle(.tm.accentTertiary)
+                            
+                            Text("Правил блокировки: \(viewModel.rulesCount)")
+                                .font(.caption)
+                                .foregroundStyle(.tm.subTitle)
+                        }
+                        
+                        HStack {
+                            Image(systemName: "clock")
+                                .font(.caption)
+                                .foregroundStyle(.tm.accentTertiary)
+                            
+                            Text("Обновлено: \(viewModel.lastUpdateTime, formatter: timeFormatter)")
+                                .font(.caption)
+                                .foregroundStyle(.tm.subTitle)
+                        }
+                        
+                        // Кнопки управления
+                        HStack(spacing: 8) {
+                            // Кнопка обновления правил
+                            Button(action: {
+                                
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.caption)
+                                    Text("Обновить правила")
+                                        .font(.caption)
+                                }
+                                .foregroundStyle(.tm.accentSecondary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.tm.accentSecondary.opacity(0.1))
+                                )
+                            }
+                            .disabled(viewModel.isProcess)
+                            
+                            // Кнопка диагностики
+                            Button(action: {
+                                // Здесь можно показать alert с результатами диагностики
+                            }) {
+                                HStack {
+                                    Image(systemName: "stethoscope")
+                                        .font(.caption)
+                                    Text("Диагностика")
+                                        .font(.caption)
+                                }
+                                .foregroundStyle(.tm.accentTertiary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.tm.accentTertiary.opacity(0.1))
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.tm.container.opacity(0.3))
+                    )
                 }
                 .padding(.bottom, 50)
             }
@@ -297,6 +376,16 @@ struct WaveShape: Shape {
 #Preview {
     BlockAdsView()
 }
+
+// MARK: - Time Formatter
+private let timeFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeStyle = .short
+    formatter.dateStyle = .short
+    formatter.locale = Locale(identifier: "ru_RU")
+    return formatter
+}()
+
 struct ParticlesView: View {
     @State private var animation = false
     
