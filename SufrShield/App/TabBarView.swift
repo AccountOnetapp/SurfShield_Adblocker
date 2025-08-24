@@ -32,6 +32,6 @@ struct TabBarView: View {
                 .tag(0)
         }
         )
-        .tint(.tm.accentTertiary)
+        .tint(.tm.accentSecondary)
     }
 }

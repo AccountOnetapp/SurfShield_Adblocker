@@ -102,9 +102,21 @@ struct BlockAdsView: View {
     
     var content: some View {
         ZStack {
-            // Фон
-            Color.tm.background
-                .ignoresSafeArea()
+            // Анимированный фон с градиентом
+            LinearGradient(
+                colors:
+                    viewModel.isEnabled 
+                ? [Color.tm.background, Color.tm.background.opacity(0.8), Color.tm.accentSecondary.opacity(0.1)]
+                : [Color.tm.background, Color.tm.background.opacity(0.8)]
+                ,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            // Анимированные частицы на фоне
+            ParticlesView()
+                .opacity(0.3)
             
             VStack {
                 Spacer()
@@ -113,18 +125,28 @@ struct BlockAdsView: View {
                 
                 Spacer()
                 
-                // Описание
-                VStack(spacing: 16) {
-                    Text("Блокировка рекламы")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.tm.accentTertiary)
+                // Улучшенное описание с анимацией
+                VStack(spacing: 20) {
+                    HStack(spacing: 12) {
+//                        Image(systemName: "shield.checkered")
+//                            .font(.title)
+//                            .foregroundStyle(.tm.accentSecondary)
+//                            .rotationEffect(.degrees(viewModel.isEnabled ? 0 : 360))
+//                            .animation(.spring(duration: 0.6), value: viewModel.isEnabled)
+                        
+                        Text("Blocking advertising")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.tm.accentSecondary)
+                    }
                     
-                    Text("Нажмите кнопку для активации блокировки рекламы во всех приложениях")
+                    Text("Click the button to activate advertising blocking in all applications")
                         .font(.body)
                         .foregroundColor(.tm.subTitle.opacity(0.8))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
+                        .opacity(viewModel.isProcess ? 0.6 : 1.0)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
                 }
                 .padding(.bottom, 50)
             }
@@ -136,30 +158,47 @@ struct BlockAdsView: View {
     
     @ViewBuilder
     var blockAdsButton: some View {
-        // Основная кнопка с дугой загрузки
-        mainButtonShape
-            .overlay(
-                VStack(spacing: 8) {
-                    Image(systemName: "power")
-                        .font(.system(size: 40, weight: .medium))
-                        .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .white)
-                    
-                    Text(viewModel.isEnabled ? "Выключить" : "Включить")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.center)
+        ZStack {
+            // Основная кнопка с дугой загрузки
+            
+            mainButtonShape
+                .overlay(
+                    VStack(spacing: 8) {
+                        Image(systemName: "power")
+                            .font(.system(size: 40, weight: .medium))
+                            .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .white)
+                            .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.6 : 0), radius: 3)
+                        
+                        Text(viewModel.isEnabled ? "Turn off" : "Turn on")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.center)
+                    }
+                )
+                .scaleEffect(viewModel.isProcess ? 0.97 : 1.0)
+                .onTapGesture {
+                    // Haptic feedback
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                    impactFeedback.impactOccurred()
+                    viewModel.toggleBlocking()
                 }
-            )
-            .scaleEffect(viewModel.isProcess ? 0.97 : 1.0)
-            .onTapGesture {
-                viewModel.toggleBlocking()
-            }
-            .background(
-                otherCircles
-                    .opacity(viewModel.isProcess ? 1 : 0)
-            )
-        
+                .background(
+                    ZStack {
+                        otherCircles
+                            .opacity(viewModel.isProcess ? 1 : 0)
+                        
+                        // Анимированные частицы вокруг кнопки
+                        if viewModel.isProcess {
+                            ForEach(0..<8) { index in
+                                ParticleView(index: index, isActive: viewModel.isProcess)
+                                    .opacity(0.2)
+                            }
+                        }
+                    }
+                )
+        }
     }
+
     
     @ViewBuilder
     var mainButtonShape: some View {
@@ -186,7 +225,7 @@ struct BlockAdsView: View {
         WaveShape(waveCount: 6, waveHeight: 2, progress: viewModel.waveProgress)
             .fill(
                 LinearGradient(
-                    colors: [.tm.accentSecondary.opacity(0.6), .tm.accentTertiary.opacity(0.6)],
+                    colors: [.tm.accentSecondary.opacity(0.6), .tm.accent.opacity(0.6)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -257,4 +296,60 @@ struct WaveShape: Shape {
 
 #Preview {
     BlockAdsView()
+}
+struct ParticlesView: View {
+    @State private var animation = false
+    
+    var body: some View {
+        ZStack {
+            ForEach(0..<20) { index in
+                Circle()
+                    .fill(.tm.accentTertiary.opacity(0.1))
+                    .frame(width: CGFloat.random(in: 2...6))
+                    .position(
+                        x: CGFloat.random(in: 0...UIScreen.main.bounds.width),
+                        y: CGFloat.random(in: 0...UIScreen.main.bounds.height)
+                    )
+                    .animation(
+                        .easeInOut(duration: Double.random(in: 3...6))
+                        .repeatForever(autoreverses: true),
+                        value: animation
+                    )
+            }
+        }
+        .onAppear {
+            animation.toggle()
+        }
+    }
+}
+
+// MARK: - Individual Particle
+struct ParticleView: View {
+    let index: Int
+    let isActive: Bool
+    
+    @State private var animation = false
+    
+    var body: some View {
+        Circle()
+            .fill(.tm.accentSecondary)
+            .frame(width: 4, height: 4)
+            .scaleEffect(animation ? 0.1 : 1.0)
+            .opacity(animation ? 0 : 0.8)
+            .position(
+                x: 80 + cos(Double(index) * .pi / 4) * 100,
+                y: 80 + sin(Double(index) * .pi / 4) * 100
+            )
+            .animation(
+                .easeOut(duration: 1.5)
+                .repeatForever(autoreverses: false)
+                .delay(Double(index) * 0.1),
+                value: animation
+            )
+            .onAppear {
+                if isActive {
+                    animation.toggle()
+                }
+            }
+    }
 }
