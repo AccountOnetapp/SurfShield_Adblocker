@@ -9,6 +9,22 @@
 /* Begin PBXBuildFile section */
 		8E352C592E5B836B00384E52 /* DiagnosticTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E352C582E5B836B00384E52 /* DiagnosticTool.swift */; };
 		8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF280E2E59BB03000A5748 /* Assets.xcassets */; };
+		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
+		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
+		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8EBA84082E5BBA0900206493 /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
+		8EBA840A2E5BBD0800206493 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA84092E5BBD0800206493 /* test_rules.txt */; };
+		8EC786AA2E5C41160024A55C /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786A92E5C41160024A55C /* adblock_rules.txt */; };
+		8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
+		8EC786AE2E5C57170024A55C /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC786AD2E5C57170024A55C /* SwiftyJSON */; };
+		8EC786B22E5C58C60024A55C /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC786B12E5C58C60024A55C /* SwiftyJSON */; };
+		8EC786B32E5C5F230024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
+		8EC786DB2E5C64D10024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786DA2E5C64D10024A55C /* blockerList.json */; };
+		8EC786DD2E5C64D10024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */; };
+		8EC786E12E5C64D10024A55C /* sequrity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EC786D82E5C64D10024A55C /* sequrity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786EB2E5C64F30024A55C /* blockerList.json */; };
+		8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */; };
+		8EC786F22E5C64F30024A55C /* privacy.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EC786E92E5C64F30024A55C /* privacy.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */; };
 		8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */; };
 		8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF28112E59BB03000A5748 /* Preview Assets.xcassets */; };
@@ -22,6 +38,30 @@
 		8EE43B032E5B659F004D3174 /* RuleConverterBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE43B022E5B659F004D3174 /* RuleConverterBridge.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8EBA84012E5BB15600206493 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8ECF27FF2E59BAFE000A5748 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8EBA83F92E5BB15600206493;
+			remoteInfo = adblocker;
+		};
+		8EC786DF2E5C64D10024A55C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8ECF27FF2E59BAFE000A5748 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8EC786D72E5C64D10024A55C;
+			remoteInfo = sequrity;
+		};
+		8EC786F02E5C64F30024A55C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8ECF27FF2E59BAFE000A5748 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8EC786E82E5C64F30024A55C;
+			remoteInfo = privacy;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		8E4B5F6A2E5B0C140086655B /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -29,6 +69,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				8EC786F22E5C64F30024A55C /* privacy.appex in Embed Foundation Extensions */,
+				8EC786E12E5C64D10024A55C /* sequrity.appex in Embed Foundation Extensions */,
+				8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -37,6 +80,21 @@
 
 /* Begin PBXFileReference section */
 		8E352C582E5B836B00384E52 /* DiagnosticTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiagnosticTool.swift; sourceTree = "<group>"; };
+		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
+		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
+		8EBA84002E5BB15600206493 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EBA84072E5BBA0900206493 /* RulesConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesConverter.swift; sourceTree = "<group>"; };
+		8EBA84092E5BBD0800206493 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
+		8EC786A92E5C41160024A55C /* adblock_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules.txt; sourceTree = "<group>"; };
+		8EC786D82E5C64D10024A55C /* sequrity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sequrity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EC786DA2E5C64D10024A55C /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
+		8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
+		8EC786DE2E5C64D10024A55C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EC786E92E5C64F30024A55C /* privacy.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = privacy.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EC786EB2E5C64F30024A55C /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
+		8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
+		8EC786EF2E5C64F30024A55C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ECF28072E59BAFE000A5748 /* SufrShield.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SufrShield.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SufrShieldApp.swift; sourceTree = "<group>"; };
 		8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockAdsView.swift; sourceTree = "<group>"; };
@@ -53,21 +111,85 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8ECF28042E59BAFE000A5748 /* Frameworks */ = {
+		8EBA83F72E5BB15600206493 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786B22E5C58C60024A55C /* SwiftyJSON in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC786D52E5C64D10024A55C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8EC786E62E5C64F30024A55C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8ECF28042E59BAFE000A5748 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786AE2E5C57170024A55C /* SwiftyJSON in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8EBA83FB2E5BB15600206493 /* adblocker */ = {
+			isa = PBXGroup;
+			children = (
+				8EBA83FC2E5BB15600206493 /* blockerList.json */,
+				8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */,
+				8EBA84002E5BB15600206493 /* Info.plist */,
+			);
+			path = adblocker;
+			sourceTree = "<group>";
+		};
+		8EC786B02E5C58C60024A55C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8EC786D92E5C64D10024A55C /* sequrity */ = {
+			isa = PBXGroup;
+			children = (
+				8EC786DA2E5C64D10024A55C /* blockerList.json */,
+				8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */,
+				8EC786DE2E5C64D10024A55C /* Info.plist */,
+			);
+			path = sequrity;
+			sourceTree = "<group>";
+		};
+		8EC786EA2E5C64F30024A55C /* privacy */ = {
+			isa = PBXGroup;
+			children = (
+				8EC786EB2E5C64F30024A55C /* blockerList.json */,
+				8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */,
+				8EC786EF2E5C64F30024A55C /* Info.plist */,
+			);
+			path = privacy;
+			sourceTree = "<group>";
+		};
 		8ECF27FE2E59BAFE000A5748 = {
 			isa = PBXGroup;
 			children = (
 				8ECF28092E59BAFE000A5748 /* SufrShield */,
+				8EBA83FB2E5BB15600206493 /* adblocker */,
+				8EC786D92E5C64D10024A55C /* sequrity */,
+				8EC786EA2E5C64F30024A55C /* privacy */,
 				8ECF28082E59BAFE000A5748 /* Products */,
+				8EC786B02E5C58C60024A55C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +197,9 @@
 			isa = PBXGroup;
 			children = (
 				8ECF28072E59BAFE000A5748 /* SufrShield.app */,
+				8EBA83FA2E5BB15600206493 /* adblocker.appex */,
+				8EC786D82E5C64D10024A55C /* sequrity.appex */,
+				8EC786E92E5C64F30024A55C /* privacy.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +207,8 @@
 		8ECF28092E59BAFE000A5748 /* SufrShield */ = {
 			isa = PBXGroup;
 			children = (
+				8EC786A92E5C41160024A55C /* adblock_rules.txt */,
+				8EBA84092E5BBD0800206493 /* test_rules.txt */,
 				8E352C582E5B836B00384E52 /* DiagnosticTool.swift */,
 				8EE43B022E5B659F004D3174 /* RuleConverterBridge.swift */,
 				8ECF28182E59BC33000A5748 /* App */,
@@ -89,6 +216,7 @@
 				8ECF280E2E59BB03000A5748 /* Assets.xcassets */,
 				8ECF28212E59BC80000A5748 /* Theme */,
 				8ECF28242E59BC80000A5748 /* Padding.swift */,
+				8EBA84072E5BBA0900206493 /* RulesConverter.swift */,
 				8ECF28102E59BB03000A5748 /* Preview Content */,
 			);
 			path = SufrShield;
@@ -142,6 +270,60 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8EBA83F92E5BB15600206493 /* adblocker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8EBA84042E5BB15600206493 /* Build configuration list for PBXNativeTarget "adblocker" */;
+			buildPhases = (
+				8EBA83F62E5BB15600206493 /* Sources */,
+				8EBA83F72E5BB15600206493 /* Frameworks */,
+				8EBA83F82E5BB15600206493 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = adblocker;
+			packageProductDependencies = (
+				8EC786B12E5C58C60024A55C /* SwiftyJSON */,
+			);
+			productName = adblocker;
+			productReference = 8EBA83FA2E5BB15600206493 /* adblocker.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		8EC786D72E5C64D10024A55C /* sequrity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8EC786E22E5C64D10024A55C /* Build configuration list for PBXNativeTarget "sequrity" */;
+			buildPhases = (
+				8EC786D42E5C64D10024A55C /* Sources */,
+				8EC786D52E5C64D10024A55C /* Frameworks */,
+				8EC786D62E5C64D10024A55C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = sequrity;
+			productName = sequrity;
+			productReference = 8EC786D82E5C64D10024A55C /* sequrity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		8EC786E82E5C64F30024A55C /* privacy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8EC786F32E5C64F30024A55C /* Build configuration list for PBXNativeTarget "privacy" */;
+			buildPhases = (
+				8EC786E52E5C64F30024A55C /* Sources */,
+				8EC786E62E5C64F30024A55C /* Frameworks */,
+				8EC786E72E5C64F30024A55C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = privacy;
+			productName = privacy;
+			productReference = 8EC786E92E5C64F30024A55C /* privacy.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		8ECF28062E59BAFE000A5748 /* SufrShield */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8ECF28152E59BB03000A5748 /* Build configuration list for PBXNativeTarget "SufrShield" */;
@@ -154,8 +336,14 @@
 			buildRules = (
 			);
 			dependencies = (
+				8EBA84022E5BB15600206493 /* PBXTargetDependency */,
+				8EC786E02E5C64D10024A55C /* PBXTargetDependency */,
+				8EC786F12E5C64F30024A55C /* PBXTargetDependency */,
 			);
 			name = SufrShield;
+			packageProductDependencies = (
+				8EC786AD2E5C57170024A55C /* SwiftyJSON */,
+			);
 			productName = SufrShield;
 			productReference = 8ECF28072E59BAFE000A5748 /* SufrShield.app */;
 			productType = "com.apple.product-type.application";
@@ -170,6 +358,15 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					8EBA83F92E5BB15600206493 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					8EC786D72E5C64D10024A55C = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					8EC786E82E5C64F30024A55C = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					8ECF28062E59BAFE000A5748 = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -184,22 +381,54 @@
 				Base,
 			);
 			mainGroup = 8ECF27FE2E59BAFE000A5748;
+			packageReferences = (
+				8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+			);
 			productRefGroup = 8ECF28082E59BAFE000A5748 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8ECF28062E59BAFE000A5748 /* SufrShield */,
+				8EBA83F92E5BB15600206493 /* adblocker */,
+				8EC786D72E5C64D10024A55C /* sequrity */,
+				8EC786E82E5C64F30024A55C /* privacy */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8EBA83F82E5BB15600206493 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC786D62E5C64D10024A55C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786DB2E5C64D10024A55C /* blockerList.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC786E72E5C64F30024A55C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8ECF28052E59BAFE000A5748 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */,
+				8EC786AA2E5C41160024A55C /* adblock_rules.txt in Resources */,
 				8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */,
+				8EBA840A2E5BBD0800206493 /* test_rules.txt in Resources */,
 				8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +436,31 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8EBA83F62E5BB15600206493 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */,
+				8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC786D42E5C64D10024A55C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786DD2E5C64D10024A55C /* ContentBlockerRequestHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EC786E52E5C64F30024A55C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8ECF28032E59BAFE000A5748 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -214,11 +468,13 @@
 				8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */,
 				8ECF281A2E59BC3F000A5748 /* MainView.swift in Sources */,
 				8E352C592E5B836B00384E52 /* DiagnosticTool.swift in Sources */,
+				8EBA84082E5BBA0900206493 /* RulesConverter.swift in Sources */,
 				8ECF281E2E59BC4E000A5748 /* Coordinator.swift in Sources */,
 				8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */,
 				8ECF281C2E59BC45000A5748 /* TabBarView.swift in Sources */,
 				8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */,
 				8ECF28202E59BC57000A5748 /* Screen.swift in Sources */,
+				8EC786B32E5C5F230024A55C /* ContentBlockerRequestHandler.swift in Sources */,
 				8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */,
 				8EE43B032E5B659F004D3174 /* RuleConverterBridge.swift in Sources */,
 			);
@@ -226,7 +482,187 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8EBA84022E5BB15600206493 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8EBA83F92E5BB15600206493 /* adblocker */;
+			targetProxy = 8EBA84012E5BB15600206493 /* PBXContainerItemProxy */;
+		};
+		8EC786E02E5C64D10024A55C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8EC786D72E5C64D10024A55C /* sequrity */;
+			targetProxy = 8EC786DF2E5C64D10024A55C /* PBXContainerItemProxy */;
+		};
+		8EC786F12E5C64F30024A55C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8EC786E82E5C64F30024A55C /* privacy */;
+			targetProxy = 8EC786F02E5C64F30024A55C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		8EBA84052E5BB15600206493 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = adblocker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = adblocker;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.adblocker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8EBA84062E5BB15600206493 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = adblocker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = adblocker;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.adblocker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8EC786E32E5C64D10024A55C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sequrity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = sequrity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.sequrity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8EC786E42E5C64D10024A55C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sequrity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = sequrity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.sequrity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8EC786F42E5C64F30024A55C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = privacy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = privacy;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.privacy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8EC786F52E5C64F30024A55C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = privacy/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = privacy;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.privacy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		8ECF28132E59BB03000A5748 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -369,7 +805,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.SufrShield;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -400,7 +836,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app.SufrShield;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -411,6 +847,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8EBA84042E5BB15600206493 /* Build configuration list for PBXNativeTarget "adblocker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EBA84052E5BB15600206493 /* Debug */,
+				8EBA84062E5BB15600206493 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8EC786E22E5C64D10024A55C /* Build configuration list for PBXNativeTarget "sequrity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EC786E32E5C64D10024A55C /* Debug */,
+				8EC786E42E5C64D10024A55C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8EC786F32E5C64F30024A55C /* Build configuration list for PBXNativeTarget "privacy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EC786F42E5C64F30024A55C /* Debug */,
+				8EC786F52E5C64F30024A55C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8ECF28022E59BAFE000A5748 /* Build configuration list for PBXProject "SufrShield" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -430,6 +893,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8EC786AD2E5C57170024A55C /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+		8EC786B12E5C58C60024A55C /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8ECF27FF2E59BAFE000A5748 /* Project object */;
 }

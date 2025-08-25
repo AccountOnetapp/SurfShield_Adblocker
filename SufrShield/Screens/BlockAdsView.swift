@@ -55,7 +55,12 @@ class BlockAdsViewModel: ObservableObject {
                         
                         // Обновляем статус блокировки в системе
 //                        RuleConverterBridge.setAdBlockingEnabled(isEnabled)
-//                        
+                        
+                        RulesConverter.start(
+                            groupID: "",
+                            extensionsBundles: ["com.surfshield.app.adblocker"]
+                        )
+                        
 //                        // Обновляем информацию о правилах
 //                        rulesCount = RuleConverterBridge.getRulesCount()
                         lastUpdateTime = Date()
