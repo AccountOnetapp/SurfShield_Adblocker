@@ -63,14 +63,6 @@
         }
     },
     {
-         "action": {
-             "type": "block"
-         },
-         "trigger": {
-         "url-filter": ".*google.*"
-         }
-     },
-    {
         "action": {
             "type": "block"
         },

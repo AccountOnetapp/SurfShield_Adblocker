@@ -10,4 +10,14 @@ import Foundation
 
 enum Constants {
     static var adblockGroupId = "group.surfshield.app.adblocker"
+    
+    enum BlockExtenesionBundleIds: String, CaseIterable {
+        case adblocker = "com.surfshield.app.adblocker"
+        case security = "com.surfshield.app.security"
+        case privacy = "com.surfshield.app.privacy"
+        
+        static var all: [String] {
+            BlockExtenesionBundleIds.allCases.map { $0.rawValue }
+        }
+    }
 }
