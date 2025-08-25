@@ -1,0 +1,55 @@
+[
+    {
+        "trigger": {
+            "url-filter": ".*ads.*",
+            "resource-type": ["script", "image"]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": ".*banner.*",
+            "resource-type": ["image"]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": ".*analytics.*",
+            "resource-type": ["script"]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": ".*tracker.*",
+            "resource-type": ["script"]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": ".*popup.*",
+            "resource-type": ["document"]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+         "action": {
+             "type": "block"
+         },
+         "trigger": {
+         "url-filter": ".*google.*"
+         }
+     }
+]

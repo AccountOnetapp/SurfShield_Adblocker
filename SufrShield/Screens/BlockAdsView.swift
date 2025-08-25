@@ -24,6 +24,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var waveHeight: CGFloat = 0
     @Published var rulesCount: Int = 0
     @Published var lastUpdateTime: Date = Date()
+    @Published var extensionStatus: [String: String] = [:]
     
     private var blockingTask: Task<Void, Never>?
     
@@ -32,6 +33,9 @@ class BlockAdsViewModel: ObservableObject {
 //        isEnabled = RuleConverterBridge.isAdBlockingEnabled()
 //        rulesCount = RuleConverterBridge.getRulesCount()
         lastUpdateTime = Date()
+        
+        // Загружаем текущий статус расширений
+        loadExtensionStatus()
     }
     
     func toggleBlocking() {
@@ -56,10 +60,7 @@ class BlockAdsViewModel: ObservableObject {
                         // Обновляем статус блокировки в системе
 //                        RuleConverterBridge.setAdBlockingEnabled(isEnabled)
                         
-                        RulesConverter.start(
-                            groupID: "",
-                            extensionsBundles: ["com.surfshield.app.adblocker"]
-                        )
+                        RulesConverter.start()
                         
 //                        // Обновляем информацию о правилах
 //                        rulesCount = RuleConverterBridge.getRulesCount()
@@ -107,6 +108,18 @@ class BlockAdsViewModel: ObservableObject {
             circleRotation = 0
             waveHeight = 0
             waveProgress = 0
+        }
+    }
+    
+    private func loadExtensionStatus() {
+        let extensions = ["adblocker", "sequrity", "privacy"]
+        
+        for extensionName in extensions {
+            if let status = DiagnosticTool.getExtensionStatus(extensionName) {
+                extensionStatus[extensionName] = status
+            } else {
+                extensionStatus[extensionName] = "📄 Статус недоступен"
+            }
         }
     }
 }
@@ -161,33 +174,59 @@ struct BlockAdsView: View {
                         .opacity(viewModel.isProcess ? 0.6 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
                     
-                    // Информация о правилах блокировки
-                    VStack(spacing: 8) {
-                        HStack {
-                            Image(systemName: "list.bullet")
-                                .font(.caption)
-                                .foregroundStyle(.tm.accentTertiary)
+                                            // Информация о правилах блокировки
+                        VStack(spacing: 8) {
+                            HStack {
+                                Image(systemName: "list.bullet")
+                                    .font(.caption)
+                                    .foregroundStyle(.tm.accentTertiary)
+                                
+                                Text("Правил блокировки: \(viewModel.rulesCount)")
+                                    .font(.caption)
+                                    .foregroundStyle(.tm.subTitle)
+                            }
                             
-                            Text("Правил блокировки: \(viewModel.rulesCount)")
-                                .font(.caption)
-                                .foregroundStyle(.tm.subTitle)
-                        }
-                        
-                        HStack {
-                            Image(systemName: "clock")
-                                .font(.caption)
-                                .foregroundStyle(.tm.accentTertiary)
+                            HStack {
+                                Image(systemName: "clock")
+                                    .font(.caption)
+                                    .foregroundStyle(.tm.accentTertiary)
+                                
+                                Text("Обновлено: \(viewModel.lastUpdateTime, formatter: timeFormatter)")
+                                    .font(.caption)
+                                    .foregroundStyle(.tm.subTitle)
+                            }
                             
-                            Text("Обновлено: \(viewModel.lastUpdateTime, formatter: timeFormatter)")
-                                .font(.caption)
-                                .foregroundStyle(.tm.subTitle)
-                        }
+                            // Статус расширений
+                            VStack(spacing: 4) {
+                                Text("Статус расширений:")
+                                    .font(.caption)
+                                    .foregroundStyle(.tm.accentTertiary)
+                                
+                                ForEach(Array(viewModel.extensionStatus.keys.sorted()), id: \.self) { extensionName in
+                                    HStack {
+                                        Image(systemName: "puzzlepiece")
+                                            .font(.caption2)
+                                            .foregroundStyle(.tm.accentTertiary)
+                                        
+                                        Text("\(extensionName): \(viewModel.extensionStatus[extensionName] ?? "Неизвестно")")
+                                            .font(.caption2)
+                                            .foregroundStyle(.tm.subTitle)
+                                            .lineLimit(2)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(.tm.accentTertiary.opacity(0.1))
+                            )
                         
                         // Кнопки управления
                         HStack(spacing: 8) {
                             // Кнопка обновления правил
                             Button(action: {
-                                
+                                RulesConverter.start()
                             }) {
                                 HStack {
                                     Image(systemName: "arrow.clockwise")
@@ -207,12 +246,54 @@ struct BlockAdsView: View {
                             
                             // Кнопка диагностики
                             Button(action: {
-                                // Здесь можно показать alert с результатами диагностики
+                                let diagnosticResult = DiagnosticTool.runFullDiagnostic()
+                                print(diagnosticResult)
+                                
+                                // Показываем alert с результатами
+                                // В реальном приложении здесь можно использовать @State для показа alert
                             }) {
                                 HStack {
                                     Image(systemName: "stethoscope")
                                         .font(.caption)
                                     Text("Диагностика")
+                                        .font(.caption)
+                                }
+                                .foregroundStyle(.tm.accentTertiary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.tm.accentTertiary.opacity(0.1))
+                                )
+                            }
+                            
+                            // Кнопка тестирования App Group
+                            Button(action: {
+                                DiagnosticTool.testAppGroupAccess()
+                            }) {
+                                HStack {
+                                    Image(systemName: "network")
+                                        .font(.caption)
+                                    Text("Тест App Group")
+                                        .font(.caption)
+                                }
+                                .foregroundStyle(.tm.success)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.tm.success.opacity(0.1))
+                                )
+                            }
+                            
+                            // Кнопка загрузки тестовых правил
+                            Button(action: {
+                                RulesConverter.loadTestRules()
+                            }) {
+                                HStack {
+                                    Image(systemName: "doc.text")
+                                        .font(.caption)
+                                    Text("Загрузить тест")
                                         .font(.caption)
                                 }
                                 .foregroundStyle(.tm.accentTertiary)

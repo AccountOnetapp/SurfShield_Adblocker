@@ -1,141 +1,136 @@
-//import Foundation
-//
-///// Инструмент для диагностики работы блокировщика рекламы
-//class DiagnosticTool {
-//    
-//    /// Запускает полную диагностику блокировщика
-//    static func runFullDiagnostic() -> String {
-//        var report = "🔍 ДИАГНОСТИКА БЛОКИРОВЩИКА РЕКЛАМЫ\n"
-//        report += "=====================================\n\n"
-//        
-//        // 1. Проверка файлов
-//        report += "📁 ПРОВЕРКА ФАЙЛОВ:\n"
-//        report += checkFiles()
-//        report += "\n"
-//        
-//        // 2. Проверка правил
-//        report += "📋 ПРОВЕРКА ПРАВИЛ:\n"
-//        report += checkRules()
-//        report += "\n"
-//        
-//        // 3. Проверка конвертации
-//        report += "🔄 ПРОВЕРКА КОНВЕРТАЦИИ:\n"
-//        report += checkConversion()
-//        report += "\n"
-//        
-//        // 4. Рекомендации
-//        report += "💡 РЕКОМЕНДАЦИИ:\n"
-//        report += generateRecommendations()
-//        
-//        return report
-//    }
-//    
-//    /// Проверяет наличие необходимых файлов
-//    private static func checkFiles() -> String {
-//        var result = ""
-//        
-//        // Проверяем adblock_rules.txt
-//        if let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") {
-//            let fileSize = (try? FileManager.default.attributesOfItem(atPath: rulesPath)[.size] as? Int) ?? 0
-//            result += "✅ adblock_rules.txt найден (размер: \(fileSize) байт)\n"
-//        } else {
-//            result += "❌ adblock_rules.txt НЕ НАЙДЕН\n"
-//        }
-//        
-//        // Проверяем blockerList.json
-//        if let blockerPath = Bundle.main.path(forResource: "blockerList", ofType: "json") {
-//            let fileSize = (try? FileManager.default.attributesOfItem(atPath: blockerPath)[.size] ?? 0) as? Int ?? 0
-//            result += "✅ blockerList.json найден (размер: \(fileSize) байт)\n"
-//        } else {
-//            result += "❌ blockerList.json НЕ НАЙДЕН\n"
-//        }
-//        
-//        return result
-//    }
-//    
-//    /// Проверяет правила блокировки
-//    private static func checkRules() -> String {
-//        var result = ""
-//        
-//        // Загружаем правила из adblock_rules.txt
-//        if let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt"),
-//           let content = try? String(contentsOfFile: rulesPath, encoding: .utf8) {
-//            let lines = content.components(separatedBy: .newlines)
-//            let nonEmptyLines = lines.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-//            let commentLines = lines.filter { $0.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("//") || $0.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("#") }
-//            
-//            result += "📊 adblock_rules.txt:\n"
-//            result += "   • Всего строк: \(lines.count)\n"
-//            result += "   • Непустых строк: \(nonEmptyLines.count)\n"
-//            result += "   • Комментариев: \(commentLines.count)\n"
-//            result += "   • Правил: \(nonEmptyLines.count - commentLines.count)\n"
-//            
-//            // Показываем первые несколько правил
-//            let actualRules = nonEmptyLines.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("//") && !$0.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("#") }
-//            if !actualRules.isEmpty {
-//                result += "   • Примеры правил:\n"
-//                for (index, rule) in actualRules.prefix(3).enumerated() {
-//                    result += "     \(index + 1). \(rule)\n"
-//                }
-//            }
-//        } else {
-//            result += "❌ Не удалось загрузить adblock_rules.txt\n"
-//        }
-//        
-//        return result
-//    }
-//    
-//    /// Проверяет конвертацию правил
-//    private static func checkConversion() -> String {
-//        var result = ""
-//        
-//        // Проверяем конвертацию через RuleConverterBridge
-////        let rulesCount = RuleConverterBridge.getRulesCount()
-////        let stats = RuleConverterBridge.getRulesStatistics()
-//        
-//        result += "🔄 Статистика конвертации:\n"
-//        result += "   • Всего правил: \(rulesCount)\n"
-//        
-//        if let totalLines = stats["totalLines"] as? Int {
-//            result += "   • Всего строк: \(totalLines)\n"
-//        }
-//        
-//        if let validRules = stats["validRules"] as? Int {
-//            result += "   • Валидных правил: \(validRules)\n"
-//        }
-//        
-//        if let scriptRules = stats["scriptRules"] as? Int {
-//            result += "   • Правил для скриптов: \(scriptRules)\n"
-//        }
-//        
-//        if let imageRules = stats["imageRules"] as? Int {
-//            result += "   • Правил для изображений: \(imageRules)\n"
-//        }
-//        
-//        return result
-//    }
-//    
-//    /// Генерирует рекомендации по устранению проблем
-//    private static func generateRecommendations() -> String {
-//        var result = ""
-//        
-//        result += "🚨 ВОЗМОЖНЫЕ ПРОБЛЕМЫ И РЕШЕНИЯ:\n\n"
-//        
-//        result += "1. **Расширение не включено в Safari**\n"
-//        result += "   Решение: Настройки → Safari → Расширения → Включить SufrShield\n\n"
-//        
-//        result += "2. **Правила не загружены**\n"
-//        result += "   Решение: Нажать 'Обновить правила' в приложении\n\n"
-//        
-//        result += "3. **Неправильный формат правил**\n"
-//        result += "   Решение: Проверить синтаксис в adblock_rules.txt\n\n"
-//        
-//        result += "4. **Кэш Safari**\n"
-//        result += "   Решение: Перезапустить Safari или очистить кэш\n\n"
-//        
-//        result += "5. **Проблемы с подписью**\n"
-//        result += "   Решение: Пересобрать проект в Xcode\n\n"
-//        
-//        return result
-//    }
-//}
+import Foundation
+
+/// Инструмент для диагностики работы блокировщика рекламы
+class DiagnosticTool {
+    
+    /// Запускает полную диагностику блокировщика
+    static func runFullDiagnostic() -> String {
+        var result = "🔍 Диагностика блокировщика рекламы\n\n"
+        
+        // Проверяем App Group
+        testAppGroupAccess()
+        
+        // Проверяем статус расширений
+        result += checkExtensionsStatus()
+        
+        return result
+    }
+    
+    /// Проверяет статус всех расширений
+    static func checkExtensionsStatus() -> String {
+        var result = "📱 Статус расширений:\n"
+        
+        let extensions = ["adblocker", "sequrity", "privacy"]
+        
+        for extensionName in extensions {
+            if let status = getExtensionStatus(extensionName) {
+                result += "• \(extensionName): \(status)\n"
+            } else {
+                result += "• \(extensionName): ❌ Статус недоступен\n"
+            }
+        }
+        
+        return result
+    }
+    
+    /// Получает статус конкретного расширения
+    static func getExtensionStatus(_ extensionName: String) -> String? {
+        let fileManager = FileManager.default
+        let groupID = Constants.adblockGroupId
+        
+        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+            return nil
+        }
+        
+        let statusFileURL = groupURL.appendingPathComponent("extension_status.json")
+        
+        guard fileManager.fileExists(atPath: statusFileURL.path) else {
+            return "📄 Файл статуса не найден"
+        }
+        
+        do {
+            let data = try Data(contentsOf: statusFileURL)
+            let status = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            
+            guard let status = status else { return "❌ Ошибка парсинга статуса" }
+            
+            let success = status["success"] as? Bool ?? false
+            let timestamp = status["timestamp"] as? TimeInterval ?? 0
+            let error = status["error"] as? String
+            
+            if success {
+                let date = Date(timeIntervalSince1970: timestamp)
+                let formatter = DateFormatter()
+                formatter.dateStyle = .short
+                formatter.timeStyle = .short
+                
+                return "✅ Правила загружены (\(formatter.string(from: date)))"
+            } else {
+                return "❌ Ошибка: \(error ?? "Неизвестная ошибка")"
+            }
+            
+        } catch {
+            return "❌ Ошибка чтения: \(error.localizedDescription)"
+        }
+    }
+}
+
+// MARK: - App Group Access Testing
+extension DiagnosticTool {
+    
+    /// Тестирует доступ к App Group и запись/чтение файлов
+    static func testAppGroupAccess() {
+        let fileManager = FileManager.default
+        let groupID = Constants.adblockGroupId
+        
+        print("🔍 Тестирование App Group: \(groupID)")
+        
+        // 1. Проверяем доступ к App Group
+        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+            print("❌ Не удалось получить доступ к App Group: \(groupID)")
+            return
+        }
+        
+        print("✅ App Group доступен: \(groupURL.path)")
+        
+        // 2. Создаем тестовый файл
+        let testFileURL = groupURL.appendingPathComponent("test_rules.json")
+        let testRules = [
+            [
+                "trigger": [
+                    "url-filter": ".*test.*",
+                    "resource-type": ["script", "image"]
+                ],
+                "action": ["type": "block"]
+            ]
+        ]
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: testRules, options: .prettyPrinted)
+            try jsonData.write(to: testFileURL)
+            print("✅ Тестовый файл создан: \(testFileURL.path)")
+        } catch {
+            print("❌ Ошибка создания тестового файла: \(error)")
+            return
+        }
+        
+        // 3. Проверяем, что файл существует
+        guard fileManager.fileExists(atPath: testFileURL.path) else {
+            print("❌ Тестовый файл не найден после создания")
+            return
+        }
+        
+        // 4. Читаем файл обратно
+        do {
+            let readData = try Data(contentsOf: testFileURL)
+            let readRules = try JSONSerialization.jsonObject(with: readData) as? [[String: Any]]
+            print("✅ Файл прочитан успешно, правил: \(readRules?.count ?? 0)")
+        } catch {
+            print("❌ Ошибка чтения тестового файла: \(error)")
+        }
+        
+        // 5. Очищаем тестовый файл
+        try? fileManager.removeItem(at: testFileURL)
+        print("🧹 Тестовый файл удален")
+    }
+}
