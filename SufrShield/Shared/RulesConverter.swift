@@ -35,7 +35,6 @@ public enum RulesConverter {
         }
         
         // Fallback к файлу из bundle
-//        return Bundle.main.url(forResource: "blockerList", withExtension: "json")
         return nil
     }
 }
@@ -82,7 +81,6 @@ extension RulesConverter {
     
     private static var workItem: DispatchWorkItem?
     
-//    public static func start(groupID: String, extensionsBundles: [String]) {
     public static func start() {
         generateFiles()
     }
@@ -191,9 +189,8 @@ extension RulesConverter {
     private static func loadAndParseDomains() throws -> [String] {
         print("🔄 Начинаем загрузку и парсинг правил AdBlock...")
         
-//        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") else {
-            guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
-            print("❌ Файл adblock_rules.txt не найден")
+        guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
+            print("❌ Файл domains.txt не найден")
             throw RulesConverterError.fileNotFound
         }
         
@@ -229,14 +226,13 @@ extension RulesConverter {
         print("🔄 Начинаем конвертацию \(rules.count) правил AdBlock в правила Safari...")
         
         var preparedRules = [String]()
-        let chunks = rules.chunked(by: 30000)
+        let chunks = rules.chunked(by: 40000)
         
-        print("📦 Разделено на чанки: \(chunks.count) по 15000 правил")
+        print("📦 Разделено на чанки: \(chunks.count) по 40000 правил")
         
         chunks.enumerated().forEach { index, chunk in
             print("🔄 Обрабатываем чанк \(index + 1)/\(chunks.count) с \(chunk.count) правилами")
             
-//            let safariRules = chunk.compactMap(convertAdBlockRuleToSafari)
             let safariRules = chunk.compactMap(makeRule)
             let safariRulesArray = safariRules.isEmpty ? [createEmptyRule()] : safariRules
             
@@ -254,67 +250,28 @@ extension RulesConverter {
         return preparedRules
     }
     
-    private static func makeRule(domain: String) -> [String: Any]? {
-        
-        let rule = [
-            "trigger" : [
-                "url-filter": "^https?:/+([^/:]+\\.)?\(domain)[:/]",
-                "load-type": [
-                    "third-party",
-                    "first-party"
-                ]
-            ],
-            "action": [
-                "type": "block",
-            ]
-        ]
-        print("DEBUG: safari rule \(rule)")
-        return rule
-    }
+         private static func makeRule(domain: String) -> [String: Any]? {
+         // Экранируем точки в домене для регулярного выражения
+         let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
+         
+         let rule: [String: Any] = [
+             "trigger": [
+                 "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
+                 "load-type": [
+                     "third-party",
+                     "first-party"
+                 ]
+             ],
+             "action": [
+                 "type": "block"
+             ]
+         ]
+         
+         return rule
+     }
     
     
-    private static func convertAdBlockRuleToSafari(_ rule: String) -> [String: Any]? {
-        // Парсим правило AdBlock
-        let parsedRule = AdBlockRuleParser.parse(rule)
-        
-        guard let parsedRule = parsedRule else { return nil }
-        
-        // Создаем Safari правило
-        var safariRule: [String: Any] = [
-            "action": [
-                "type": parsedRule.action == .block ? "block" : "ignore-previous-rules"
-            ]
-        ]
-        
-        var trigger: [String: Any] = [:]
-        
-        // URL фильтр
-        trigger["url-filter"] = parsedRule.urlFilter
-        
-        // Типы ресурсов
-        if !parsedRule.resourceTypes.isEmpty {
-            trigger["resource-type"] = parsedRule.resourceTypes
-        }
-        
-        // Load type (third-party/first-party)
-        if !parsedRule.loadTypes.isEmpty {
-            trigger["load-type"] = parsedRule.loadTypes
-        }
-        
-        // Unless domain (исключения)
-        if !parsedRule.unlessDomains.isEmpty {
-            trigger["unless-domain"] = parsedRule.unlessDomains
-        }
-        
-        // If domain (только для определенных доменов)
-        if !parsedRule.ifDomains.isEmpty {
-            trigger["if-domain"] = parsedRule.ifDomains
-        }
-        
-        safariRule["trigger"] = trigger
-        print("DEBUG: safari rule \(safariRule)")
-        return safariRule
-    }
+
     
     private static func createEmptyRule() -> [String: Any] {
         print("⚠️ Создаем пустое правило")

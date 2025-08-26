@@ -22,20 +22,11 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isEnabled: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
-    @Published var rulesCount: Int = 0
-    @Published var lastUpdateTime: Date = Date()
-    @Published var extensionStatus: [String: String] = [:]
     
     private var blockingTask: Task<Void, Never>?
+    var animationID = UUID() // Для отслеживания текущей анимации
     
     init() {
-        // Загружаем текущий статус блокировки
-//        isEnabled = RuleConverterBridge.isAdBlockingEnabled()
-//        rulesCount = RuleConverterBridge.getRulesCount()
-        lastUpdateTime = Date()
-        
-        // Загружаем текущий статус расширений
-        loadExtensionStatus()
     }
     
     func toggleBlocking() {
@@ -53,53 +44,60 @@ class BlockAdsViewModel: ObservableObject {
             
             if !Task.isCancelled {
                 await MainActor.run {
-                    withAnimation(.bouncy(duration: 0.3)) {
+                    // Отменяем анимацию и сбрасываем состояние
+                    
+                    // Обновляем состояние с анимацией
+                    withAnimation(.bouncy(duration: 0.2)) {
                         isEnabled.toggle()
                         isProcess = false
-                        
-                        // Обновляем статус блокировки в системе
-//                        RuleConverterBridge.setAdBlockingEnabled(isEnabled)
-                        
-                        RulesConverter.start()
-                        
-//                        // Обновляем информацию о правилах
-//                        rulesCount = RuleConverterBridge.getRulesCount()
-                        lastUpdateTime = Date()
                     }
-                    resetAnimations()
+                    
+                    RulesConverter.start()
                 }
             }
         }
     }
 
     
-    private func animate() {
-        
-        withAnimation {
+    func animate() {
+        animationID = UUID()
+
+        // Disable previous animation
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            circleRotation = 0
+            waveHeight = 0
+            waveProgress = 0
+        }
+
+        withAnimation(.bouncy(duration: 0.2, extraBounce: 0.1)) {
             isProcess = true
         }
         
-        // Animation not working
-        waveHeight = 2
-        
         withAnimation(.easeInOut(duration: 1.0)) {
-            waveProgress = 1.0
+            self.waveProgress = 1.0
         }
         
-        circleRotation = 360
+//        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+            self.circleRotation = 360
+//        }
     }
     
     func cancelBlockingTask() {
         blockingTask?.cancel()
         blockingTask = nil
-        withAnimation(.easeInOut(duration: 0.3)) {
-            circleRotation = 0
+        
+        // Обновляем состояние
+        withAnimation(.easeInOut(duration: 0.2)) {
             isProcess = false
         }
-        resetAnimations()
     }
     
     private func resetAnimations() {
+        // Отменяем текущую анимацию
+        animationID = UUID()
+        
         // Отключаем анимацию для сброса
         var transaction = Transaction()
         transaction.disablesAnimations = true
@@ -108,18 +106,6 @@ class BlockAdsViewModel: ObservableObject {
             circleRotation = 0
             waveHeight = 0
             waveProgress = 0
-        }
-    }
-    
-    private func loadExtensionStatus() {
-        let extensions = ["adblocker", "sequrity", "privacy"]
-        
-        for extensionName in extensions {
-            if let status = DiagnosticTool.getExtensionStatus(extensionName) {
-                extensionStatus[extensionName] = status
-            } else {
-                extensionStatus[extensionName] = "📄 Статус недоступен"
-            }
         }
     }
 }
@@ -173,150 +159,6 @@ struct BlockAdsView: View {
                         .padding(.horizontal, 32)
                         .opacity(viewModel.isProcess ? 0.6 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
-                    Button("🔍 Полная диагностика") {
-                        let diagnosticResult = DiagnosticTool.runFullDiagnostic()
-                        print(diagnosticResult)
-                        // Или покажите результат в UI
-                    }
-                    
-                                            // Информация о правилах блокировки
-                        VStack(spacing: 8) {
-                            HStack {
-                                Image(systemName: "list.bullet")
-                                    .font(.caption)
-                                    .foregroundStyle(.tm.accentTertiary)
-                                
-                                Text("Правил блокировки: \(viewModel.rulesCount)")
-                                    .font(.caption)
-                                    .foregroundStyle(.tm.subTitle)
-                            }
-                            
-                            HStack {
-                                Image(systemName: "clock")
-                                    .font(.caption)
-                                    .foregroundStyle(.tm.accentTertiary)
-                                
-                                Text("Обновлено: \(viewModel.lastUpdateTime, formatter: timeFormatter)")
-                                    .font(.caption)
-                                    .foregroundStyle(.tm.subTitle)
-                            }
-                            
-                            // Статус расширений
-                            VStack(spacing: 4) {
-                                Text("Статус расширений:")
-                                    .font(.caption)
-                                    .foregroundStyle(.tm.accentTertiary)
-                                
-                                ForEach(Array(viewModel.extensionStatus.keys.sorted()), id: \.self) { extensionName in
-                                    HStack {
-                                        Image(systemName: "puzzlepiece")
-                                            .font(.caption2)
-                                            .foregroundStyle(.tm.accentTertiary)
-                                        
-                                        Text("\(extensionName): \(viewModel.extensionStatus[extensionName] ?? "Неизвестно")")
-                                            .font(.caption2)
-                                            .foregroundStyle(.tm.subTitle)
-                                            .lineLimit(2)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.tm.accentTertiary.opacity(0.1))
-                            )
-                        
-                        // Кнопки управления
-                        HStack(spacing: 8) {
-                            // Кнопка обновления правил
-                            Button(action: {
-                                RulesConverter.start()
-                            }) {
-                                HStack {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.caption)
-                                    Text("Обновить правила")
-                                        .font(.caption)
-                                }
-                                .foregroundStyle(.tm.accentSecondary)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.tm.accentSecondary.opacity(0.1))
-                                )
-                            }
-                            .disabled(viewModel.isProcess)
-                            
-                            // Кнопка диагностики
-                            Button(action: {
-                                let diagnosticResult = DiagnosticTool.runFullDiagnostic()
-                                print(diagnosticResult)
-                                
-                                // Показываем alert с результатами
-                                // В реальном приложении здесь можно использовать @State для показа alert
-                            }) {
-                                HStack {
-                                    Image(systemName: "stethoscope")
-                                        .font(.caption)
-                                    Text("Диагностика")
-                                        .font(.caption)
-                                }
-                                .foregroundStyle(.tm.accentTertiary)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.tm.accentTertiary.opacity(0.1))
-                                )
-                            }
-                            
-                            // Кнопка тестирования App Group
-                            Button(action: {
-                                DiagnosticTool.testAppGroupAccess()
-                            }) {
-                                HStack {
-                                    Image(systemName: "network")
-                                        .font(.caption)
-                                    Text("Тест App Group")
-                                        .font(.caption)
-                                }
-                                .foregroundStyle(.tm.success)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.tm.success.opacity(0.1))
-                                )
-                            }
-                            
-                            // Кнопка загрузки тестовых правил
-                            Button(action: {
-                                RulesConverter.loadTestRules()
-                            }) {
-                                HStack {
-                                    Image(systemName: "doc.text")
-                                        .font(.caption)
-                                    Text("Загрузить тест")
-                                        .font(.caption)
-                                }
-                                .foregroundStyle(.tm.accentTertiary)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.tm.accentTertiary.opacity(0.1))
-                                )
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.tm.container.opacity(0.3))
-                    )
                 }
                 .padding(.bottom, 50)
             }
@@ -345,7 +187,6 @@ struct BlockAdsView: View {
                             .multilineTextAlignment(.center)
                     }
                 )
-                .scaleEffect(viewModel.isProcess ? 0.97 : 1.0)
                 .onTapGesture {
                     // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
@@ -356,7 +197,6 @@ struct BlockAdsView: View {
                     ZStack {
                         otherCircles
                             .opacity(viewModel.isProcess ? 1 : 0)
-                        
                         // Анимированные частицы вокруг кнопки
                         if viewModel.isProcess {
                             ForEach(0..<8) { index in
@@ -366,33 +206,34 @@ struct BlockAdsView: View {
                         }
                     }
                 )
+                .scaleEffect(viewModel.isProcess ? 0.94 : 1.0)
         }
     }
 
     
     @ViewBuilder
     var mainButtonShape: some View {
-        WaveShape(waveCount: 6, waveHeight: viewModel.waveHeight, progress: viewModel.waveProgress)
+        WaveShape(waveCount: 0, waveHeight: 0, progress: viewModel.waveProgress)
             .fill(
                 LinearGradient(
-                    colors: viewModel.isProcess ? [.tm.accentSecondary.opacity(0.4), .tm.accentTertiary.opacity(0.4)] : [.tm.container, .tm.container.opacity(0.8)],
+                    colors: viewModel.isProcess ? [.tm.accentSecondary.opacity(0.4), .tm.accent.opacity(0.4)] : [.tm.container, .tm.container.opacity(0.8)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .frame(width: 160, height: 160)
-            .rotationEffect(.degrees(viewModel.circleRotation))
+//            .rotationEffect(.degrees(viewModel.circleRotation))
             .opacity(viewModel.isProcess ? 0 : 1)
     }
     
     var otherCircles: some View {
-        ForEach(1..<7) { index in
-            makeWaveCircle(duration: 2 + Double(index) / 4, opacity: Double(index) / 8, rotationVector: index % 2 == 0)
+        ForEach(1..<9) { index in
+            makeWaveCircle(duration: 3 + Double(index) / 4, opacity: Double(index) / 8, rotationVector: index % 2 == 0)
         }
     }
     
     func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool) -> some View {
-        WaveShape(waveCount: 6, waveHeight: 2, progress: viewModel.waveProgress)
+        WaveShape(waveCount: 5, waveHeight: 4, progress: viewModel.waveProgress)
             .fill(
                 LinearGradient(
                     colors: [.tm.accentSecondary.opacity(0.6), .tm.accent.opacity(0.6)],
@@ -401,9 +242,13 @@ struct BlockAdsView: View {
                 )
             )
             .frame(width: waveSize, height: waveSize)
+            .rotationEffect(.degrees(opacity * 140))
             .rotationEffect(.degrees(rotationVector ? -viewModel.circleRotation : viewModel.circleRotation))
             .opacity(opacity)
-            .animation(.linear(duration: duration), value: viewModel.circleRotation)
+            .animation(viewModel.isProcess ? .linear(duration: duration) : .none,
+                value: viewModel.circleRotation
+            )
+            .id(viewModel.animationID)
             .shadow(color: .tm.accentSecondary.opacity(0.1), radius: 40, x: 0, y: 0)
     }
 }
@@ -467,15 +312,6 @@ struct WaveShape: Shape {
 #Preview {
     BlockAdsView()
 }
-
-// MARK: - Time Formatter
-private let timeFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.timeStyle = .short
-    formatter.dateStyle = .short
-    formatter.locale = Locale(identifier: "ru_RU")
-    return formatter
-}()
 
 struct ParticlesView: View {
     @State private var animation = false
