@@ -6,7 +6,7 @@
 //
 import Foundation
 import SafariServices
-import SwiftyJSON
+
 
 /// Модуль блокировщика рекламы
 public enum RulesConverter {
@@ -111,7 +111,7 @@ extension RulesConverter {
             print("✅ Тестовые правила прочитаны, размер: \(testRulesString.count) символов")
             
             // Сохраняем в App Group
-            let targetFileURL = groupURL.appendingPathComponent("new_rules.json")
+            let targetFileURL = groupURL.appendingPathComponent("adBlock.json")
             try testRulesString.write(to: targetFileURL, atomically: true, encoding: .utf8)
             
             if fileManager.fileExists(atPath: targetFileURL.path) {
@@ -119,7 +119,7 @@ extension RulesConverter {
                 
                 // Перезагружаем расширения
                 DispatchQueue.main.async {
-                    reloadExtensions(bundles: extensionsBundles, maxRetries: extensionsBundles.count) {
+                    reloadExtensions(bundles: [Constants.BlockExtenesionBundleIds.adblocker.rawValue], maxRetries: 1) {
                         print("✅ Расширения перезагружены")
                     }
                 }
@@ -189,9 +189,10 @@ extension RulesConverter {
 // MARK: - Private Helper Methods
 extension RulesConverter {
     private static func loadAndParseDomains() throws -> [String] {
-        print("🔄 Начинаем загрузку и парсинг доменов...")
+        print("🔄 Начинаем загрузку и парсинг правил AdBlock...")
         
-        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") else {
+//        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") else {
+            guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
             print("❌ Файл adblock_rules.txt не найден")
             throw RulesConverterError.fileNotFound
         }
@@ -204,40 +205,40 @@ extension RulesConverter {
         let lines = rulesString.components(separatedBy: .newlines)
         print("📝 Разделено на строки: \(lines.count)")
         
-        let domains = lines.compactMap(parseDomainFromLine)
-        print("🌐 Извлечено доменов: \(domains.count)")
+        let rules = lines.compactMap(parseAdBlockRule)
+        print("🎯 Извлечено правил: \(rules.count)")
         
-        return domains
+        return rules
     }
     
-    private static func parseDomainFromLine(_ line: String) -> String? {
+    private static func parseAdBlockRule(_ line: String) -> String? {
         let trimmed = line.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty, !trimmed.hasPrefix("!"), !trimmed.hasPrefix("[") else { return nil }
         
-        // Парсинг правил формата ||domain^
-        if trimmed.hasPrefix("||"), let domainEnd = trimmed.firstIndex(of: "^") {
-            let start = trimmed.index(trimmed.startIndex, offsetBy: 2)
-            let domain = String(trimmed[start..<domainEnd])
-            return domain.isEmpty ? nil : domain
-        }
+        // Пропускаем комментарии и пустые строки
+        guard !trimmed.isEmpty, 
+              !trimmed.hasPrefix("!"), 
+              !trimmed.hasPrefix("[") else { return nil }
         
-        // TODO: Добавить парсинг других форматов правил
-        return nil
+        // Пропускаем элемент-скрывающие правила (##)
+        guard !trimmed.contains("##") else { return nil }
+        
+        return trimmed
     }
     
-    private static func convertDomainsToSafariRules(_ domains: [String]) -> [String] {
-        print("🔄 Начинаем конвертацию \(domains.count) доменов в правила Safari...")
+    private static func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
+        print("🔄 Начинаем конвертацию \(rules.count) правил AdBlock в правила Safari...")
         
         var preparedRules = [String]()
-        let chunks = domains.chunked(by: 40000)
+        let chunks = rules.chunked(by: 30000)
         
-        print("📦 Разделено на чанки: \(chunks.count) по 40000 доменов")
+        print("📦 Разделено на чанки: \(chunks.count) по 15000 правил")
         
         chunks.enumerated().forEach { index, chunk in
-            print("🔄 Обрабатываем чанк \(index + 1)/\(chunks.count) с \(chunk.count) доменами")
+            print("🔄 Обрабатываем чанк \(index + 1)/\(chunks.count) с \(chunk.count) правилами")
             
-            let rules = chunk.map(createSafariRule)
-            let safariRulesArray = rules.isEmpty ? [createEmptyRule()] : rules
+//            let safariRules = chunk.compactMap(convertAdBlockRuleToSafari)
+            let safariRules = chunk.compactMap(makeRule)
+            let safariRulesArray = safariRules.isEmpty ? [createEmptyRule()] : safariRules
             
             print("📋 Создано правил Safari: \(safariRulesArray.count)")
             
@@ -253,33 +254,96 @@ extension RulesConverter {
         return preparedRules
     }
     
-    private static func createSafariRule(from domain: String) -> [String: Any] {
-        return [
-            "trigger": [
-                "url-filter": ".*\\b\(domain)\\b.*",
-                "resource-type": ["script", "image", "subdocument"],
-                "load-type": ["third-party", "first-party"]
+    private static func makeRule(domain: String) -> [String: Any]? {
+        
+        let rule = [
+            "trigger" : [
+                "url-filter": "^https?:/+([^/:]+\\.)?\(domain)[:/]",
+                "load-type": [
+                    "third-party",
+                    "first-party"
+                ]
             ],
-            "action": ["type": "block"]
+            "action": [
+                "type": "block",
+            ]
         ]
+        print("DEBUG: safari rule \(rule)")
+        return rule
+    }
+    
+    
+    private static func convertAdBlockRuleToSafari(_ rule: String) -> [String: Any]? {
+        // Парсим правило AdBlock
+        let parsedRule = AdBlockRuleParser.parse(rule)
+        
+        guard let parsedRule = parsedRule else { return nil }
+        
+        // Создаем Safari правило
+        var safariRule: [String: Any] = [
+            "action": [
+                "type": parsedRule.action == .block ? "block" : "ignore-previous-rules"
+            ]
+        ]
+        
+        var trigger: [String: Any] = [:]
+        
+        // URL фильтр
+        trigger["url-filter"] = parsedRule.urlFilter
+        
+        // Типы ресурсов
+        if !parsedRule.resourceTypes.isEmpty {
+            trigger["resource-type"] = parsedRule.resourceTypes
+        }
+        
+        // Load type (third-party/first-party)
+        if !parsedRule.loadTypes.isEmpty {
+            trigger["load-type"] = parsedRule.loadTypes
+        }
+        
+        // Unless domain (исключения)
+        if !parsedRule.unlessDomains.isEmpty {
+            trigger["unless-domain"] = parsedRule.unlessDomains
+        }
+        
+        // If domain (только для определенных доменов)
+        if !parsedRule.ifDomains.isEmpty {
+            trigger["if-domain"] = parsedRule.ifDomains
+        }
+        
+        safariRule["trigger"] = trigger
+        print("DEBUG: safari rule \(safariRule)")
+        return safariRule
     }
     
     private static func createEmptyRule() -> [String: Any] {
         print("⚠️ Создаем пустое правило")
         return [
-            "trigger": ["url-filter": "none"],
-            "action": ["type": "block"]
+            "trigger": [
+                "url-filter": "none"
+            ],
+            "action": [
+                "type": "block"
+            ]
         ]
     }
     
     private static func convertRulesToJSON(_ rules: [[String: Any]]) -> String? {
-        let jsonString = JSON(rules).rawString(.utf8, options: .prettyPrinted)
-        if jsonString != nil {
-            print("✅ Правила конвертированы в JSON")
-        } else {
-            print("❌ Ошибка конвертации правил в JSON")
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: rules, options: .prettyPrinted)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            
+            if jsonString != nil {
+                print("✅ Правила конвертированы в JSON")
+            } else {
+                print("❌ Ошибка конвертации данных в строку")
+            }
+            
+            return jsonString
+        } catch {
+            print("❌ Ошибка конвертации правил в JSON: \(error)")
+            return nil
         }
-        return jsonString
     }
     
     private static func saveRulesToFiles(_ preparedRules: [String]) {
@@ -329,4 +393,154 @@ extension Array {
 
 private enum RulesConverterError: Error {
     case fileNotFound
+}
+
+// MARK: - AdBlock Rule Parser
+
+struct AdBlockRuleParser {
+    struct ParsedRule {
+        let urlFilter: String
+        let action: Action
+        let resourceTypes: [String]
+        let loadTypes: [String]
+        let unlessDomains: [String]
+        let ifDomains: [String]
+        
+        enum Action {
+            case block
+            case allow
+        }
+    }
+    
+    static func parse(_ rule: String) -> ParsedRule? {
+        var workingRule = rule
+        var action: ParsedRule.Action = .block
+        var resourceTypes: [String] = []
+        var loadTypes: [String] = []
+        var unlessDomains: [String] = []
+        var ifDomains: [String] = []
+        
+        // Проверяем на исключение (@@)
+        if workingRule.hasPrefix("@@") {
+            action = .allow
+            workingRule = String(workingRule.dropFirst(2))
+        }
+        
+        // Разделяем на URL и опции
+        let parts = workingRule.components(separatedBy: "$")
+        let urlPart = parts[0]
+        let optionsPart = parts.count > 1 ? parts[1] : ""
+        
+        // Парсим опции
+        if !optionsPart.isEmpty {
+            let options = optionsPart.components(separatedBy: ",")
+            
+            for option in options {
+                let trimmedOption = option.trimmingCharacters(in: .whitespaces)
+                
+                if trimmedOption == "third-party" {
+                    loadTypes.append("third-party")
+                } else if trimmedOption == "first-party" {
+                    loadTypes.append("first-party")
+                } else if trimmedOption.hasPrefix("domain=") {
+                    let domainString = String(trimmedOption.dropFirst(7))
+                    let domains = domainString.components(separatedBy: "|")
+                    
+                    for domain in domains {
+                        if domain.hasPrefix("~") {
+                            unlessDomains.append(String(domain.dropFirst(1)))
+                        } else {
+                            ifDomains.append(domain)
+                        }
+                    }
+                } else if isResourceType(trimmedOption) {
+                    if trimmedOption.hasPrefix("~") {
+                        // Исключаем этот тип ресурса - добавляем все остальные
+                        let excludedType = String(trimmedOption.dropFirst(1))
+                        resourceTypes = getAllResourceTypes().filter { $0 != mapResourceType(excludedType) }
+                    } else {
+                        resourceTypes.append(mapResourceType(trimmedOption))
+                    }
+                }
+            }
+        }
+        
+        // Конвертируем URL в Safari формат
+        let urlFilter = convertUrlToSafariFilter(urlPart)
+        
+        return ParsedRule(
+            urlFilter: urlFilter,
+            action: action,
+            resourceTypes: resourceTypes,
+            loadTypes: loadTypes,
+            unlessDomains: unlessDomains,
+            ifDomains: ifDomains
+        )
+    }
+    
+    private static func convertUrlToSafariFilter(_ url: String) -> String {
+        var filter = url
+        
+        // Обрабатываем специальные символы AdBlock СНАЧАЛА
+        if filter.hasPrefix("||") {
+            // ||domain^ -> ^https?://.*domain.*
+            filter = String(filter.dropFirst(2)) // убираем ||
+            if filter.hasSuffix("^") {
+                filter = String(filter.dropLast(1)) // убираем ^
+            }
+            // Экранируем точки в доменах
+            filter = filter.replacingOccurrences(of: ".", with: "\\.")
+            filter = "^https?://.*" + filter + ".*"
+        } else if filter.hasPrefix("/") && filter.hasSuffix("/") {
+            // /path/ -> ^https?://.*/path.*
+            filter = String(filter.dropFirst().dropLast()) // убираем / /
+            filter = escapeRegexCharacters(filter)
+            filter = "^https?://.*/" + filter + ".*"
+        } else {
+            // Обычный URL или путь
+            filter = escapeRegexCharacters(filter)
+            if !filter.hasPrefix("^https?://") {
+                filter = "^https?://.*" + filter + ".*"
+            }
+        }
+        
+        return filter
+    }
+    
+    private static func escapeRegexCharacters(_ string: String) -> String {
+        // Экранируем только необходимые символы для Safari
+        var escaped = string
+        escaped = escaped.replacingOccurrences(of: "\\", with: "\\\\")
+        escaped = escaped.replacingOccurrences(of: ".", with: "\\.")
+        escaped = escaped.replacingOccurrences(of: "+", with: "\\+")
+        escaped = escaped.replacingOccurrences(of: "?", with: "\\?")
+        escaped = escaped.replacingOccurrences(of: "$", with: "\\$")
+        escaped = escaped.replacingOccurrences(of: "{", with: "\\{")
+        escaped = escaped.replacingOccurrences(of: "}", with: "\\}")
+        escaped = escaped.replacingOccurrences(of: "[", with: "\\[")
+        escaped = escaped.replacingOccurrences(of: "]", with: "\\]")
+        escaped = escaped.replacingOccurrences(of: "(", with: "\\(")
+        escaped = escaped.replacingOccurrences(of: ")", with: "\\)")
+        return escaped
+    }
+    
+    private static func isResourceType(_ option: String) -> Bool {
+        let cleanOption = option.hasPrefix("~") ? String(option.dropFirst(1)) : option
+        let resourceTypes = ["script", "image", "stylesheet", "object", "xmlhttprequest", 
+                           "subdocument", "ping", "websocket", "other", "font", "media"]
+        return resourceTypes.contains(cleanOption)
+    }
+    
+    private static func mapResourceType(_ type: String) -> String {
+        switch type {
+        case "stylesheet": return "style-sheet"
+        case "xmlhttprequest": return "raw"
+        case "other": return "raw"
+        default: return type
+        }
+    }
+    
+    private static func getAllResourceTypes() -> [String] {
+        return ["script", "image", "style-sheet", "font", "raw", "media"]
+    }
 }

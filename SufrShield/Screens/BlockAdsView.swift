@@ -173,6 +173,11 @@ struct BlockAdsView: View {
                         .padding(.horizontal, 32)
                         .opacity(viewModel.isProcess ? 0.6 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
+                    Button("🔍 Полная диагностика") {
+                        let diagnosticResult = DiagnosticTool.runFullDiagnostic()
+                        print(diagnosticResult)
+                        // Или покажите результат в UI
+                    }
                     
                                             // Информация о правилах блокировки
                         VStack(spacing: 8) {

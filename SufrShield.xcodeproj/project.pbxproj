@@ -15,6 +15,7 @@
 		8E9F1AF52E5C94EE0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF82E5CD12B0093C76B /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8E9F1AF92E5CD12B0093C76B /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
+		8EA6702A2E5DB3F400B4F62F /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EA670292E5DB3F400B4F62F /* domains.txt */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -22,8 +23,6 @@
 		8EBA840A2E5BBD0800206493 /* test_rules.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA84092E5BBD0800206493 /* test_rules.json */; };
 		8EC786AA2E5C41160024A55C /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786A92E5C41160024A55C /* adblock_rules.txt */; };
 		8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
-		8EC786AE2E5C57170024A55C /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC786AD2E5C57170024A55C /* SwiftyJSON */; };
-		8EC786B22E5C58C60024A55C /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC786B12E5C58C60024A55C /* SwiftyJSON */; };
 		8EC786DB2E5C64D10024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786DA2E5C64D10024A55C /* blockerList.json */; };
 		8EC786E12E5C64D10024A55C /* sequrity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EC786D82E5C64D10024A55C /* sequrity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786EB2E5C64F30024A55C /* blockerList.json */; };
@@ -89,6 +88,7 @@
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
 		8E9F1AF12E5C94C30093C76B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E9F1AFA2E5CD15A0093C76B /* sequrity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sequrity.entitlements; sourceTree = "<group>"; };
+		8EA670292E5DB3F400B4F62F /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -125,7 +125,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EC786B22E5C58C60024A55C /* SwiftyJSON in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,7 +146,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EC786AE2E5C57170024A55C /* SwiftyJSON in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +226,7 @@
 		8ECF28092E59BAFE000A5748 /* SufrShield */ = {
 			isa = PBXGroup;
 			children = (
+				8EA670292E5DB3F400B4F62F /* domains.txt */,
 				8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */,
 				8EC786A92E5C41160024A55C /* adblock_rules.txt */,
 				8EBA84092E5BBD0800206493 /* test_rules.json */,
@@ -304,11 +303,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				8ED1F97D2E5CD378000900F9 /* PBXTargetDependency */,
 			);
 			name = adblocker;
 			packageProductDependencies = (
-				8EC786B12E5C58C60024A55C /* SwiftyJSON */,
 			);
 			productName = adblocker;
 			productReference = 8EBA83FA2E5BB15600206493 /* adblocker.appex */;
@@ -325,7 +322,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				8ED1F97F2E5CD37E000900F9 /* PBXTargetDependency */,
 			);
 			name = sequrity;
 			productName = sequrity;
@@ -343,7 +339,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				8ED1F9812E5CD384000900F9 /* PBXTargetDependency */,
 			);
 			name = privacy;
 			productName = privacy;
@@ -368,7 +363,6 @@
 			);
 			name = SufrShield;
 			packageProductDependencies = (
-				8EC786AD2E5C57170024A55C /* SwiftyJSON */,
 			);
 			productName = SufrShield;
 			productReference = 8ECF28072E59BAFE000A5748 /* SufrShield.app */;
@@ -408,7 +402,6 @@
 			);
 			mainGroup = 8ECF27FE2E59BAFE000A5748;
 			packageReferences = (
-				8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 8ECF28082E59BAFE000A5748 /* Products */;
 			projectDirPath = "";
@@ -451,6 +444,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EA6702A2E5DB3F400B4F62F /* domains.txt in Resources */,
 				8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */,
 				8EC786AA2E5C41160024A55C /* adblock_rules.txt in Resources */,
 				8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */,
@@ -528,18 +522,6 @@
 			isa = PBXTargetDependency;
 			target = 8EC786E82E5C64F30024A55C /* privacy */;
 			targetProxy = 8EC786F02E5C64F30024A55C /* PBXContainerItemProxy */;
-		};
-		8ED1F97D2E5CD378000900F9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 8ED1F97C2E5CD378000900F9 /* SwiftyJSON */;
-		};
-		8ED1F97F2E5CD37E000900F9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 8ED1F97E2E5CD37E000900F9 /* SwiftyJSON */;
-		};
-		8ED1F9812E5CD384000900F9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 8ED1F9802E5CD384000900F9 /* SwiftyJSON */;
 		};
 /* End PBXTargetDependency section */
 
@@ -944,45 +926,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8EC786AD2E5C57170024A55C /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
-		8EC786B12E5C58C60024A55C /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
-		8ED1F97C2E5CD378000900F9 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
-		8ED1F97E2E5CD37E000900F9 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
-		8ED1F9802E5CD384000900F9 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8EC786AC2E5C57170024A55C /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8ECF27FF2E59BAFE000A5748 /* Project object */;
 }
