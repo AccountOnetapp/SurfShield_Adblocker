@@ -48,6 +48,10 @@ extension ShapeStyle where Self == Color {
 // Расширение для Color
 extension Color {
     static var tm: Colors { Colors() }
+    
+    init(color: ThemeColors) {
+        self = color.color
+    }
 }
 
 // Расширение для использования в .foregroundStyle

@@ -14,7 +14,8 @@ class BlockAdsViewModel: ObservableObject {
     enum BlockingState {
         case enabled
         case disabled
-        case process
+        case connecting
+        case disconnecting
     }
     
     @Published var waveProgress: Double = 0
@@ -23,11 +24,13 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
     
+    @Published var blockingState: BlockingState = .disabled
+    
     private var blockingTask: Task<Void, Never>?
+    private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации
     
-    init() {
-    }
+    init() { }
     
     func toggleBlocking() {
         if !isProcess {
@@ -50,6 +53,13 @@ class BlockAdsViewModel: ObservableObject {
                     withAnimation(.bouncy(duration: 0.2)) {
                         isEnabled.toggle()
                         isProcess = false
+                    }
+                    
+                    // Запускаем или останавливаем постоянную анимацию
+                    if isEnabled {
+                        startContinuousAnimation()
+                    } else {
+                        stopContinuousAnimation()
                     }
                     
                     RulesConverter.start()
@@ -75,7 +85,7 @@ class BlockAdsViewModel: ObservableObject {
             isProcess = true
         }
         
-        withAnimation(.easeInOut(duration: 1.0)) {
+        withAnimation(.easeInOut(duration: 1.0).repeatForever()) {
             self.waveProgress = 1.0
         }
         
@@ -91,6 +101,11 @@ class BlockAdsViewModel: ObservableObject {
         // Обновляем состояние
         withAnimation(.easeInOut(duration: 0.2)) {
             isProcess = false
+        }
+        
+        // Если блокировка не включена, останавливаем анимацию
+        if !isEnabled {
+            stopContinuousAnimation()
         }
     }
     
@@ -108,6 +123,37 @@ class BlockAdsViewModel: ObservableObject {
             waveProgress = 0
         }
     }
+    
+    func startContinuousAnimation() {
+        stopContinuousAnimation() // Останавливаем предыдущую анимацию если есть
+        
+        animationID = UUID()
+        
+        // Сбрасываем состояние
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            circleRotation = 0
+            waveProgress = 0
+        }
+        
+        // Запускаем постоянную анимацию
+        withAnimation(.easeInOut(duration: 1.0).repeatForever()) {
+            self.waveProgress = 1.0
+        }
+        
+        withAnimation(.linear(duration: 8.0).repeatForever(autoreverses: false)) {
+            self.circleRotation = 360
+        }
+    }
+    
+    private func stopContinuousAnimation() {
+        continuousAnimationTask?.cancel()
+        continuousAnimationTask = nil
+        
+        // Сбрасываем анимации
+        resetAnimations()
+    }
 }
 
 
@@ -115,22 +161,18 @@ class BlockAdsViewModel: ObservableObject {
 // MARK: - View
 struct BlockAdsView: View {
     @StateObject private var viewModel = BlockAdsViewModel()
-    let waveSize: CGFloat = 160
+    
     var body: some View {
         content
     }
     
+
+    let id = UUID()
     var content: some View {
         ZStack {
             // Анимированный фон с градиентом
-            LinearGradient(
-                colors: viewModel.isEnabled 
-                    ? [Color.tm.background, Color.tm.background.opacity(0.8), Color.tm.accentSecondary.opacity(0.1)]
-                    : [Color.tm.background, Color.tm.background.opacity(0.8)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            BackgroundGradient(isHighlight: viewModel.isEnabled)
+                .ignoresSafeArea()
             
             // Анимированные частицы на фоне
             ParticlesView()
@@ -139,117 +181,240 @@ struct BlockAdsView: View {
             VStack {
                 Spacer()
                 
-                blockAdsButton
+                VStack(spacing: 24) {
+                    blockAdsButton
+                    
+                    // Статус кнопки с лоадером
+                    VStack(spacing: 12) {
+                        Text(buttonStatusTitle)
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.tm.title)
+                            .opacity(viewModel.isProcess ? 0.7 : 1.0)
+                        
+                        // Красивый лоадер для процесса
+                        ProcessLoader()
+                            .transition(.scale.combined(with: .opacity))
+                            .opacity(viewModel.isProcess ? 1 : 0)
+                    }
+                    .id(viewModel.animationID)
+                }
                 
                 Spacer()
                 
-                // Улучшенное описание с анимацией
-                VStack(spacing: 20) {
-                    HStack(spacing: 12) {
-                        Text("Blocking advertising")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.tm.accentSecondary)
-                    }
+                // Описание приложения
+                VStack(spacing: 16) {
+                    Text("Blocking advertising")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.tm.accentSecondary)
                     
-                    Text("Click the button to activate advertising blocking in all applications")
+                    Text("Click the button to activate or deactivate advertising blocking in Safari")
                         .font(.body)
                         .foregroundColor(.tm.subTitle.opacity(0.8))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
-                        .opacity(viewModel.isProcess ? 0.6 : 1.0)
-                        .animation(.easeInOut(duration: 0.3), value: viewModel.isProcess)
                 }
                 .padding(.bottom, 50)
+            }
+        }
+        .onAppear {
+            // Запускаем анимацию если блокировка уже включена
+            if viewModel.isEnabled {
+                viewModel.startContinuousAnimation()
             }
         }
         .onDisappear {
             viewModel.cancelBlockingTask()
         }
     }
-    
+
     @ViewBuilder
     var blockAdsButton: some View {
-        ZStack {
-            // Основная кнопка с дугой загрузки
-            
-            mainButtonShape
-                .overlay(
-                    VStack(spacing: 8) {
-                        Image(systemName: "power")
-                            .font(.system(size: 40, weight: .medium))
-                            .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .white)
-                            .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.6 : 0), radius: 3)
-                        
-                        Text(viewModel.isEnabled ? "Turn off" : "Turn on")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(.white)
-                            .multilineTextAlignment(.center)
-                    }
-                )
-                .onTapGesture {
-                    // Haptic feedback
-                    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-                    impactFeedback.impactOccurred()
-                    viewModel.toggleBlocking()
-                }
-                .background(
-                    ZStack {
-                        otherCircles
-                            .opacity(viewModel.isProcess ? 1 : 0)
-                        // Анимированные частицы вокруг кнопки
-                        if viewModel.isProcess {
-                            ForEach(0..<8) { index in
-                                ParticleView(index: index, isActive: viewModel.isProcess)
-                                    .opacity(0.2)
-                            }
-                        }
-                    }
-                )
-                .scaleEffect(viewModel.isProcess ? 0.94 : 1.0)
+        AnimatedBlockButton(
+            isEnabled: viewModel.isEnabled,
+            isProcess: viewModel.isProcess,
+            waveProgress: viewModel.waveProgress,
+            circleRotation: viewModel.circleRotation,
+            animationID: viewModel.animationID,
+            onTap: {
+                // Haptic feedback
+                let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                impactFeedback.impactOccurred()
+                viewModel.toggleBlocking()
+            }
+        )
+    }
+    
+    private var buttonStatusTitle: String {
+        if viewModel.isProcess {
+            return viewModel.isEnabled ? "Отключение" : "Подключение"
+        } else {
+            return viewModel.isEnabled ? "Включено" : "Выключено"
         }
     }
 
+}
+
+// MARK: - Animated Block Button
+struct AnimatedBlockButton: View {
+    let isEnabled: Bool
+    let isProcess: Bool
+    let waveProgress: Double
+    let circleRotation: Double
+    let animationID: UUID
+    let onTap: () -> Void
+    
+    private let waveSize: CGFloat = 160
+    private let waveCount = 4
+    
+    var body: some View {
+        ZStack {
+            // Основная кнопка с дугой загрузки
+            if isEnabled {
+                makeEnabledStateButton()
+            } else {
+                makeDisabledStateButton()
+            }
+            
+            // Overlay с иконкой и состоянием
+            buttonContentOverlay
+        }
+        .onTapGesture {
+            onTap()
+        }
+        .scaleEffect(isProcess ? 0.94 : 1.0)
+        .background {
+            if isProcess {
+                ForEach(0..<8) { index in
+                    ParticleView(index: index, isActive: isProcess)
+                        .opacity(0.6)
+                }
+            }
+        }
+    }
     
     @ViewBuilder
-    var mainButtonShape: some View {
-        WaveShape(waveCount: 0, waveHeight: 0, progress: viewModel.waveProgress)
+    private var buttonContentOverlay: some View {
+        ZStack {
+            // Пульсирующее кольцо для активного состояния
+            if isEnabled && !isProcess {
+                Circle()
+                    .stroke(.white.opacity(0.2), lineWidth: 2)
+                    .frame(width: 70, height: 70)
+                    .scaleEffect(1.0)
+                    .opacity(0.8)
+                    .animation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true), value: isEnabled)
+                
+                Circle()
+                    .stroke(.white.opacity(0.1), lineWidth: 1)
+                    .frame(width: 85, height: 85)
+                    .scaleEffect(1.1)
+                    .opacity(0.6)
+                    .animation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true), value: isEnabled)
+            }
+            
+            // Дополнительное свечение для включенного состояния
+            if isEnabled && !isProcess {
+                Image(systemName: iconName)
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundStyle(.tm.accentSecondary.opacity(0.2))
+                    .scaleEffect(1.15)
+                    .blur(radius: 6)
+            }
+            
+            // Основная иконка
+            Image(systemName: iconName)
+                .font(.system(size: 32, weight: .medium))
+                .foregroundStyle(iconColor)
+                .shadow(color: iconShadow, radius: iconShadowRadius)
+                .scaleEffect(isProcess ? 0.9 : 1.0)
+                .rotationEffect(.degrees(isProcess ? circleRotation : 0))
+                .animation(.easeInOut(duration: 0.2), value: isProcess)
+                .animation(isProcess ? .linear(duration: 2.0).repeatForever(autoreverses: false) : .none, value: circleRotation)
+        }
+    }
+    
+
+    
+    private var iconName: String {
+        if isProcess {
+            return "arrow.triangle.2.circlepath"
+        } else {
+            return "power"
+        }
+    }
+    
+    private var iconColor: Color {
+        if isProcess {
+            return .white.opacity(0.9)
+        } else if isEnabled {
+            // Для включенного состояния - белый с легким свечением
+            return .white
+        } else {
+            // Для выключенного состояния - приглушенный белый
+            return .white.opacity(0.7)
+        }
+    }
+    
+    private var iconShadow: Color {
+        if isProcess {
+            return .clear
+        } else if isEnabled {
+            // Красивое свечение для включенного состояния
+            return .tm.accentSecondary
+        } else {
+            return .clear
+        }
+    }
+    
+    private var iconShadowRadius: CGFloat {
+        if isEnabled && !isProcess {
+            return 12
+        } else {
+            return 0
+        }
+    }
+    
+    private func makeDisabledStateButton() -> some View {
+        WaveShape(waveCount: 0, waveHeight: 0, progress: waveProgress)
             .fill(
                 LinearGradient(
-                    colors: viewModel.isProcess ? [.tm.accentSecondary.opacity(0.4), .tm.accent.opacity(0.4)] : [.tm.container, .tm.container.opacity(0.8)],
+                    colors: [.tm.container, .tm.container.opacity(0.9)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .frame(width: 160, height: 160)
-//            .rotationEffect(.degrees(viewModel.circleRotation))
-            .opacity(viewModel.isProcess ? 0 : 1)
+            .scaleEffect(isProcess ? 0.94 : 1.0)
     }
     
-    var otherCircles: some View {
-        ForEach(1..<9) { index in
-            makeWaveCircle(duration: 3 + Double(index) / 4, opacity: Double(index) / 8, rotationVector: index % 2 == 0)
+    private func makeEnabledStateButton() -> some View {
+        ForEach(1..<12) { index in
+            makeWaveCircle(
+                duration: 3 + Double(index) / 4,
+                opacity: Double(index) / 20,
+                rotationVector: index % 2 == 0,
+                colors: [.tm.accentSecondary, .tm.accent]
+            )
+            .scaleEffect(CGSize(width: 1 - (Double(index) * 0.005), height: 1 - (Double(index) * 0.005)) )
         }
     }
     
-    func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool) -> some View {
-        WaveShape(waveCount: 5, waveHeight: 4, progress: viewModel.waveProgress)
+    private func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool, colors: [Color]) -> some View {
+        WaveShape(waveCount: waveCount, waveHeight: 3, progress: waveProgress)
             .fill(
                 LinearGradient(
-                    colors: [.tm.accentSecondary.opacity(0.6), .tm.accent.opacity(0.6)],
+                    colors: colors,
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .frame(width: waveSize, height: waveSize)
-            .rotationEffect(.degrees(opacity * 140))
-            .rotationEffect(.degrees(rotationVector ? -viewModel.circleRotation : viewModel.circleRotation))
+            .rotationEffect(.degrees(opacity * 140)) // Сдвиг по часовой стрелке чтобы анимация начиналась не с нулевого положения
+            .rotationEffect(.degrees(rotationVector ? -circleRotation : circleRotation))
             .opacity(opacity)
-            .animation(viewModel.isProcess ? .linear(duration: duration) : .none,
-                value: viewModel.circleRotation
-            )
-            .id(viewModel.animationID)
-            .shadow(color: .tm.accentSecondary.opacity(0.1), radius: 40, x: 0, y: 0)
+            .animation(.linear(duration: duration).repeatForever(autoreverses: false), value: circleRotation)
+            .id(animationID)
     }
 }
 
@@ -308,6 +473,35 @@ struct WaveShape: Shape {
     }
 }
 
+
+// MARK: - Process Loader
+struct ProcessLoader: View {
+    @State private var isAnimating = false
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach(0..<3) { index in
+                Circle()
+                    .fill(.tm.accentSecondary.opacity(0.8))
+                    .frame(width: 6, height: 6)
+                    .scaleEffect(isAnimating ? 1.2 : 0.8)
+                    .opacity(isAnimating ? 1.0 : 0.4)
+                    .animation(
+                        .easeInOut(duration: 0.6)
+                        .repeatForever()
+                        .delay(Double(index) * 0.2),
+                        value: isAnimating
+                    )
+            }
+        }
+        .onAppear {
+            isAnimating = true
+        }
+        .onDisappear {
+            isAnimating = false
+        }
+    }
+}
 
 #Preview {
     BlockAdsView()

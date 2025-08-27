@@ -18,6 +18,7 @@ enum Layout {
         case regular = 8
         case regularExt = 12
         case medium = 16
+        case mediumExt = 20
         case large = 24
         case extraLarge = 32
         

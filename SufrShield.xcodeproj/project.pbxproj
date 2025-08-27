@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0384CE2E5E4939001D5E9D /* SettingsView.swift */; };
+		8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */; };
 		8E352C592E5B836B00384E52 /* DiagnosticTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E352C582E5B836B00384E52 /* DiagnosticTool.swift */; };
 		8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF280E2E59BB03000A5748 /* Assets.xcassets */; };
 		8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
@@ -81,6 +83,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8E0384CE2E5E4939001D5E9D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundGradient.swift; sourceTree = "<group>"; };
 		8E352C582E5B836B00384E52 /* DiagnosticTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiagnosticTool.swift; sourceTree = "<group>"; };
 		8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SufrShield.entitlements; sourceTree = "<group>"; };
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
@@ -148,6 +152,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E0384D02E5E4B23001D5E9D /* ViewComponents */ = {
+			isa = PBXGroup;
+			children = (
+				8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */,
+			);
+			path = ViewComponents;
+			sourceTree = "<group>";
+		};
 		8E9F1AF62E5CBBBE0093C76B /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +245,7 @@
 				8ECF28212E59BC80000A5748 /* Theme */,
 				8ECF28102E59BB03000A5748 /* Preview Content */,
 				8E9F1AF12E5C94C30093C76B /* Constants.swift */,
+				8E0384D02E5E4B23001D5E9D /* ViewComponents */,
 			);
 			path = SufrShield;
 			sourceTree = "<group>";
@@ -279,6 +292,7 @@
 			isa = PBXGroup;
 			children = (
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
+				8E0384CE2E5E4939001D5E9D /* SettingsView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -492,6 +506,8 @@
 				8ECF281C2E59BC45000A5748 /* TabBarView.swift in Sources */,
 				8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */,
 				8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */,
+				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
+				8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */,
 				8ECF28202E59BC57000A5748 /* Screen.swift in Sources */,
 				8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */,
 			);

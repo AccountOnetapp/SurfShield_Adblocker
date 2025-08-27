@@ -27,7 +27,7 @@ struct TabBarView: View {
                 .tabItem { Label("Block Ads", systemImage: "flame.fill") }
                 .tag(0)
             
-            Text("Hello surf shield Second View")
+            SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(0)
         }
