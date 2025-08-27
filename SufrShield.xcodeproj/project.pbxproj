@@ -23,12 +23,16 @@
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8EBA84082E5BBA0900206493 /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8EBA840A2E5BBD0800206493 /* test_rules.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA84092E5BBD0800206493 /* test_rules.json */; };
+		8EBA84112E5BBA1000206493 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
 		8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8EC786DB2E5C64D10024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786DA2E5C64D10024A55C /* blockerList.json */; };
 		8EC786E12E5C64D10024A55C /* sequrity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EC786D82E5C64D10024A55C /* sequrity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786EB2E5C64F30024A55C /* blockerList.json */; };
 		8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */; };
 		8EC786F22E5C64F30024A55C /* privacy.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EC786E92E5C64F30024A55C /* privacy.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8ECD7C7C2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
+		8ECD7C7D2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
+		8ECD7C7E2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
 		8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */; };
 		8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */; };
 		8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF28112E59BB03000A5748 /* Preview Assets.xcassets */; };
@@ -97,6 +101,7 @@
 		8EBA84002E5BB15600206493 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EBA84072E5BBA0900206493 /* RulesConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesConverter.swift; sourceTree = "<group>"; };
 		8EBA84092E5BBD0800206493 /* test_rules.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test_rules.json; sourceTree = "<group>"; };
+		8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBlockerStateManager.swift; sourceTree = "<group>"; };
 		8EC786D82E5C64D10024A55C /* sequrity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sequrity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC786DA2E5C64D10024A55C /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -164,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				8EBA84072E5BBA0900206493 /* RulesConverter.swift */,
+				8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -468,6 +474,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */,
+				8ECD7C7C2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */,
 				8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */,
 				8E9F1AF32E5C94EC0093C76B /* Constants.swift in Sources */,
 			);
@@ -478,6 +485,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ED1F9792E5CD213000900F9 /* ContentBlockerRequestHandler.swift in Sources */,
+				8ECD7C7D2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */,
 				8E9F1AF92E5CD12B0093C76B /* RulesConverter.swift in Sources */,
 				8E9F1AF42E5C94EE0093C76B /* Constants.swift in Sources */,
 			);
@@ -488,6 +496,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E9F1AF82E5CD12B0093C76B /* RulesConverter.swift in Sources */,
+				8ECD7C7E2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */,
 				8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */,
 				8E9F1AF52E5C94EE0093C76B /* Constants.swift in Sources */,
 			);
@@ -501,6 +510,7 @@
 				8ECF281A2E59BC3F000A5748 /* MainView.swift in Sources */,
 				8E352C592E5B836B00384E52 /* DiagnosticTool.swift in Sources */,
 				8EBA84082E5BBA0900206493 /* RulesConverter.swift in Sources */,
+				8EBA84112E5BBA1000206493 /* AdBlockerStateManager.swift in Sources */,
 				8ECF281E2E59BC4E000A5748 /* Coordinator.swift in Sources */,
 				8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */,
 				8ECF281C2E59BC45000A5748 /* TabBarView.swift in Sources */,

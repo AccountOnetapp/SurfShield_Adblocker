@@ -13,7 +13,7 @@ enum Constants {
     
     enum BlockExtenesionBundleIds: String, CaseIterable {
         case adblocker = "com.surfshield.app.adblocker"
-        case security = "com.surfshield.app.security"
+        case security = "com.surfshield.app.sequrity"
         case privacy = "com.surfshield.app.privacy"
         
         static var all: [String] {

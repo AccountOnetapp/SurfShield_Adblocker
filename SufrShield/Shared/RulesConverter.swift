@@ -9,84 +9,167 @@ import SafariServices
 
 
 /// Модуль блокировщика рекламы
-public enum RulesConverter {
-    // MARK: Open Properties
+public class RulesConverter {
+    // MARK: - Singleton
+    public static let shared = RulesConverter()
     
     // MARK: Internal Properties
-    internal static var groupID: String = Constants.adblockGroupId
-    internal static var extensionsBundles: [String] = Constants.BlockExtenesionBundleIds.all
+    private let groupID: String = Constants.adblockGroupId
+    private let extensionsBundles: [String] = Constants.BlockExtenesionBundleIds.all
+    private var workItem: DispatchWorkItem?
     
-    /// Получить URL по каторому находится файл для определенного экстеншна
-    /// - Parameters:
-    ///   - type: тип екстеншена, для которго нужно получить URL
-    /// - Returns: URL по каторому находится файл
-    public static func getExtensionFileURL(forType type: RulesType) -> URL? {
-        return type.filePath
+    // MARK: - Initialization
+    private init() {
+        print("🚀 Создаем RulesConverter singleton...")
+        Task {
+            await initialize()
+        }
     }
     
-    /// Получить URL для Content Blocker Extension с fallback к bundle
+    // MARK: - Static API (обертки для singleton)
+    
+    /// Получить URL файла правил с fallback к bundle
     /// - Parameter type: тип расширения
     /// - Returns: URL файла правил или fallback к bundle
     public static func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
-        // Пытаемся получить файл из App Group
-        if let appGroupURL = type.filePath,
-           FileManager.default.fileExists(atPath: appGroupURL.path) {
-            return appGroupURL
-        }
-        
-        // Fallback к файлу из bundle
-        return nil
-    }
-}
-
-
-/// Тип екстеншена блокировщика
-public enum RulesType: String, Codable, CaseIterable {
-    case adBlock
-    case sequrity
-    case privacy
-    
-    /// Получить URL по каторому находится файл для определенного экстеншна
-    /// - Returns: URL по каторому находится файл
-    internal var filePath: URL? {
-        let fileManager = FileManager.default
-        // Используй App Group вместо Documents
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: RulesConverter.groupID) else {
-            return nil
-        }
-        let fileURL = groupURL.appendingPathComponent("\(self.rawValue).json")
-        return fileURL
+        return type.filePath
     }
     
-    private var fileName: String {
-        return self.rawValue + ".json"
+    /// Переключает состояние блокировщика
+    public static func toggleBlocking() async {
+        await shared.toggleBlocking()
     }
-
-    internal func writeRules(_ rules: String) {
-        guard let filePath = filePath else { return }
-        let fileManager = FileManager.default
-        
-        
-        try? rules.write(to: filePath, atomically: true, encoding: .utf8)
-        
-        if fileManager.fileExists(atPath: filePath.path) {
-            print("\(self.rawValue) successfully write to file", filePath.absoluteURL)
-        } else {
-            print("\(self.rawValue) cant write to file with path \(filePath.absoluteURL)")
-        }
+    
+    /// Включает блокировщик
+    public static func enableBlocking() async {
+        await shared.enableBlocking()
     }
-}
-
-extension RulesConverter {
     
-    private static var workItem: DispatchWorkItem?
+    /// Выключает блокировщик
+    public static func disableBlocking() async {
+        await shared.disableBlocking()
+    }
     
-    public static func start() {
-        generateFiles()
+    /// Получает текущее состояние блокировщика
+    public static func isBlockingEnabled() async -> Bool {
+        return await shared.isBlockingEnabled()
+    }
+    
+    /// Диагностика Content Blocker API
+    public static func diagnoseContentBlocker() {
+        shared.diagnoseContentBlocker()
+    }
+    
+    /// Тестовый метод для проверки состояния блокировщика
+    public static func testBlockerState() async {
+        await shared.testBlockerState()
     }
     
     /// Простой тестовый метод для загрузки готовых правил
-    public static func loadTestRules() {
+    public static func loadTestRules() async {
+        await shared.loadTestRules()
+    }
+    
+    /// Применяет текущее состояние блокировщика при запуске
+    public static func applyBlockingState(_ isEnabled: Bool) async {
+        await shared.applyBlockingState(isEnabled)
+    }
+    
+    /// Применяет новое состояние и сохраняет его
+    /// - Parameter isEnabled: новое состояние блокировщика
+    public static func applyNewState(isEnabled: Bool) async {
+        await shared.applyNewState(isEnabled: isEnabled)
+    }
+    
+    /// Инициализирует блокировщик с текущим сохраненным состоянием
+    public static func initialize() async {
+        await shared.initialize()
+    }
+    
+    /// Старый метод для совместимости
+    public static func start() {
+        Task {
+            await shared.generateFiles()
+        }
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Переключает состояние блокировщика
+    public func toggleBlocking() async {
+        let currentState = await AdBlockerStateManager.getCurrentState()
+        let newState = !currentState
+        
+        print("🔄 Переключаем блокировщик: \(currentState ? "выключаем" : "включаем")")
+        
+        // Сохраняем новое состояние
+        await AdBlockerStateManager.saveState(newState)
+        
+        // Применяем новое состояние
+        await applyBlockingState(newState)
+    }
+    
+    /// Включает блокировщик
+    public func enableBlocking() async {
+        print("🔄 Включаем блокировщик")
+        await AdBlockerStateManager.saveState(true)
+        await applyBlockingState(true)
+    }
+    
+    /// Выключает блокировщик
+    public func disableBlocking() async {
+        print("🔄 Выключаем блокировщик")
+        await AdBlockerStateManager.saveState(false)
+        await applyBlockingState(false)
+    }
+    
+    /// Получает текущее состояние блокировщика
+    public func isBlockingEnabled() async -> Bool {
+        return await AdBlockerStateManager.getCurrentState()
+    }
+    
+    /// Диагностика Content Blocker API
+    public func diagnoseContentBlocker() {
+        print("🔍 Диагностика Content Blocker API...")
+        
+        #if targetEnvironment(simulator)
+        print("⚠️ Запущено в симуляторе - Content Blocker Extensions не поддерживаются")
+        #else
+        print("✅ Запущено на реальном устройстве")
+        #endif
+        
+        if #available(iOS 9.0, *) {
+            print("✅ iOS версия поддерживает Content Blocker")
+            
+            // Проверяем доступность класса
+            let managerClass = SFContentBlockerManager.self
+            print("✅ Класс SFContentBlockerManager доступен: \(managerClass)")
+            
+        } else {
+            print("❌ iOS версия не поддерживает Content Blocker")
+        }
+        
+        print("📦 Bundle IDs расширений:")
+        for bundle in extensionsBundles {
+            print("  - \(bundle)")
+        }
+    }
+    
+    /// Тестовый метод для проверки состояния блокировщика
+    public func testBlockerState() async {
+        let currentState = await AdBlockerStateManager.getCurrentState()
+        print("🧪 Тестируем состояние блокировщика...")
+        print("📱 Текущее состояние: \(currentState ? "включен" : "выключен")")
+        
+        // Диагностика
+        diagnoseContentBlocker()
+        
+        // Применяем текущее состояние
+        await applyBlockingState(currentState)
+    }
+    
+    /// Простой тестовый метод для загрузки готовых правил
+    public func loadTestRules() async {
         print("🧪 Загружаем тестовые правила...")
         
         let fileManager = FileManager.default
@@ -116,11 +199,7 @@ extension RulesConverter {
                 print("✅ Тестовые правила сохранены в App Group: \(targetFileURL.path)")
                 
                 // Перезагружаем расширения
-                DispatchQueue.main.async {
-                    reloadExtensions(bundles: [Constants.BlockExtenesionBundleIds.adblocker.rawValue], maxRetries: 1) {
-                        print("✅ Расширения перезагружены")
-                    }
-                }
+                await reloadExtensions(bundles: [Constants.BlockExtenesionBundleIds.adblocker.rawValue], maxRetries: 1)
             } else {
                 print("❌ Не удалось сохранить тестовые правила")
             }
@@ -130,154 +209,105 @@ extension RulesConverter {
         }
     }
     
-    private static func generateFiles(completion: @escaping (() -> Void) = {}) {
+    // MARK: - Private Methods
+    
+    /// Инициализирует блокировщик с текущим сохраненным состоянием
+    private func initialize() async {
+        let currentState = await AdBlockerStateManager.getCurrentState()
+        print("🚀 Инициализируем блокировщик с состоянием: \(currentState ? "включен" : "выключен")")
+        await applyBlockingState(currentState)
+    }
+    
+    /// Применяет или отменяет правила блокировки в зависимости от состояния
+    private func applyBlockingState(_ isEnabled: Bool) async {
+        print("🔄 Применяем состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
+        
+        if isEnabled {
+            await generateFiles()
+        } else {
+            await generateEmptyRules()
+        }
+    }
+    
+    /// Применяет новое состояние и сохраняет его
+    /// - Parameter isEnabled: новое состояние блокировщика
+    public func applyNewState(isEnabled: Bool) async {
+        print("🔄 Применяем новое состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
+        
+        // Сохраняем новое состояние
+        await AdBlockerStateManager.saveState(isEnabled)
+        
+        // Применяем новое состояние
+        await applyBlockingState(isEnabled)
+    }
+    
+    /// Генерирует пустые правила для отключения блокировки
+    private func generateEmptyRules() async {
         workItem?.cancel()
         
+        await withCheckedContinuation { continuation in
         let currentWorkItem = DispatchWorkItem {
-            do {
-                let domains = try loadAndParseDomains()
-                let preparedRules = convertDomainsToSafariRules(domains)
-                saveRulesToFiles(preparedRules)
+                print("🔄 Создаем пустые правила для отключения блокировки...")
                 
-                DispatchQueue.main.async {
-                    reloadExtensions(bundles: extensionsBundles, maxRetries: extensionsBundles.count, completion: completion)
+                let emptyRuleArray = [self.createEmptyRule()]
+                
+                guard let emptyRulesJSON = self.convertRulesToJSON(emptyRuleArray) else {
+                    print("❌ Ошибка создания пустых правил")
+                    continuation.resume()
+                    return
                 }
-            } catch {
-                print("❌ Ошибка генерации файлов: \(error)")
-                DispatchQueue.main.async { completion() }
+                
+                for ruleType in RulesType.allCases {
+                    ruleType.writeRules(emptyRulesJSON, groupID: self.groupID)
+                    print("✅ Пустые правила сохранены для \(ruleType.rawValue)")
+                }
+                
+                Task { @MainActor in
+                    print("🔄 Перезагружаем расширения после создания пустых правил...")
+                    await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+                    print("✅ Пустые правила применены ко всем расширениям")
+                    continuation.resume()
+                }
             }
+            
+            self.workItem = currentWorkItem
+            DispatchQueue.global(qos: .userInteractive).async(execute: currentWorkItem)
         }
+    }
+    
+    /// Генерирует файлы правил
+    private func generateFiles() async {
+        workItem?.cancel()
         
-        workItem = currentWorkItem
+        await withCheckedContinuation { continuation in
+            let currentWorkItem = DispatchWorkItem {
+                do {
+                    let domains = try self.loadAndParseDomains()
+                    let preparedRules = self.convertDomainsToSafariRules(domains)
+                    self.saveRulesToFiles(preparedRules)
+                    
+                    Task { @MainActor in
+                        print("🔄 Перезагружаем расширения после создания правил блокировки...")
+                        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+                        print("✅ Правила блокировки применены ко всем расширениям")
+                        continuation.resume()
+                    }
+                } catch {
+                    print("❌ Ошибка генерации файлов: \(error)")
+                    continuation.resume()
+                }
+            }
+            
+            self.workItem = currentWorkItem
         DispatchQueue.global(qos: .userInteractive).async(execute: currentWorkItem)
-    }
-    
-    
-    private static func reloadExtensions(bundles: [String], maxRetries: Int, completion: @escaping () -> Void) {
-        guard !bundles.isEmpty else { 
-            completion()
-            return 
-        }
-        
-        var reloadResults = [String: Bool]()
-        
-        for bundle in bundles {
-            SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle) { error in
-                reloadResults[bundle] = (error == nil)
-                
-                guard reloadResults.count == bundles.count else { return }
-                
-                handleReloadResults(reloadResults, maxRetries: maxRetries, completion: completion)
-            }
         }
     }
-
-    private static func handleReloadResults(_ results: [String: Bool], maxRetries: Int, completion: @escaping () -> Void) {
-        let failedBundles = results.compactMap { key, success in key }
-        
-        if failedBundles.isEmpty || maxRetries <= 0 {
-            DispatchQueue.main.async { completion() }
-            return
-        }
-        
-        reloadExtensions(bundles: failedBundles, maxRetries: maxRetries - 1, completion: completion)
-    }
-}
-
-// MARK: - Private Helper Methods
-extension RulesConverter {
-    private static func loadAndParseDomains() throws -> [String] {
-        print("🔄 Начинаем загрузку и парсинг правил AdBlock...")
-        
-        guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
-            print("❌ Файл domains.txt не найден")
-            throw RulesConverterError.fileNotFound
-        }
-        
-        print("✅ Файл найден: \(rulesPath)")
-        
-        let rulesString = try String(contentsOfFile: rulesPath, encoding: .utf8)
-        print("📄 Файл прочитан, размер: \(rulesString.count) символов")
-        
-        let lines = rulesString.components(separatedBy: .newlines)
-        print("📝 Разделено на строки: \(lines.count)")
-        
-        let rules = lines.compactMap(parseAdBlockRule)
-        print("🎯 Извлечено правил: \(rules.count)")
-        
-        return rules
-    }
     
-    private static func parseAdBlockRule(_ line: String) -> String? {
-        let trimmed = line.trimmingCharacters(in: .whitespaces)
-        
-        // Пропускаем комментарии и пустые строки
-        guard !trimmed.isEmpty, 
-              !trimmed.hasPrefix("!"), 
-              !trimmed.hasPrefix("[") else { return nil }
-        
-        // Пропускаем элемент-скрывающие правила (##)
-        guard !trimmed.contains("##") else { return nil }
-        
-        return trimmed
-    }
-    
-    private static func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
-        print("🔄 Начинаем конвертацию \(rules.count) правил AdBlock в правила Safari...")
-        
-        var preparedRules = [String]()
-        let chunks = rules.chunked(by: 40000)
-        
-        print("📦 Разделено на чанки: \(chunks.count) по 40000 правил")
-        
-        chunks.enumerated().forEach { index, chunk in
-            print("🔄 Обрабатываем чанк \(index + 1)/\(chunks.count) с \(chunk.count) правилами")
-            
-            let safariRules = chunk.compactMap(makeRule)
-            let safariRulesArray = safariRules.isEmpty ? [createEmptyRule()] : safariRules
-            
-            print("📋 Создано правил Safari: \(safariRulesArray.count)")
-            
-            if let jsonString = convertRulesToJSON(safariRulesArray) {
-                preparedRules.append(jsonString)
-                print("✅ Чанк \(index + 1) конвертирован в JSON")
-            } else {
-                print("❌ Ошибка конвертации чанка \(index + 1) в JSON")
-            }
-        }
-        
-        print("✅ Конвертация завершена. Подготовлено файлов: \(preparedRules.count)")
-        return preparedRules
-    }
-    
-         private static func makeRule(domain: String) -> [String: Any]? {
-         // Экранируем точки в домене для регулярного выражения
-         let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
-         
-         let rule: [String: Any] = [
-             "trigger": [
-                 "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
-                 "load-type": [
-                     "third-party",
-                     "first-party"
-                 ]
-             ],
-             "action": [
-                 "type": "block"
-             ]
-         ]
-         
-         return rule
-     }
-    
-    
-
-    
-    private static func createEmptyRule() -> [String: Any] {
-        print("⚠️ Создаем пустое правило")
+    // Добавляем недостающие вспомогательные методы
+    private func createEmptyRule() -> [String: Any] {
         return [
             "trigger": [
-                "url-filter": "none"
+                "url-filter": "^https?://never-existing-domain-for-adblocker-disabled\\.com/.*"
             ],
             "action": [
                 "type": "block"
@@ -285,48 +315,139 @@ extension RulesConverter {
         ]
     }
     
-    private static func convertRulesToJSON(_ rules: [[String: Any]]) -> String? {
+    private func convertRulesToJSON(_ rules: [[String: Any]]) -> String? {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: rules, options: .prettyPrinted)
-            let jsonString = String(data: jsonData, encoding: .utf8)
-            
-            if jsonString != nil {
-                print("✅ Правила конвертированы в JSON")
-            } else {
-                print("❌ Ошибка конвертации данных в строку")
-            }
-            
-            return jsonString
+            return String(data: jsonData, encoding: .utf8)
         } catch {
             print("❌ Ошибка конвертации правил в JSON: \(error)")
             return nil
         }
     }
     
-    private static func saveRulesToFiles(_ preparedRules: [String]) {
-        print("🔄 Начинаем сохранение правил в файлы...")
-        print("📁 Количество подготовленных правил: \(preparedRules.count)")
-        print("📁 Количество типов расширений: \(RulesType.allCases.count)")
+    private func reloadExtensions(bundles: [String], maxRetries: Int) async {
+        guard !bundles.isEmpty else { return }
         
-        for (index, ruleType) in RulesType.allCases.enumerated() {
-            print("🔄 Сохраняем правила для \(ruleType.rawValue) (индекс \(index))")
-            
-            if let rules = preparedRules[safe: index] {
-                ruleType.writeRules(rules)
-                print("✅ Правила для \(ruleType.rawValue) сохранены")
-            } else {
-                print("⚠️ Нет правил для \(ruleType.rawValue), создаем пустое правило")
-                let emptyRuleArray = [createEmptyRule()]
-                if let jsonString = convertRulesToJSON(emptyRuleArray) {
-                    ruleType.writeRules(jsonString)
-                    print("✅ Пустое правило для \(ruleType.rawValue) сохранено")
-                } else {
-                    print("❌ Ошибка сохранения пустого правила для \(ruleType.rawValue)")
+        #if targetEnvironment(simulator)
+        print("⚠️ Content Blocker Extensions не поддерживаются в симуляторе")
+        return
+        #endif
+        
+        guard #available(iOS 9.0, *) else {
+            print("⚠️ SFContentBlockerManager недоступен на этой версии iOS")
+            return 
+        }
+        
+        for bundle in bundles {
+            await withCheckedContinuation { continuation in
+            SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle) { error in
+                    if let error = error {
+                        print("❌ Ошибка перезагрузки расширения \(bundle): \(error.localizedDescription)")
+                    } else {
+                        print("✅ Расширение \(bundle) успешно перезагружено")
+                    }
+                    continuation.resume()
                 }
             }
         }
+    }
+    
+    private func loadAndParseDomains() throws -> [String] {
+        guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
+            throw RulesConverterError.fileNotFound
+        }
         
-        print("✅ Сохранение правил завершено")
+        let rulesString = try String(contentsOfFile: rulesPath, encoding: .utf8)
+        let lines = rulesString.components(separatedBy: .newlines)
+        return lines.compactMap { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty, !trimmed.hasPrefix("!"), !trimmed.hasPrefix("[") else { return nil }
+            guard !trimmed.contains("##") else { return nil }
+            return trimmed
+        }
+    }
+    
+    private func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
+        let chunks = rules.chunked(by: 35000)
+        var preparedRules = [String]()
+        
+        for chunk in chunks {
+            let safariRules = chunk.compactMap { domain in
+                let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
+                return [
+                    "trigger": [
+                        "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
+                        "load-type": ["third-party", "first-party"]
+                    ],
+                    "action": ["type": "block"]
+                ]
+            }
+            
+            if let jsonString = convertRulesToJSON(safariRules.isEmpty ? [createEmptyRule()] : safariRules) {
+                preparedRules.append(jsonString)
+            }
+        }
+        
+        return preparedRules
+    }
+    
+    private func saveRulesToFiles(_ preparedRules: [String]) {
+        for (index, ruleType) in RulesType.allCases.enumerated() {
+            if let rules = preparedRules[safe: index] {
+                ruleType.writeRules(rules, groupID: groupID)
+            } else {
+                let emptyRuleArray = [createEmptyRule()]
+                if let jsonString = convertRulesToJSON(emptyRuleArray) {
+                    ruleType.writeRules(jsonString, groupID: groupID)
+                }
+            }
+        }
+    }
+}
+
+
+/// Тип екстеншена блокировщика
+public enum RulesType: String, Codable, CaseIterable {
+    case adBlock
+    case sequrity
+    case privacy
+    
+    /// Получить URL по каторому находится файл для определенного экстеншна
+    /// - Returns: URL по каторому находится файл
+    internal var filePath: URL? {
+        let fileManager = FileManager.default
+        // Используй App Group вместо Documents
+        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.adblockGroupId) else {
+            return nil
+        }
+        let fileURL = groupURL.appendingPathComponent("\(self.rawValue).json")
+        return fileURL
+    }
+    
+    private var fileName: String {
+        return self.rawValue + ".json"
+    }
+
+    internal func writeRules(_ rules: String, groupID: String) {
+        guard let filePath = getFilePath(groupID: groupID) else { return }
+        let fileManager = FileManager.default
+        
+        try? rules.write(to: filePath, atomically: true, encoding: .utf8)
+        
+        if fileManager.fileExists(atPath: filePath.path) {
+            print("\(self.rawValue) successfully write to file", filePath.absoluteURL)
+        } else {
+            print("\(self.rawValue) cant write to file with path \(filePath.absoluteURL)")
+        }
+    }
+    
+    private func getFilePath(groupID: String) -> URL? {
+        let fileManager = FileManager.default
+        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+            return nil
+        }
+        let fileURL = groupURL.appendingPathComponent("\(self.rawValue).json")
+        return fileURL
     }
 }
 

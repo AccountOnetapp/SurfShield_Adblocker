@@ -11,26 +11,23 @@ import Combine
 @MainActor
 class BlockAdsViewModel: ObservableObject {
     
-    enum BlockingState {
-        case enabled
-        case disabled
-        case connecting
-        case disconnecting
-    }
-    
     @Published var waveProgress: Double = 0
     @Published var circleRotation: Double = 0
     @Published var isEnabled: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
     
-    @Published var blockingState: BlockingState = .disabled
-    
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации
     
-    init() { }
+    private let stateManager = AdBlockerStateManager.shared
+    
+    init() {
+        // Инициализируем блокировщик с сохраненным состоянием
+        let isEnabled = UserDefaults.standard.bool(forKey: "adBlockerEnabled")
+        self.isEnabled = isEnabled
+    }
     
     func toggleBlocking() {
         if !isProcess {
@@ -42,27 +39,32 @@ class BlockAdsViewModel: ObservableObject {
     
     private func toggleAllBlocking() {
         animate()
+        
+        // Сразу определяем новое состояние
+        let newState = !isEnabled
+        
         blockingTask = Task {
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            if !newState {
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
             
             if !Task.isCancelled {
+                // Применяем новое состояние через RulesConverter
+                await RulesConverter.applyNewState(isEnabled: newState)
+                
                 await MainActor.run {
-                    // Отменяем анимацию и сбрасываем состояние
-                    
                     // Обновляем состояние с анимацией
                     withAnimation(.bouncy(duration: 0.2)) {
-                        isEnabled.toggle()
                         isProcess = false
+                        isEnabled = newState
                     }
                     
                     // Запускаем или останавливаем постоянную анимацию
-                    if isEnabled {
+                    if newState {
                         startContinuousAnimation()
                     } else {
                         stopContinuousAnimation()
                     }
-                    
-                    RulesConverter.start()
                 }
             }
         }
@@ -218,10 +220,7 @@ struct BlockAdsView: View {
             }
         }
         .onAppear {
-            // Запускаем анимацию если блокировка уже включена
-            if viewModel.isEnabled {
-                viewModel.startContinuousAnimation()
-            }
+            if viewModel.isEnabled { viewModel.startContinuousAnimation() }
         }
         .onDisappear {
             viewModel.cancelBlockingTask()
@@ -296,30 +295,13 @@ struct AnimatedBlockButton: View {
     @ViewBuilder
     private var buttonContentOverlay: some View {
         ZStack {
-            // Пульсирующее кольцо для активного состояния
-            if isEnabled && !isProcess {
-                Circle()
-                    .stroke(.white.opacity(0.2), lineWidth: 2)
-                    .frame(width: 70, height: 70)
-                    .scaleEffect(1.0)
-                    .opacity(0.8)
-                    .animation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true), value: isEnabled)
-                
-                Circle()
-                    .stroke(.white.opacity(0.1), lineWidth: 1)
-                    .frame(width: 85, height: 85)
-                    .scaleEffect(1.1)
-                    .opacity(0.6)
-                    .animation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true), value: isEnabled)
-            }
-            
             // Дополнительное свечение для включенного состояния
             if isEnabled && !isProcess {
                 Image(systemName: iconName)
                     .font(.system(size: 32, weight: .medium))
-                    .foregroundStyle(.tm.accentSecondary.opacity(0.2))
-                    .scaleEffect(1.15)
-                    .blur(radius: 6)
+                    .foregroundStyle(.tm.accent.opacity(0.3))
+                    .scaleEffect(2.15)
+                    .blur(radius: 20)
             }
             
             // Основная иконка
@@ -327,14 +309,12 @@ struct AnimatedBlockButton: View {
                 .font(.system(size: 32, weight: .medium))
                 .foregroundStyle(iconColor)
                 .shadow(color: iconShadow, radius: iconShadowRadius)
-                .scaleEffect(isProcess ? 0.9 : 1.0)
+                .scaleEffect(isProcess ? 0.95 : 1.0)
                 .rotationEffect(.degrees(isProcess ? circleRotation : 0))
                 .animation(.easeInOut(duration: 0.2), value: isProcess)
                 .animation(isProcess ? .linear(duration: 2.0).repeatForever(autoreverses: false) : .none, value: circleRotation)
         }
     }
-    
-
     
     private var iconName: String {
         if isProcess {
@@ -361,7 +341,7 @@ struct AnimatedBlockButton: View {
             return .clear
         } else if isEnabled {
             // Красивое свечение для включенного состояния
-            return .tm.accentSecondary
+            return .tm.accent
         } else {
             return .clear
         }
@@ -369,7 +349,7 @@ struct AnimatedBlockButton: View {
     
     private var iconShadowRadius: CGFloat {
         if isEnabled && !isProcess {
-            return 12
+            return 20
         } else {
             return 0
         }
@@ -396,12 +376,12 @@ struct AnimatedBlockButton: View {
                 rotationVector: index % 2 == 0,
                 colors: [.tm.accentSecondary, .tm.accent]
             )
-            .scaleEffect(CGSize(width: 1 - (Double(index) * 0.005), height: 1 - (Double(index) * 0.005)) )
+            .scaleEffect(CGSize(width: 1 - (Double(index) * 0.006), height: 1 - (Double(index) * 0.006)) )
         }
     }
     
     private func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool, colors: [Color]) -> some View {
-        WaveShape(waveCount: waveCount, waveHeight: 3, progress: waveProgress)
+        WaveShape(waveCount: waveCount, waveHeight: 2, progress: waveProgress)
             .fill(
                 LinearGradient(
                     colors: colors,
@@ -502,6 +482,7 @@ struct ProcessLoader: View {
         }
     }
 }
+
 
 #Preview {
     BlockAdsView()
