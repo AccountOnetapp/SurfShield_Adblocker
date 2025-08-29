@@ -21,8 +21,6 @@ class BlockAdsViewModel: ObservableObject {
     private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации
     
-    private let stateManager = AdBlockerStateManager.shared
-    
     init() {
         // Инициализируем блокировщик с сохраненным состоянием
         let isEnabled = UserDefaults.standard.bool(forKey: "adBlockerEnabled")
@@ -156,6 +154,34 @@ class BlockAdsViewModel: ObservableObject {
         // Сбрасываем анимации
         resetAnimations()
     }
+    
+    func testScriptRules() {
+        Task {
+//            await RulesConverter.shared.loadTestRules()
+            do {
+                try await RulesConverter.shared.testContentBlockerConverter()
+                print("✅ Тест конвертера завершен:")
+            } catch {
+                print("❌ Ошибка тестирования конвертера: \(error)")
+            }
+//            let result = await RulesConverter.splitJSONIntoChunks(fileName: "blockerList1")
+//            print("DEBUG: result count \(result?.count)")
+        }
+    }
+    
+    
+    func getBlockerList1Info() async {
+        print("📊 Получаем информацию о blockerList1.json...")
+        let result = await RulesConverter.getBlockerList1ChunksInfo()
+        if let info = result {
+            print("📊 Информация получена:")
+            print("  - Всего правил: \(info.totalRules)")
+            print("  - Количество чанков: \(info.numberOfChunks)")
+            print("  - Размеры чанков: \(info.chunkSizes)")
+        } else {
+            print("❌ Не удалось получить информацию о blockerList1.json")
+        }
+    }
 }
 
 
@@ -185,13 +211,15 @@ struct BlockAdsView: View {
                 
                 VStack(spacing: 24) {
                     blockAdsButton
-                    
+                    testButton
+                    blockerList1InfoButton
                     // Статус кнопки с лоадером
                     VStack(spacing: 12) {
                         Text(buttonStatusTitle)
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(.tm.title)
+                            .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .tm.title)
                             .opacity(viewModel.isProcess ? 0.7 : 1.0)
+                            .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.3 : 0), radius: 8)
                         
                         // Красивый лоадер для процесса
                         ProcessLoader()
@@ -246,12 +274,33 @@ struct BlockAdsView: View {
     
     private var buttonStatusTitle: String {
         if viewModel.isProcess {
-            return viewModel.isEnabled ? "Отключение" : "Подключение"
+            return viewModel.isEnabled ? "Disabling" : "Enabling"
         } else {
-            return viewModel.isEnabled ? "Включено" : "Выключено"
+            return viewModel.isEnabled ? "Enabled" : "Disabled"
         }
     }
 
+    var testButton: some View {
+        Button {
+            viewModel.testScriptRules()
+        } label: {
+            Text("Загрузить Тестовый массив правил")
+        }
+        .buttonStyle(.bordered)
+        .tint(.red)
+    }
+    
+    var blockerList1InfoButton: some View {
+        Button {
+            Task {
+                await viewModel.getBlockerList1Info()
+            }
+        } label: {
+            Text("Информация о blockerList1.json")
+        }
+        .buttonStyle(.bordered)
+        .tint(.green)
+    }
 }
 
 // MARK: - Animated Block Button
@@ -303,31 +352,22 @@ struct AnimatedBlockButton: View {
                     .scaleEffect(2.15)
                     .blur(radius: 20)
             }
-            
-            // Основная иконка
-            Image(systemName: iconName)
-                .font(.system(size: 32, weight: .medium))
-                .foregroundStyle(iconColor)
-                .shadow(color: iconShadow, radius: iconShadowRadius)
-                .scaleEffect(isProcess ? 0.95 : 1.0)
-                .rotationEffect(.degrees(isProcess ? circleRotation : 0))
-                .animation(.easeInOut(duration: 0.2), value: isProcess)
-                .animation(isProcess ? .linear(duration: 2.0).repeatForever(autoreverses: false) : .none, value: circleRotation)
+
+                Image(systemName: iconName)
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundStyle(iconColor)
+                    .shadow(color: iconShadow, radius: iconShadowRadius)
+                    .scaleEffect(1.0)
+                    .animation(.easeInOut(duration: 0.2), value: isProcess)
         }
     }
     
     private var iconName: String {
-        if isProcess {
-            return "arrow.triangle.2.circlepath"
-        } else {
-            return "power"
-        }
+        return "power"
     }
     
     private var iconColor: Color {
-        if isProcess {
-            return .white.opacity(0.9)
-        } else if isEnabled {
+        if isEnabled {
             // Для включенного состояния - белый с легким свечением
             return .white
         } else {
@@ -337,9 +377,7 @@ struct AnimatedBlockButton: View {
     }
     
     private var iconShadow: Color {
-        if isProcess {
-            return .clear
-        } else if isEnabled {
+        if isEnabled {
             // Красивое свечение для включенного состояния
             return .tm.accent
         } else {
@@ -453,6 +491,167 @@ struct WaveShape: Shape {
     }
 }
 
+
+// MARK: - Custom Loaders
+
+// Лоадер с вращающимися точками
+struct RotatingDotsLoader: View {
+    @State private var rotation: Double = 0
+    
+    var body: some View {
+        ZStack {
+            ForEach(0..<8) { index in
+                Circle()
+                    .fill(.white.opacity(0.9))
+                    .frame(width: 3, height: 3)
+                    .offset(y: -12)
+                    .rotationEffect(.degrees(Double(index) * 45))
+                    .opacity(getOpacity(for: index))
+                    .scaleEffect(getScale(for: index))
+            }
+        }
+        .rotationEffect(.degrees(rotation))
+        .onAppear {
+            withAnimation(.linear(duration: 1.0).repeatForever(autoreverses: false)) {
+                rotation = 360
+            }
+        }
+    }
+    
+    private func getOpacity(for index: Int) -> Double {
+        let progress = (rotation / 360.0).truncatingRemainder(dividingBy: 1.0)
+        let dotProgress = (progress * 8 + Double(index)).truncatingRemainder(dividingBy: 8.0)
+        return max(0.2, 1.0 - dotProgress / 8.0)
+    }
+    
+    private func getScale(for index: Int) -> Double {
+        let progress = (rotation / 360.0).truncatingRemainder(dividingBy: 1.0)
+        let dotProgress = (progress * 8 + Double(index)).truncatingRemainder(dividingBy: 8.0)
+        return max(0.6, 1.0 - dotProgress / 12.0)
+    }
+}
+
+// Лоадер с пульсирующими кольцами
+struct PulsingRingsLoader: View {
+    @State private var scale1: CGFloat = 0.5
+    @State private var scale2: CGFloat = 0.5
+    @State private var scale3: CGFloat = 0.5
+    @State private var opacity1: Double = 1.0
+    @State private var opacity2: Double = 1.0
+    @State private var opacity3: Double = 1.0
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(.white.opacity(0.8), lineWidth: 1.5)
+                .frame(width: 20, height: 20)
+                .scaleEffect(scale1)
+                .opacity(opacity1)
+            
+            Circle()
+                .stroke(.white.opacity(0.6), lineWidth: 1.2)
+                .frame(width: 20, height: 20)
+                .scaleEffect(scale2)
+                .opacity(opacity2)
+            
+            Circle()
+                .stroke(.white.opacity(0.4), lineWidth: 1.0)
+                .frame(width: 20, height: 20)
+                .scaleEffect(scale3)
+                .opacity(opacity3)
+        }
+        .onAppear {
+            startAnimation()
+        }
+    }
+    
+    private func startAnimation() {
+        withAnimation(.easeInOut(duration: 1.2).repeatForever()) {
+            scale1 = 1.8
+            opacity1 = 0.0
+        }
+        
+        withAnimation(.easeInOut(duration: 1.2).repeatForever().delay(0.4)) {
+            scale2 = 1.8
+            opacity2 = 0.0
+        }
+        
+        withAnimation(.easeInOut(duration: 1.2).repeatForever().delay(0.8)) {
+            scale3 = 1.8
+            opacity3 = 0.0
+        }
+    }
+}
+
+// Лоадер со спиральной анимацией
+struct SpiralLoader: View {
+    @State private var rotation: Double = 0
+    @State private var scale: CGFloat = 1.0
+    
+    var body: some View {
+        ZStack {
+            ForEach(0..<12) { index in
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(.white.opacity(0.9))
+                    .frame(width: 2, height: 8)
+                    .offset(y: -10)
+                    .rotationEffect(.degrees(Double(index) * 30))
+                    .opacity(getOpacity(for: index))
+                    .scaleEffect(getScale(for: index))
+            }
+        }
+        .rotationEffect(.degrees(rotation))
+        .scaleEffect(scale)
+        .onAppear {
+            withAnimation(.linear(duration: 1.0).repeatForever(autoreverses: false)) {
+                rotation = 360
+            }
+            withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+                scale = 1.2
+            }
+        }
+    }
+    
+    private func getOpacity(for index: Int) -> Double {
+        let progress = (rotation / 360.0).truncatingRemainder(dividingBy: 1.0)
+        let barProgress = (progress * 12 + Double(index)).truncatingRemainder(dividingBy: 12.0)
+        return max(0.1, 1.0 - barProgress / 12.0)
+    }
+    
+    private func getScale(for index: Int) -> Double {
+        let progress = (rotation / 360.0).truncatingRemainder(dividingBy: 1.0)
+        let barProgress = (progress * 12 + Double(index)).truncatingRemainder(dividingBy: 12.0)
+        return max(0.4, 1.0 - barProgress / 24.0)
+    }
+}
+
+// Современный минималистичный лоадер
+struct ModernLoader: View {
+    @State private var rotation: Double = 0
+    @State private var trimEnd: CGFloat = 0.8
+    
+    var body: some View {
+        ZStack {
+            // Фоновый круг
+            Circle()
+                .stroke(.white.opacity(0.2), lineWidth: 2)
+                .frame(width: 24, height: 24)
+            
+            // Анимированная дуга
+            Circle()
+                .trim(from: 0, to: trimEnd)
+                .stroke(.white, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .frame(width: 24, height: 24)
+                .rotationEffect(.degrees(rotation))
+                .animation(.linear(duration: 1.0).repeatForever(autoreverses: false), value: rotation)
+                .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: trimEnd)
+        }
+        .onAppear {
+            rotation = 360
+            trimEnd = 0.1
+        }
+    }
+}
 
 // MARK: - Process Loader
 struct ProcessLoader: View {

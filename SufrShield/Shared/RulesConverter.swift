@@ -199,7 +199,7 @@ public class RulesConverter {
                 print("✅ Тестовые правила сохранены в App Group: \(targetFileURL.path)")
                 
                 // Перезагружаем расширения
-                await reloadExtensions(bundles: [Constants.BlockExtenesionBundleIds.adblocker.rawValue], maxRetries: 1)
+                await reloadExtensions(bundles: [Constants.BlockExtenesionBundleIds.adblocker.rawValue], maxRetries: 4)
             } else {
                 print("❌ Не удалось сохранить тестовые правила")
             }
@@ -209,6 +209,226 @@ public class RulesConverter {
         }
     }
     
+    /// Разбивает JSON файл на чанки по 20 000 элементов
+    /// - Parameter fileName: имя JSON файла в bundle (без расширения)
+    /// - Returns: массив чанков, каждый содержит до 20 000 элементов
+    public static func splitJSONIntoChunks(fileName: String, chunkSize: Int = 20000) async -> [[[String: Any]]]? {
+        return await shared.splitJSONIntoChunks(fileName: fileName, chunkSize: chunkSize)
+    }
+    
+    /// Разбивает JSON файл на чанки по 20 000 элементов
+    /// - Parameter fileName: имя JSON файла в bundle (без расширения)
+    /// - Returns: массив чанков, каждый содержит до 20 000 элементов
+    public func splitJSONIntoChunks(fileName: String, chunkSize: Int = 20000) async -> [[[String: Any]]]? {
+        print("🔄 Разбиваем JSON файл \(fileName) на чанки по \(chunkSize) элементов...")
+        
+        // Получаем путь к файлу в bundle
+        guard let filePath = Bundle.main.path(forResource: fileName, ofType: "json") else {
+            print("❌ Файл \(fileName).json не найден в bundle")
+            return nil
+        }
+        
+        do {
+            // Читаем содержимое файла
+            let fileData = try Data(contentsOf: URL(fileURLWithPath: filePath))
+            let jsonString = String(data: fileData, encoding: .utf8) ?? ""
+            
+            print("✅ Файл прочитан, размер: \(jsonString.count) символов")
+            
+            // Парсим JSON как многомерный массив объектов
+            guard let jsonData = jsonString.data(using: .utf8),
+                  let jsonArray = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {
+                print("❌ Ошибка парсинга JSON файла - ожидается многомерный массив объектов")
+                return nil
+            }
+            
+            print("✅ JSON успешно распарсен, групп правил: \(jsonArray.count)")
+            
+            // Разбиваем на чанки
+            let chunks = jsonArray.chunked(by: chunkSize)
+            
+            
+            for chank in chunks {
+                for rule in chank {
+                }
+            }
+            
+            print("✅ Файл разбит на \(chunks.count) чанков:")
+            for (index, chunk) in chunks.enumerated() {
+                let rulesInChunk = chunk.reduce(0) { $0 + $1.count }
+                print("  - Чанк \(index + 1): \(chunk.count) групп, \(rulesInChunk) правил")
+            }
+           
+            
+            return chunks
+            
+        } catch {
+            print("❌ Ошибка при работе с файлом \(fileName).json: \(error)")
+            return nil
+        }
+    }
+    
+    /// Сохраняет чанки в отдельные файлы в App Group
+    /// - Parameters:
+    ///   - chunks: массив чанков для сохранения
+    ///   - baseFileName: базовое имя файла (без расширения)
+    /// - Returns: массив URL сохраненных файлов
+    public static func saveChunksToFiles(_ chunks: [[[String: Any]]], baseFileName: String) async -> [URL]? {
+        return await shared.saveChunksToFiles(chunks, baseFileName: baseFileName)
+    }
+    
+    /// Сохраняет чанки в отдельные файлы в App Group
+    /// - Parameters:
+    ///   - chunks: массив чанков для сохранения
+    ///   - baseFileName: базовое имя файла (без расширения)
+    /// - Returns: массив URL сохраненных файлов
+    public func saveChunksToFiles(_ chunks: [[[String: Any]]], baseFileName: String) async -> [URL]? {
+        print("💾 Сохраняем \(chunks.count) чанков в файлы...")
+        
+        let fileManager = FileManager.default
+        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+            print("❌ Не удалось получить доступ к App Group: \(groupID)")
+            return nil
+        }
+        
+        var savedFileURLs: [URL] = []
+        
+        for (index, chunk) in chunks.enumerated() {
+            let fileName = "\(baseFileName)_chunk_\(index + 1).json"
+            let fileURL = groupURL.appendingPathComponent(fileName)
+            
+            do {
+                // Конвертируем чанк в JSON
+                let jsonData = try JSONSerialization.data(withJSONObject: chunk, options: .prettyPrinted)
+                let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
+                
+                // Сохраняем файл
+                try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+                
+                if fileManager.fileExists(atPath: fileURL.path) {
+                    let rulesInChunk = chunk.reduce(0) { $0 + $1.count }
+                    print("✅ Чанк \(index + 1) сохранен: \(fileName) (\(chunk.count) групп, \(rulesInChunk) правил)")
+                    savedFileURLs.append(fileURL)
+                } else {
+                    print("❌ Не удалось сохранить чанк \(index + 1)")
+                }
+                
+            } catch {
+                print("❌ Ошибка при сохранении чанка \(index + 1): \(error)")
+            }
+        }
+        
+        print("✅ Сохранено \(savedFileURLs.count) из \(chunks.count) чанков")
+        return savedFileURLs.isEmpty ? nil : savedFileURLs
+    }
+    
+    /// Получает информацию о чанках blockerList1.json без их сохранения
+    /// - Parameter chunkSize: размер чанка (по умолчанию 20 000)
+    /// - Returns: информация о чанках
+    public static func getBlockerList1ChunksInfo(chunkSize: Int = 20000) async -> (totalRules: Int, numberOfChunks: Int, chunkSizes: [Int])? {
+        return await shared.getBlockerList1ChunksInfo(chunkSize: chunkSize)
+    }
+    
+    /// Получает информацию о чанках blockerList1.json без их сохранения
+    /// - Parameter chunkSize: размер чанка (по умолчанию 20 000)
+    /// - Returns: информация о чанках
+    public func getBlockerList1ChunksInfo(chunkSize: Int = 20000) async -> (totalRules: Int, numberOfChunks: Int, chunkSizes: [Int])? {
+        print("📊 Получаем информацию о чанках blockerList1.json...")
+        
+        // Разбиваем на чанки
+        guard let chunks = await splitJSONIntoChunks(fileName: "blockerList1", chunkSize: chunkSize) else {
+            print("❌ Не удалось разбить blockerList1.json на чанки")
+            return nil
+        }
+        
+        let totalRules = chunks.reduce(0) { $0 + $1.reduce(0) { $0 + $1.count } }
+        let numberOfChunks = chunks.count
+        let chunkSizes = chunks.map { $0.reduce(0) { $0 + $1.count } }
+        
+        print("📊 Информация о чанках:")
+        print("  - Всего правил: \(totalRules)")
+        print("  - Количество чанков: \(numberOfChunks)")
+        print("  - Размеры чанков (правил в каждом чанке): \(chunkSizes)")
+        
+        return (totalRules: totalRules, numberOfChunks: numberOfChunks, chunkSizes: chunkSizes)
+    }
+
+    
+    
+//    private func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
+//        let chunks = rules.chunked(by: 35000)
+//        var preparedRules = [String]()
+//        
+//        for chunk in chunks {
+//            let safariRules = chunk.compactMap { domain in
+//                let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
+//                return [
+//                    "trigger": [
+//                        "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
+//                        "load-type": ["third-party", "first-party"]
+//                    ],
+//                    "action": ["type": "block"]
+//                ]
+//            }
+//            
+//            if let jsonString = convertRulesToJSON(safariRules.isEmpty ? [createEmptyRule()] : safariRules) {
+//                preparedRules.append(jsonString)
+//            }
+//        }
+//        
+//        return preparedRules
+//    }
+    
+    public func testContentBlockerConverter() async  {
+        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") else {
+            return
+        }
+        
+        let rulesString = try! String(contentsOfFile: rulesPath, encoding: .utf8)
+        let lines = rulesString.components(separatedBy: .newlines)
+        let chunkedRules = lines.chunked(by: 30000)
+        var resultArray: [String] = []
+        
+        for chunkedRule in chunkedRules {
+            
+            let result: ConversionResult = ContentBlockerConverter().convertArray(
+                   rules: chunkedRule,
+                   safariVersion: SafariVersion.autodetect(),
+                   advancedBlocking: true,
+                   maxJsonSizeBytes: nil,
+                   progress: nil
+               )
+            let json = result.safariRulesJSON
+            resultArray.append(json)
+            
+            // Сохраняем JSON в файл для просмотра
+            saveJSONToFile(json: json)
+        }
+        
+        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+        
+        RulesConverter.shared.saveRulesToFiles(resultArray)
+        
+        print("📖 Загружено \(lines.count) правил из adblock_rules.txt")
+    }
+    
+    /// Сохраняет JSON в файл для просмотра
+    private func saveJSONToFile(json: String) {
+        do {
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let fileName = "safari_rules_\(Date().timeIntervalSince1970).json"
+            let fileURL = documentsPath.appendingPathComponent(fileName)
+            
+            try json.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            print("💾 JSON сохранен в файл: \(fileURL.path)")
+            print("📁 Путь к файлу: \(fileURL.path)")
+            
+        } catch {
+            print("❌ Ошибка при сохранении JSON: \(error)")
+        }
+    }
+ 
     // MARK: - Private Methods
     
     /// Инициализирует блокировщик с текущим сохраненным состоянием
@@ -328,16 +548,6 @@ public class RulesConverter {
     private func reloadExtensions(bundles: [String], maxRetries: Int) async {
         guard !bundles.isEmpty else { return }
         
-        #if targetEnvironment(simulator)
-        print("⚠️ Content Blocker Extensions не поддерживаются в симуляторе")
-        return
-        #endif
-        
-        guard #available(iOS 9.0, *) else {
-            print("⚠️ SFContentBlockerManager недоступен на этой версии iOS")
-            return 
-        }
-        
         for bundle in bundles {
             await withCheckedContinuation { continuation in
             SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle) { error in
@@ -352,7 +562,7 @@ public class RulesConverter {
         }
     }
     
-    private func loadAndParseDomains() throws -> [String] {
+    func loadAndParseDomains() throws -> [String] {
         guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
             throw RulesConverterError.fileNotFound
         }
@@ -411,6 +621,7 @@ public enum RulesType: String, Codable, CaseIterable {
     case adBlock
     case sequrity
     case privacy
+    case banners
     
     /// Получить URL по каторому находится файл для определенного экстеншна
     /// - Returns: URL по каторому находится файл

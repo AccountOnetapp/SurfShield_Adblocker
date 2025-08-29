@@ -24,7 +24,7 @@ struct TabBarView: View {
         TabView(selection: $selection,
                 content:  {
             BlockAdsView()
-                .tabItem { Label("Block Ads", systemImage: "flame.fill") }
+                .tabItem { Label("Block Ads", systemImage: "shield.fill") }
                 .tag(0)
             
             SettingsView()

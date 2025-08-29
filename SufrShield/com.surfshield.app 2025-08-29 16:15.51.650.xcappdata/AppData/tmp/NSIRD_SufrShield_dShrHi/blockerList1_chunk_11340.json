@@ -1,0 +1,9 @@
+{
+  "action" : {
+    "type" : "css-display-none",
+    "selector" : ".freestar-ad-container"
+  },
+  "trigger" : {
+    "url-filter" : ".*"
+  }
+}
