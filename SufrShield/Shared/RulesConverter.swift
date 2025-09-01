@@ -89,7 +89,7 @@ public class RulesConverter {
     /// Старый метод для совместимости
     public static func start() {
         Task {
-            await shared.generateFiles()
+//            await shared.generateFiles()
         }
     }
     
@@ -209,184 +209,15 @@ public class RulesConverter {
         }
     }
     
-    /// Разбивает JSON файл на чанки по 20 000 элементов
-    /// - Parameter fileName: имя JSON файла в bundle (без расширения)
-    /// - Returns: массив чанков, каждый содержит до 20 000 элементов
-    public static func splitJSONIntoChunks(fileName: String, chunkSize: Int = 20000) async -> [[[String: Any]]]? {
-        return await shared.splitJSONIntoChunks(fileName: fileName, chunkSize: chunkSize)
-    }
-    
-    /// Разбивает JSON файл на чанки по 20 000 элементов
-    /// - Parameter fileName: имя JSON файла в bundle (без расширения)
-    /// - Returns: массив чанков, каждый содержит до 20 000 элементов
-    public func splitJSONIntoChunks(fileName: String, chunkSize: Int = 20000) async -> [[[String: Any]]]? {
-        print("🔄 Разбиваем JSON файл \(fileName) на чанки по \(chunkSize) элементов...")
-        
-        // Получаем путь к файлу в bundle
-        guard let filePath = Bundle.main.path(forResource: fileName, ofType: "json") else {
-            print("❌ Файл \(fileName).json не найден в bundle")
-            return nil
-        }
-        
-        do {
-            // Читаем содержимое файла
-            let fileData = try Data(contentsOf: URL(fileURLWithPath: filePath))
-            let jsonString = String(data: fileData, encoding: .utf8) ?? ""
-            
-            print("✅ Файл прочитан, размер: \(jsonString.count) символов")
-            
-            // Парсим JSON как многомерный массив объектов
-            guard let jsonData = jsonString.data(using: .utf8),
-                  let jsonArray = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {
-                print("❌ Ошибка парсинга JSON файла - ожидается многомерный массив объектов")
-                return nil
-            }
-            
-            print("✅ JSON успешно распарсен, групп правил: \(jsonArray.count)")
-            
-            // Разбиваем на чанки
-            let chunks = jsonArray.chunked(by: chunkSize)
-            
-            
-            for chank in chunks {
-                for rule in chank {
-                }
-            }
-            
-            print("✅ Файл разбит на \(chunks.count) чанков:")
-            for (index, chunk) in chunks.enumerated() {
-                let rulesInChunk = chunk.reduce(0) { $0 + $1.count }
-                print("  - Чанк \(index + 1): \(chunk.count) групп, \(rulesInChunk) правил")
-            }
-           
-            
-            return chunks
-            
-        } catch {
-            print("❌ Ошибка при работе с файлом \(fileName).json: \(error)")
-            return nil
-        }
-    }
-    
-    /// Сохраняет чанки в отдельные файлы в App Group
-    /// - Parameters:
-    ///   - chunks: массив чанков для сохранения
-    ///   - baseFileName: базовое имя файла (без расширения)
-    /// - Returns: массив URL сохраненных файлов
-    public static func saveChunksToFiles(_ chunks: [[[String: Any]]], baseFileName: String) async -> [URL]? {
-        return await shared.saveChunksToFiles(chunks, baseFileName: baseFileName)
-    }
-    
-    /// Сохраняет чанки в отдельные файлы в App Group
-    /// - Parameters:
-    ///   - chunks: массив чанков для сохранения
-    ///   - baseFileName: базовое имя файла (без расширения)
-    /// - Returns: массив URL сохраненных файлов
-    public func saveChunksToFiles(_ chunks: [[[String: Any]]], baseFileName: String) async -> [URL]? {
-        print("💾 Сохраняем \(chunks.count) чанков в файлы...")
-        
-        let fileManager = FileManager.default
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
-            print("❌ Не удалось получить доступ к App Group: \(groupID)")
-            return nil
-        }
-        
-        var savedFileURLs: [URL] = []
-        
-        for (index, chunk) in chunks.enumerated() {
-            let fileName = "\(baseFileName)_chunk_\(index + 1).json"
-            let fileURL = groupURL.appendingPathComponent(fileName)
-            
-            do {
-                // Конвертируем чанк в JSON
-                let jsonData = try JSONSerialization.data(withJSONObject: chunk, options: .prettyPrinted)
-                let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
-                
-                // Сохраняем файл
-                try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
-                
-                if fileManager.fileExists(atPath: fileURL.path) {
-                    let rulesInChunk = chunk.reduce(0) { $0 + $1.count }
-                    print("✅ Чанк \(index + 1) сохранен: \(fileName) (\(chunk.count) групп, \(rulesInChunk) правил)")
-                    savedFileURLs.append(fileURL)
-                } else {
-                    print("❌ Не удалось сохранить чанк \(index + 1)")
-                }
-                
-            } catch {
-                print("❌ Ошибка при сохранении чанка \(index + 1): \(error)")
-            }
-        }
-        
-        print("✅ Сохранено \(savedFileURLs.count) из \(chunks.count) чанков")
-        return savedFileURLs.isEmpty ? nil : savedFileURLs
-    }
-    
-    /// Получает информацию о чанках blockerList1.json без их сохранения
-    /// - Parameter chunkSize: размер чанка (по умолчанию 20 000)
-    /// - Returns: информация о чанках
-    public static func getBlockerList1ChunksInfo(chunkSize: Int = 20000) async -> (totalRules: Int, numberOfChunks: Int, chunkSizes: [Int])? {
-        return await shared.getBlockerList1ChunksInfo(chunkSize: chunkSize)
-    }
-    
-    /// Получает информацию о чанках blockerList1.json без их сохранения
-    /// - Parameter chunkSize: размер чанка (по умолчанию 20 000)
-    /// - Returns: информация о чанках
-    public func getBlockerList1ChunksInfo(chunkSize: Int = 20000) async -> (totalRules: Int, numberOfChunks: Int, chunkSizes: [Int])? {
-        print("📊 Получаем информацию о чанках blockerList1.json...")
-        
-        // Разбиваем на чанки
-        guard let chunks = await splitJSONIntoChunks(fileName: "blockerList1", chunkSize: chunkSize) else {
-            print("❌ Не удалось разбить blockerList1.json на чанки")
-            return nil
-        }
-        
-        let totalRules = chunks.reduce(0) { $0 + $1.reduce(0) { $0 + $1.count } }
-        let numberOfChunks = chunks.count
-        let chunkSizes = chunks.map { $0.reduce(0) { $0 + $1.count } }
-        
-        print("📊 Информация о чанках:")
-        print("  - Всего правил: \(totalRules)")
-        print("  - Количество чанков: \(numberOfChunks)")
-        print("  - Размеры чанков (правил в каждом чанке): \(chunkSizes)")
-        
-        return (totalRules: totalRules, numberOfChunks: numberOfChunks, chunkSizes: chunkSizes)
-    }
-
-    
-    
-//    private func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
-//        let chunks = rules.chunked(by: 35000)
-//        var preparedRules = [String]()
-//        
-//        for chunk in chunks {
-//            let safariRules = chunk.compactMap { domain in
-//                let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
-//                return [
-//                    "trigger": [
-//                        "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
-//                        "load-type": ["third-party", "first-party"]
-//                    ],
-//                    "action": ["type": "block"]
-//                ]
-//            }
-//            
-//            if let jsonString = convertRulesToJSON(safariRules.isEmpty ? [createEmptyRule()] : safariRules) {
-//                preparedRules.append(jsonString)
-//            }
-//        }
-//        
-//        return preparedRules
-//    }
-    
-    public func testContentBlockerConverter() async  {
-        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules", ofType: "txt") else {
+    //MARK: Main Method
+    public func enableContentBlocker() async  {
+        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules2", ofType: "txt") else {
             return
         }
         
         let rulesString = try! String(contentsOfFile: rulesPath, encoding: .utf8)
         let lines = rulesString.components(separatedBy: .newlines)
-        let chunkedRules = lines.chunked(by: 30000)
+        let chunkedRules = lines.chunked(by: 20000)
         var resultArray: [String] = []
         
         for chunkedRule in chunkedRules {
@@ -443,7 +274,8 @@ public class RulesConverter {
         print("🔄 Применяем состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
         
         if isEnabled {
-            await generateFiles()
+//            await generateFiles()
+            await enableContentBlocker()
         } else {
             await generateEmptyRules()
         }
@@ -622,6 +454,8 @@ public enum RulesType: String, Codable, CaseIterable {
     case sequrity
     case privacy
     case banners
+    case trackers
+    case advanced
     
     /// Получить URL по каторому находится файл для определенного экстеншна
     /// - Returns: URL по каторому находится файл
@@ -686,150 +520,3 @@ private enum RulesConverterError: Error {
 
 // MARK: - AdBlock Rule Parser
 
-struct AdBlockRuleParser {
-    struct ParsedRule {
-        let urlFilter: String
-        let action: Action
-        let resourceTypes: [String]
-        let loadTypes: [String]
-        let unlessDomains: [String]
-        let ifDomains: [String]
-        
-        enum Action {
-            case block
-            case allow
-        }
-    }
-    
-    static func parse(_ rule: String) -> ParsedRule? {
-        var workingRule = rule
-        var action: ParsedRule.Action = .block
-        var resourceTypes: [String] = []
-        var loadTypes: [String] = []
-        var unlessDomains: [String] = []
-        var ifDomains: [String] = []
-        
-        // Проверяем на исключение (@@)
-        if workingRule.hasPrefix("@@") {
-            action = .allow
-            workingRule = String(workingRule.dropFirst(2))
-        }
-        
-        // Разделяем на URL и опции
-        let parts = workingRule.components(separatedBy: "$")
-        let urlPart = parts[0]
-        let optionsPart = parts.count > 1 ? parts[1] : ""
-        
-        // Парсим опции
-        if !optionsPart.isEmpty {
-            let options = optionsPart.components(separatedBy: ",")
-            
-            for option in options {
-                let trimmedOption = option.trimmingCharacters(in: .whitespaces)
-                
-                if trimmedOption == "third-party" {
-                    loadTypes.append("third-party")
-                } else if trimmedOption == "first-party" {
-                    loadTypes.append("first-party")
-                } else if trimmedOption.hasPrefix("domain=") {
-                    let domainString = String(trimmedOption.dropFirst(7))
-                    let domains = domainString.components(separatedBy: "|")
-                    
-                    for domain in domains {
-                        if domain.hasPrefix("~") {
-                            unlessDomains.append(String(domain.dropFirst(1)))
-                        } else {
-                            ifDomains.append(domain)
-                        }
-                    }
-                } else if isResourceType(trimmedOption) {
-                    if trimmedOption.hasPrefix("~") {
-                        // Исключаем этот тип ресурса - добавляем все остальные
-                        let excludedType = String(trimmedOption.dropFirst(1))
-                        resourceTypes = getAllResourceTypes().filter { $0 != mapResourceType(excludedType) }
-                    } else {
-                        resourceTypes.append(mapResourceType(trimmedOption))
-                    }
-                }
-            }
-        }
-        
-        // Конвертируем URL в Safari формат
-        let urlFilter = convertUrlToSafariFilter(urlPart)
-        
-        return ParsedRule(
-            urlFilter: urlFilter,
-            action: action,
-            resourceTypes: resourceTypes,
-            loadTypes: loadTypes,
-            unlessDomains: unlessDomains,
-            ifDomains: ifDomains
-        )
-    }
-    
-    private static func convertUrlToSafariFilter(_ url: String) -> String {
-        var filter = url
-        
-        // Обрабатываем специальные символы AdBlock СНАЧАЛА
-        if filter.hasPrefix("||") {
-            // ||domain^ -> ^https?://.*domain.*
-            filter = String(filter.dropFirst(2)) // убираем ||
-            if filter.hasSuffix("^") {
-                filter = String(filter.dropLast(1)) // убираем ^
-            }
-            // Экранируем точки в доменах
-            filter = filter.replacingOccurrences(of: ".", with: "\\.")
-            filter = "^https?://.*" + filter + ".*"
-        } else if filter.hasPrefix("/") && filter.hasSuffix("/") {
-            // /path/ -> ^https?://.*/path.*
-            filter = String(filter.dropFirst().dropLast()) // убираем / /
-            filter = escapeRegexCharacters(filter)
-            filter = "^https?://.*/" + filter + ".*"
-        } else {
-            // Обычный URL или путь
-            filter = escapeRegexCharacters(filter)
-            if !filter.hasPrefix("^https?://") {
-                filter = "^https?://.*" + filter + ".*"
-            }
-        }
-        
-        return filter
-    }
-    
-    private static func escapeRegexCharacters(_ string: String) -> String {
-        // Экранируем только необходимые символы для Safari
-        var escaped = string
-        escaped = escaped.replacingOccurrences(of: "\\", with: "\\\\")
-        escaped = escaped.replacingOccurrences(of: ".", with: "\\.")
-        escaped = escaped.replacingOccurrences(of: "+", with: "\\+")
-        escaped = escaped.replacingOccurrences(of: "?", with: "\\?")
-        escaped = escaped.replacingOccurrences(of: "$", with: "\\$")
-        escaped = escaped.replacingOccurrences(of: "{", with: "\\{")
-        escaped = escaped.replacingOccurrences(of: "}", with: "\\}")
-        escaped = escaped.replacingOccurrences(of: "[", with: "\\[")
-        escaped = escaped.replacingOccurrences(of: "]", with: "\\]")
-        escaped = escaped.replacingOccurrences(of: "(", with: "\\(")
-        escaped = escaped.replacingOccurrences(of: ")", with: "\\)")
-        return escaped
-    }
-    
-    private static func isResourceType(_ option: String) -> Bool {
-        let cleanOption = option.hasPrefix("~") ? String(option.dropFirst(1)) : option
-        let resourceTypes = ["script", "image", "stylesheet", "object", "xmlhttprequest", 
-                           "subdocument", "ping", "websocket", "other", "font", "media"]
-        return resourceTypes.contains(cleanOption)
-    }
-    
-    private static func mapResourceType(_ type: String) -> String {
-        switch type {
-        case "stylesheet": return "style-sheet"
-        case "xmlhttprequest": return "raw"
-        case "other": return "raw"
-        default: return type
-        }
-    }
-    
-    private static func getAllResourceTypes() -> [String] {
-        return ["script", "image", "style-sheet", "font", "raw", "media"]
-    }
-}

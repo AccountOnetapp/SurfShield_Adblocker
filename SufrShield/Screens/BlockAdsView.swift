@@ -159,27 +159,13 @@ class BlockAdsViewModel: ObservableObject {
         Task {
 //            await RulesConverter.shared.loadTestRules()
             do {
-                try await RulesConverter.shared.testContentBlockerConverter()
+                await RulesConverter.shared.enableContentBlocker()
                 print("✅ Тест конвертера завершен:")
             } catch {
                 print("❌ Ошибка тестирования конвертера: \(error)")
             }
 //            let result = await RulesConverter.splitJSONIntoChunks(fileName: "blockerList1")
 //            print("DEBUG: result count \(result?.count)")
-        }
-    }
-    
-    
-    func getBlockerList1Info() async {
-        print("📊 Получаем информацию о blockerList1.json...")
-        let result = await RulesConverter.getBlockerList1ChunksInfo()
-        if let info = result {
-            print("📊 Информация получена:")
-            print("  - Всего правил: \(info.totalRules)")
-            print("  - Количество чанков: \(info.numberOfChunks)")
-            print("  - Размеры чанков: \(info.chunkSizes)")
-        } else {
-            print("❌ Не удалось получить информацию о blockerList1.json")
         }
     }
 }
@@ -209,10 +195,9 @@ struct BlockAdsView: View {
             VStack {
                 Spacer()
                 
-                VStack(spacing: 24) {
+                VStack(spacing: 32) {
                     blockAdsButton
-                    testButton
-                    blockerList1InfoButton
+//                    testButton
                     // Статус кнопки с лоадером
                     VStack(spacing: 12) {
                         Text(buttonStatusTitle)
@@ -274,7 +259,7 @@ struct BlockAdsView: View {
     
     private var buttonStatusTitle: String {
         if viewModel.isProcess {
-            return viewModel.isEnabled ? "Disabling" : "Enabling"
+            return viewModel.isEnabled ? "Disabling..." : "Enabling..."
         } else {
             return viewModel.isEnabled ? "Enabled" : "Disabled"
         }
@@ -289,18 +274,6 @@ struct BlockAdsView: View {
         .buttonStyle(.bordered)
         .tint(.red)
     }
-    
-    var blockerList1InfoButton: some View {
-        Button {
-            Task {
-                await viewModel.getBlockerList1Info()
-            }
-        } label: {
-            Text("Информация о blockerList1.json")
-        }
-        .buttonStyle(.bordered)
-        .tint(.green)
-    }
 }
 
 // MARK: - Animated Block Button
@@ -313,7 +286,8 @@ struct AnimatedBlockButton: View {
     let onTap: () -> Void
     
     private let waveSize: CGFloat = 160
-    private let waveCount = 4
+    private let waveCount = 6
+    private let waveHeight: CGFloat = 2
     
     var body: some View {
         ZStack {
@@ -419,7 +393,7 @@ struct AnimatedBlockButton: View {
     }
     
     private func makeWaveCircle(duration: Double, opacity: CGFloat, rotationVector: Bool, colors: [Color]) -> some View {
-        WaveShape(waveCount: waveCount, waveHeight: 2, progress: waveProgress)
+        WaveShape(waveCount: waveCount, waveHeight: waveHeight, progress: waveProgress)
             .fill(
                 LinearGradient(
                     colors: colors,
