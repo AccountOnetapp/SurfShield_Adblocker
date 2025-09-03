@@ -3,4 +3,114 @@
    uuid = "3151133A-AEBC-4775-9A2F-D1AFF4E93298"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SufrShield/Shared/RulesConverter.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
+            landmarkName = "reloadExtensions(bundles:maxRetries:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - be38418de12b3e15"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "220">
+               </Location>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - ecd590b4a4f93a03"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - 5a4c3bc7fb007a0b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "72">
+               </Location>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - c986c0fa0614d408"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - e52aba34184d100e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(6) suspend resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "260">
+               </Location>
+               <Location
+                  uuid = "BBE99D72-0278-4CB2-AFAD-88BEA7A91C95 - 13634f6b2751f20f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for SufrShield.RulesConverter.reloadSingleExtension(bundle: Swift.String, maxRetries: Swift.Int) async -&gt; ()"
+                  moduleName = "SufrShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SufrShield/SufrShield/Shared/RulesConverter.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "386"
+                  endingLineNumber = "386"
+                  offsetFromSymbolStart = "280">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

@@ -16,7 +16,6 @@ public class RulesConverter {
     // MARK: Internal Properties
     private let groupID: String = Constants.adblockGroupId
     private let extensionsBundles: [String] = Constants.BlockExtenesionBundleIds.all
-    private var workItem: DispatchWorkItem?
     
     // MARK: - Initialization
     private init() {
@@ -212,15 +211,21 @@ public class RulesConverter {
     //MARK: Main Method
     public func enableContentBlocker() async  {
         guard let rulesPath = Bundle.main.path(forResource: "adblock_rules2", ofType: "txt") else {
+            print("❌ Файл adblock_rules2.txt не найден в bundle")
             return
         }
         
+        print("🔄 Начинаем загрузку и конвертацию правил...")
+        
         let rulesString = try! String(contentsOfFile: rulesPath, encoding: .utf8)
         let lines = rulesString.components(separatedBy: .newlines)
-        let chunkedRules = lines.chunked(by: 20000)
+        let chunkedRules = lines.chunked(by: 180000)
         var resultArray: [String] = []
         
-        for chunkedRule in chunkedRules {
+        print("📊 Обрабатываем \(lines.count) правил, разбитых на \(chunkedRules.count) чанков")
+        
+        for (index, chunkedRule) in chunkedRules.enumerated() {
+            print("🔄 Обрабатываем чанк \(index + 1)/\(chunkedRules.count)...")
             
             let result: ConversionResult = ContentBlockerConverter().convertArray(
                    rules: chunkedRule,
@@ -236,11 +241,18 @@ public class RulesConverter {
             saveJSONToFile(json: json)
         }
         
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-        
+        print("💾 Сохраняем правила в App Group...")
+        // ВАЖНО: Сначала сохраняем правила в App Group
         RulesConverter.shared.saveRulesToFiles(resultArray)
         
-        print("📖 Загружено \(lines.count) правил из adblock_rules.txt")
+        // Небольшая задержка для гарантии записи на диск
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 секунды
+        
+        print("🔄 Перезагружаем расширения после сохранения правил...")
+        // Только после сохранения перезагружаем расширения
+        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+        
+        print("✅ Загружено \(lines.count) правил из adblock_rules2.txt и применено ко всем расширениям")
     }
     
     /// Сохраняет JSON в файл для просмотра
@@ -286,72 +298,50 @@ public class RulesConverter {
     public func applyNewState(isEnabled: Bool) async {
         print("🔄 Применяем новое состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
         
-        // Сохраняем новое состояние
-        await AdBlockerStateManager.saveState(isEnabled)
         
         // Применяем новое состояние
         await applyBlockingState(isEnabled)
+        // Сохраняем новое состояние
+        await AdBlockerStateManager.saveState(isEnabled)
     }
     
     /// Генерирует пустые правила для отключения блокировки
     private func generateEmptyRules() async {
-        workItem?.cancel()
+        print("🔄 Создаем пустые правила для отключения блокировки...")
         
-        await withCheckedContinuation { continuation in
-        let currentWorkItem = DispatchWorkItem {
-                print("🔄 Создаем пустые правила для отключения блокировки...")
-                
-                let emptyRuleArray = [self.createEmptyRule()]
-                
-                guard let emptyRulesJSON = self.convertRulesToJSON(emptyRuleArray) else {
-                    print("❌ Ошибка создания пустых правил")
-                    continuation.resume()
-                    return
-                }
-                
-                for ruleType in RulesType.allCases {
-                    ruleType.writeRules(emptyRulesJSON, groupID: self.groupID)
-                    print("✅ Пустые правила сохранены для \(ruleType.rawValue)")
-                }
-                
-                Task { @MainActor in
-                    print("🔄 Перезагружаем расширения после создания пустых правил...")
-                    await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-                    print("✅ Пустые правила применены ко всем расширениям")
-                    continuation.resume()
-                }
-            }
-            
-            self.workItem = currentWorkItem
-            DispatchQueue.global(qos: .userInteractive).async(execute: currentWorkItem)
+        let emptyRuleArray = [self.createEmptyRule()]
+        
+        guard let emptyRulesJSON = self.convertRulesToJSON(emptyRuleArray) else {
+            print("❌ Ошибка создания пустых правил")
+            return
         }
+        
+        print("💾 Сохраняем пустые правила в App Group...")
+        for ruleType in RulesType.allCases {
+            ruleType.writeRules(emptyRulesJSON, groupID: self.groupID)
+            print("✅ Пустые правила сохранены для \(ruleType.rawValue)")
+        }
+        
+        // Небольшая задержка для гарантии записи на диск
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 секунды
+        
+        print("🔄 Перезагружаем расширения после создания пустых правил...")
+        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+        print("✅ Пустые правила применены ко всем расширениям")
     }
     
     /// Генерирует файлы правил
     private func generateFiles() async {
-        workItem?.cancel()
-        
-        await withCheckedContinuation { continuation in
-            let currentWorkItem = DispatchWorkItem {
-                do {
-                    let domains = try self.loadAndParseDomains()
-                    let preparedRules = self.convertDomainsToSafariRules(domains)
-                    self.saveRulesToFiles(preparedRules)
-                    
-                    Task { @MainActor in
-                        print("🔄 Перезагружаем расширения после создания правил блокировки...")
-                        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-                        print("✅ Правила блокировки применены ко всем расширениям")
-                        continuation.resume()
-                    }
-                } catch {
-                    print("❌ Ошибка генерации файлов: \(error)")
-                    continuation.resume()
-                }
-            }
+        do {
+            let domains = try self.loadAndParseDomains()
+            let preparedRules = self.convertDomainsToSafariRules(domains)
+            self.saveRulesToFiles(preparedRules)
             
-            self.workItem = currentWorkItem
-        DispatchQueue.global(qos: .userInteractive).async(execute: currentWorkItem)
+            print("🔄 Перезагружаем расширения после создания правил блокировки...")
+            await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+            print("✅ Правила блокировки применены ко всем расширениям")
+        } catch {
+            print("❌ Ошибка генерации файлов: \(error)")
         }
     }
     
@@ -380,18 +370,54 @@ public class RulesConverter {
     private func reloadExtensions(bundles: [String], maxRetries: Int) async {
         guard !bundles.isEmpty else { return }
         
+        print("🔄 Начинаем параллельную перезагрузку \(bundles.count) расширений...")
+        
+        // Создаем задачи для параллельной перезагрузки всех расширений
+//        let reloadTasks = bundles.map { bundle in
+//            Task {
+//                await reloadSingleExtension(bundle: bundle, maxRetries: maxRetries)
+//            }
+//        }
+        
         for bundle in bundles {
-            await withCheckedContinuation { continuation in
-            SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle) { error in
-                    if let error = error {
-                        print("❌ Ошибка перезагрузки расширения \(bundle): \(error.localizedDescription)")
-                    } else {
-                        print("✅ Расширение \(bundle) успешно перезагружено")
-                    }
-                    continuation.resume()
-                }
+            await reloadSingleExtension(bundle: bundle, maxRetries: 1)
+        }
+        
+        // Ждем завершения всех задач
+//        await withTaskGroup(of: Void.self) { group in
+//            for task in reloadTasks {
+//                group.addTask {
+//                    await task.value
+//                }
+//            }
+//        }
+        
+        print("✅ Завершена перезагрузка всех расширений")
+    }
+    
+    /// Перезагружает одно расширение с повторными попытками
+    private func reloadSingleExtension(bundle: String, maxRetries: Int) async {
+        var attempts = 0
+        
+        while attempts < maxRetries {
+            attempts += 1
+            
+            print("DEBUG: ATTEMPT TO RELOAD Blocker for \(bundle)")
+            do {
+                try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle)
+                print("✅ Расширение \(bundle) успешно перезагружено (попытка \(attempts)/\(maxRetries))")
+                return
+            } catch {
+                print("❌ Попытка - Ошибка перезагрузки расширения \(bundle):")
+            }
+
+            // Небольшая задержка перед повторной попыткой
+            if attempts < maxRetries {
+                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 секунды
             }
         }
+        
+        print("⚠️ Не удалось перезагрузить расширение \(bundle) после \(maxRetries) попыток")
     }
     
     func loadAndParseDomains() throws -> [String] {
@@ -456,6 +482,8 @@ public enum RulesType: String, Codable, CaseIterable {
     case banners
     case trackers
     case advanced
+    case secure
+    case basic
     
     /// Получить URL по каторому находится файл для определенного экстеншна
     /// - Returns: URL по каторому находится файл
@@ -474,15 +502,31 @@ public enum RulesType: String, Codable, CaseIterable {
     }
 
     internal func writeRules(_ rules: String, groupID: String) {
-        guard let filePath = getFilePath(groupID: groupID) else { return }
+        guard let filePath = getFilePath(groupID: groupID) else { 
+            print("❌ Не удалось получить путь для \(self.rawValue)")
+            return 
+        }
         let fileManager = FileManager.default
         
-        try? rules.write(to: filePath, atomically: true, encoding: .utf8)
-        
-        if fileManager.fileExists(atPath: filePath.path) {
-            print("\(self.rawValue) successfully write to file", filePath.absoluteURL)
-        } else {
-            print("\(self.rawValue) cant write to file with path \(filePath.absoluteURL)")
+        do {
+            // Синхронная запись с принудительной синхронизацией
+            try rules.write(to: filePath, atomically: true, encoding: .utf8)
+            
+            // Принудительная синхронизация файловой системы
+            let fileHandle = try FileHandle(forWritingTo: filePath)
+            try fileHandle.synchronize()
+            try fileHandle.close()
+            
+            // Проверяем, что файл действительно создался и имеет правильный размер
+            if fileManager.fileExists(atPath: filePath.path) {
+                let attributes = try? fileManager.attributesOfItem(atPath: filePath.path)
+                let fileSize = attributes?[.size] as? Int64 ?? 0
+                print("✅ \(self.rawValue) успешно сохранен: \(filePath.path) (размер: \(fileSize) байт)")
+            } else {
+                print("❌ \(self.rawValue) файл не найден после записи: \(filePath.path)")
+            }
+        } catch {
+            print("❌ Ошибка записи \(self.rawValue): \(error.localizedDescription)")
         }
     }
     

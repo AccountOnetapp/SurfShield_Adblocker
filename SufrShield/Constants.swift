@@ -17,6 +17,8 @@ enum Constants {
         case banners = "com.surfshield.app.banners"
         case trackers = "com.surfshield.app.trackers"
         case advanced = "com.surfshield.app.advanced"
+        case secure = "com.surfshield.app.secure"
+        case basic = "com.surfshield.app.basic"
         
         static var all: [String] {
             BlockExtenesionBundleIds.allCases.map { $0.rawValue }

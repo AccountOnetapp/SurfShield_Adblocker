@@ -59,17 +59,27 @@
 		<key>advanced.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>6</integer>
 		</dict>
 		<key>banners.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>basic.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
 		<key>privacy.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
+		</dict>
+		<key>secure.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
 		</dict>
 		<key>trackers.xcscheme_^#shared#^_</key>
 		<dict>
@@ -94,7 +104,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>8EC58DC52E67E8A3008D48EF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8EC58DD62E67E916008D48EF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8EC786E82E5C64F30024A55C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8EC856ED2E65966B00936348</key>
 		<dict>
 			<key>primary</key>
 			<true/>
