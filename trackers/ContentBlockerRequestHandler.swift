@@ -11,7 +11,8 @@ import MobileCoreServices
 class ContentBlockerRequestHandler: NSObject, NSExtensionRequestHandling {
 
     func beginRequest(with context: NSExtensionContext) {
-        let attachment = NSItemProvider(contentsOf: Bundle.main.url(forResource: "blockerList", withExtension: "json"))!
+        let rulesURL = RulesConverter().getExtensionFileURLWithFallback(forType: .trackers)
+        let attachment = NSItemProvider(contentsOf: rulesURL)!
         
         let item = NSExtensionItem()
         item.attachments = [attachment]

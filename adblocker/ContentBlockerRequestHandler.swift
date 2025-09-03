@@ -12,7 +12,7 @@ import Foundation
 class ContentBlockerRequestHandler: NSObject, NSExtensionRequestHandling {
 
     func beginRequest(with context: NSExtensionContext) {
-        let rulesURL = RulesConverter.getExtensionFileURLWithFallback(forType: .adBlock)
+        let rulesURL = RulesConverter().getExtensionFileURLWithFallback(forType: .adBlock)
         let attachment = NSItemProvider(contentsOf: rulesURL)!
         
         let item = NSExtensionItem()

@@ -17,6 +17,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isEnabled: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
+    let rulesConverter = RulesConverter()
     
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
@@ -49,7 +50,7 @@ class BlockAdsViewModel: ObservableObject {
             
             if !Task.isCancelled {
                 // Применяем новое состояние через RulesConverter
-                await RulesConverter.applyNewState(isEnabled: newState)
+                await rulesConverter.applyBlockingState(newState)
                 
                 await MainActor.run {
                     // Обновляем состояние с анимацией
@@ -156,20 +157,6 @@ class BlockAdsViewModel: ObservableObject {
         resetAnimations()
     }
     
-    func testScriptRules() {
-        Task {
-//            await RulesConverter.shared.loadTestRules()
-            do {
-                await RulesConverter.shared.enableContentBlocker()
-                print("✅ Тест конвертера завершен:")
-            } catch {
-                print("❌ Ошибка тестирования конвертера: \(error)")
-            }
-//            let result = await RulesConverter.splitJSONIntoChunks(fileName: "blockerList1")
-//            print("DEBUG: result count \(result?.count)")
-        }
-    }
-    
     // MARK: - Extension Reload Methods
     func reloadExtension(bundleId: String) {
         Task {
@@ -246,9 +233,6 @@ struct BlockAdsView: View {
                             .opacity(viewModel.isProcess ? 1 : 0)
                     }
                     .id(viewModel.animationID)
-                    
-                    // Кнопки перезагрузки расширений
-                    extensionReloadButtons
                 }
                 
                 Spacer()
@@ -300,149 +284,6 @@ struct BlockAdsView: View {
         } else {
             return viewModel.isEnabled ? "Enabled" : "Disabled"
         }
-    }
-
-    var testButton: some View {
-        Button {
-            viewModel.testScriptRules()
-        } label: {
-            Text("Загрузить Тестовый массив правил")
-        }
-        .buttonStyle(.bordered)
-        .tint(.red)
-    }
-    
-    @ViewBuilder
-    var extensionReloadButtons: some View {
-        VStack(spacing: 12) {
-            Text("Перезагрузка расширений")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(.tm.title.opacity(0.8))
-            
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 12) {
-                ExtensionReloadButton(
-                    title: "Ad Blocker",
-                    icon: "shield.fill",
-                    color: .blue,
-                    action: viewModel.reloadAdBlocker
-                )
-                
-                ExtensionReloadButton(
-                    title: "Privacy",
-                    icon: "lock.fill",
-                    color: .green,
-                    action: viewModel.reloadPrivacy
-                )
-                
-                ExtensionReloadButton(
-                    title: "Banners",
-                    icon: "rectangle.stack.fill",
-                    color: .orange,
-                    action: viewModel.reloadBanners
-                )
-                
-                ExtensionReloadButton(
-                    title: "Trackers",
-                    icon: "eye.slash.fill",
-                    color: .red,
-                    action: viewModel.reloadTrackers
-                )
-                
-                ExtensionReloadButton(
-                    title: "Advanced",
-                    icon: "gearshape.fill",
-                    color: .purple,
-                    action: viewModel.reloadAdvanced
-                )
-            }
-        }
-        .padding(.horizontal, 20)
-    }
-}
-
-// MARK: - Extension Reload Button
-struct ExtensionReloadButton: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-    
-    @State private var isPressed = false
-    @State private var isReloading = false
-    
-    var body: some View {
-        Button(action: {
-            // Haptic feedback
-            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-            impactFeedback.impactOccurred()
-            
-            // Анимация нажатия
-            withAnimation(.easeInOut(duration: 0.1)) {
-                isPressed = true
-            }
-            
-            // Анимация загрузки
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isReloading = true
-            }
-            
-            // Выполняем действие
-            action()
-            
-            // Сбрасываем анимации
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = false
-                }
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isReloading = false
-                }
-            }
-        }) {
-            VStack(spacing: 8) {
-                ZStack {
-                    // Фоновый круг
-                    Circle()
-                        .fill(color.opacity(0.2))
-                        .frame(width: 50, height: 50)
-                    
-                    // Иконка или лоадер
-                    if isReloading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: color))
-                            .scaleEffect(0.8)
-                    } else {
-                        Image(systemName: icon)
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(color)
-                    }
-                }
-                
-                Text(title)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.tm.title)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(height: 80)
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(.tm.container.opacity(0.6))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(color.opacity(0.3), lineWidth: 1)
-                    )
-            )
-            .scaleEffect(isPressed ? 0.95 : 1.0)
-            .opacity(isPressed ? 0.8 : 1.0)
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 
