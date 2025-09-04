@@ -10,7 +10,6 @@ import SwiftUI
 struct AddressBarView: View {
     @Binding var urlText: String
     let onGoAction: () -> Void
-    let onClearAction: () -> Void
     
     var body: some View {
         HStack {
@@ -21,12 +20,15 @@ struct AddressBarView: View {
             TextField("Введите адрес сайта", text: $urlText)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(.system(size: 16))
+                .textInputAutocapitalization(.never)
                 .onSubmit {
                     onGoAction()
                 }
             
             if !urlText.isEmpty {
-                Button(action: onClearAction) {
+                Button(action: {
+                    urlText = ""
+                }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)

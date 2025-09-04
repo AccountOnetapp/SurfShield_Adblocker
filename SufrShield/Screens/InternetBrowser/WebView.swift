@@ -9,17 +9,39 @@ import SwiftUI
 import WebKit
 
 struct WebView: UIViewRepresentable {
-    let url: URL
-
+    @ObservedObject var interactor: WebViewInteractor
+    
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
+        context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         return webView
     }
-
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        let request = URLRequest(url: url)
-        webView.load(request)
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        // Загружаем новую страницу, если URL изменился
+        if uiView.url != interactor.url {
+            uiView.load(URLRequest(url: interactor.url))
+        }
+        
+        if interactor.goBack {
+            if uiView.canGoBack {
+                uiView.goBack()
+            }
+            interactor.goBack(false)
+        }
+        
+        if interactor.goForward {
+            if uiView.canGoForward {
+                uiView.goForward()
+            }
+            interactor.goForward(false)
+        }
+        
+        if interactor.refresh {
+            uiView.reload()
+            interactor.refresh(false)
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -27,10 +49,13 @@ struct WebView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, WKNavigationDelegate {
-        let parent: WebView
+        var parent: WebView?
+        weak var webView: WKWebView?
         
         init(_ parent: WebView) {
             self.parent = parent
         }
+        
+        // Можно здесь передавать события в interactor по необходимости
     }
 }

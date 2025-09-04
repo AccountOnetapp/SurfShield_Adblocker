@@ -293,6 +293,7 @@
 		8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */; };
 		8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */; };
 		8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */; };
+		8EC73FA02E69EAD100EAA93F /* WebViewInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F9F2E69EAD100EAA93F /* WebViewInteractor.swift */; };
 		8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786EB2E5C64F30024A55C /* blockerList.json */; };
 		8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */; };
@@ -528,6 +529,7 @@
 		8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressBarView.swift; sourceTree = "<group>"; };
 		8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewPanel.swift; sourceTree = "<group>"; };
 		8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserNavigationButton.swift; sourceTree = "<group>"; };
+		8EC73F9F2E69EAD100EAA93F /* WebViewInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewInteractor.swift; sourceTree = "<group>"; };
 		8EC786DA2E5C64D10024A55C /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		8EC786DE2E5C64D10024A55C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -673,6 +675,7 @@
 				8EC73F982E69ACFC00EAA93F /* Components */,
 				8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */,
 				8E8FFB422E68163D00F20BF0 /* WebView.swift */,
+				8EC73F9F2E69EAD100EAA93F /* WebViewInteractor.swift */,
 			);
 			path = InternetBrowser;
 			sourceTree = "<group>";
@@ -1628,6 +1631,7 @@
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
 				8EBB25BE2E61C7C700E29966 /* CosmeticRule.swift in Sources */,
 				8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */,
+				8EC73FA02E69EAD100EAA93F /* WebViewInteractor.swift in Sources */,
 				8EBB25AA2E61C7C700E29966 /* Chars.swift in Sources */,
 				8EBB25A22E61C7C700E29966 /* RuleFactory.swift in Sources */,
 				8E7B5DF72E61D0C200D5E817 /* ByteArraySuffixTrie.swift in Sources */,

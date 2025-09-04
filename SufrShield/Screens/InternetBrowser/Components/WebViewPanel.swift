@@ -14,27 +14,52 @@ struct WebViewPanel: View {
     @State private var isLoading = false
     @State private var progress: Double = 0.0
     
+    var observables: WebViewObservables
+    // Closures для внешних действий
+    let onGoBack: () -> Void
+    let onGoForward: () -> Void
+    let onRefresh: () -> Void
+    let onGoToURL: (String) -> Void
+    let onShare: (String) -> Void
+    
+    init(
+        observables: WebViewObservables,
+        onGoBack: @escaping () -> Void = {},
+        onGoForward: @escaping () -> Void = {},
+        onRefresh: @escaping () -> Void = {},
+        onGoToURL: @escaping (String) -> Void = { _ in },
+        onShare: @escaping (String) -> Void = { _ in }
+    ) {
+        self.observables = observables
+        self.onGoBack = onGoBack
+        self.onGoForward = onGoForward
+        self.onRefresh = onRefresh
+        self.onGoToURL = onGoToURL
+        self.onShare = onShare
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Панель навигации
             HStack(spacing: 12) {
                 // Кнопки навигации
                 HStack(spacing: 8) {
-                    BrowserNavigationButton(.back, isEnabled: canGoBack, action: goBack)
-                    BrowserNavigationButton(.forward, isEnabled: canGoForward, action: goForward)
-                    BrowserNavigationButton(.refresh, action: refreshPage)
+                    BrowserNavigationButton(.back, isEnabled: canGoBack, action: onGoBack)
+                    BrowserNavigationButton(.forward, isEnabled: canGoForward, action: onGoForward)
+                    BrowserNavigationButton(.refresh, action: onRefresh)
                 }
                 
                 // Адресная строка
                 AddressBarView(
                     urlText: $currentURL,
-                    onGoAction: goToURL,
-                    onClearAction: clearURL
+                    onGoAction: {
+                        onGoToURL(currentURL)
+                    }
                 )
                 
                 // Кнопка поделиться
                 BrowserNavigationButton(.share) {
-                    shareAction()
+                    onShare(currentURL)
                 }
             }
             .padding(.horizontal, 16)
@@ -48,35 +73,5 @@ struct WebViewPanel: View {
                     .frame(height: 2)
             }
         }
-    }
-    
-    // MARK: - Actions
-    private func goBack() {
-        print("Назад")
-        // TODO: Реализовать навигацию назад
-    }
-    
-    private func goForward() {
-        print("Вперед")
-        // TODO: Реализовать навигацию вперед
-    }
-    
-    private func refreshPage() {
-        print("Обновление страницы")
-        // TODO: Реализовать обновление страницы
-    }
-    
-    private func goToURL() {
-        print("Переход к URL: \(currentURL)")
-        // TODO: Реализовать переход по URL
-    }
-    
-    private func clearURL() {
-        currentURL = ""
-    }
-    
-    private func shareAction() {
-        print("Sharing: \(currentURL)")
-        // TODO: Реализовать функциональность поделиться
     }
 }
