@@ -48,7 +48,7 @@ struct AddressBarView: View {
                 }
             
             // Кнопка очистки с тенью (показываем только когда поле активно)
-            if isFocused && !displayText.isEmpty {
+//            if isFocused && !displayText.isEmpty {
                 Button(action: {
                     urlText = ""
                     displayText = ""
@@ -68,15 +68,23 @@ struct AddressBarView: View {
                             .font(.system(size: 10, weight: .bold))
                             .foregroundColor(.secondary)
                     }
+                    .opacity(isFocused && !displayText.isEmpty ? 1 : 0)
                 }
-            }
+//            }
         }
         .padding(.horizontal, isFocused ? 20 : 16)
         .padding(.vertical, 12)
-        .clipped()
         .background(
             RoundedRectangle(cornerRadius: 25)
                 .fill(Color(.systemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(
+                            isFocused ? .title.opacity(0.05) : Color.clear,
+                            lineWidth: isFocused ? 1 : 0
+                        )
+                        .padding(0.5)
+                )
                 .shadow(
                     color: .black.opacity(0.08),
                     radius: 4,

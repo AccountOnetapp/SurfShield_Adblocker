@@ -40,7 +40,7 @@ struct WebViewPanel: View {
         VStack(spacing: 0) {
             // Панель навигации
             HStack(spacing: 12) {
-                // Кнопки навигации (скрываются при фокусе адресной строки)
+                // Кнопки навигации (убираются из layout при фокусе адресной строки)
                 if !isFocused {
                     HStack(spacing: 8) {
                         BrowserNavigationButton(.back, isEnabled: observables.canGoBack, action: onGoBack)
@@ -48,8 +48,8 @@ struct WebViewPanel: View {
                         BrowserNavigationButton(.refresh, action: onRefresh)
                     }
                     .transition(.asymmetric(
-                        insertion: .scale(scale: 0.8).combined(with: .opacity),
-                        removal: .scale(scale: 0.8).combined(with: .opacity)
+                        insertion: .move(edge: .leading).combined(with: .opacity).animation(.easeInOut(duration: 0.25).delay(0.25)),
+                        removal: .move(edge: .leading).combined(with: .opacity)
                     ))
                 }
                 
@@ -62,18 +62,20 @@ struct WebViewPanel: View {
                 )
                 .focused($isFocused)
                 
-                // Кнопка поделиться (скрывается при фокусе адресной строки)
+                // Кнопка поделиться (убирается из layout при фокусе адресной строки)
                 if !isFocused {
                     BrowserNavigationButton(.share) {
                         onShare(currentURL)
                     }
                     .transition(.asymmetric(
-                        insertion: .scale(scale: 0.8).combined(with: .opacity),
-                        removal: .scale(scale: 0.8).combined(with: .opacity)
+                        insertion: .move(edge: .trailing)
+                            .animation(.easeInOut(duration: 0.8).delay(0))
+                            .combined(with: .opacity).animation(.easeInOut(duration: 0.25).delay(0.25)),
+                        removal: .move(edge: .trailing).combined(with: .opacity)
                     ))
                 }
             }
-            .animation(.easeOut(duration: 0.3), value: isFocused)
+            .animation(.easeInOut(duration: 0.4), value: isFocused)
             .clipped()
             .padding(.horizontal, .regular)
             .padding(.vertical, .regular)
