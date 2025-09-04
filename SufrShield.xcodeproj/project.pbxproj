@@ -106,13 +106,6 @@
 		8E7B5E642E61DAB000D5E817 /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */; };
 		8E8FFB402E68159900F20BF0 /* InternetBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */; };
 		8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB422E68163D00F20BF0 /* WebView.swift */; };
-		8E8FFB4C2E6819F300F20BF0 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB452E6819F300F20BF0 /* LoadingOverlay.swift */; };
-		8E8FFB4D2E6819F300F20BF0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 8E8FFB462E6819F300F20BF0 /* README.md */; };
-		8E8FFB4E2E6819F300F20BF0 /* AddressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB472E6819F300F20BF0 /* AddressBar.swift */; };
-		8E8FFB4F2E6819F300F20BF0 /* WebViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB482E6819F300F20BF0 /* WebViewContainer.swift */; };
-		8E8FFB502E6819F300F20BF0 /* ErrorOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB492E6819F300F20BF0 /* ErrorOverlay.swift */; };
-		8E8FFB512E6819F300F20BF0 /* BrowserComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB4A2E6819F300F20BF0 /* BrowserComponents.swift */; };
-		8E8FFB522E6819F300F20BF0 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB4B2E6819F300F20BF0 /* NavigationBar.swift */; };
 		8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF280E2E59BB03000A5748 /* Assets.xcassets */; };
 		8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF32E5C94EC0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
@@ -297,6 +290,9 @@
 		8EC58E452E67EA2C008D48EF /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8EC58E462E67EA6F008D48EF /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
 		8EC58E472E67EA6F008D48EF /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
+		8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */; };
+		8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */; };
+		8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */; };
 		8EC786AB2E5C52FF0024A55C /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
 		8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EC786EB2E5C64F30024A55C /* blockerList.json */; };
 		8EC786EE2E5C64F30024A55C /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC786ED2E5C64F30024A55C /* ContentBlockerRequestHandler.swift */; };
@@ -483,13 +479,6 @@
 		8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules.txt; sourceTree = "<group>"; };
 		8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetBrowserView.swift; sourceTree = "<group>"; };
 		8E8FFB422E68163D00F20BF0 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		8E8FFB452E6819F300F20BF0 /* LoadingOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingOverlay.swift; path = SufrShield/Screens/InternetBrowser/Components/LoadingOverlay.swift; sourceTree = SOURCE_ROOT; };
-		8E8FFB462E6819F300F20BF0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = SufrShield/Screens/InternetBrowser/Components/README.md; sourceTree = SOURCE_ROOT; };
-		8E8FFB472E6819F300F20BF0 /* AddressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddressBar.swift; path = SufrShield/Screens/InternetBrowser/Components/AddressBar.swift; sourceTree = SOURCE_ROOT; };
-		8E8FFB482E6819F300F20BF0 /* WebViewContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewContainer.swift; path = SufrShield/Screens/InternetBrowser/Components/WebViewContainer.swift; sourceTree = SOURCE_ROOT; };
-		8E8FFB492E6819F300F20BF0 /* ErrorOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ErrorOverlay.swift; path = SufrShield/Screens/InternetBrowser/Components/ErrorOverlay.swift; sourceTree = SOURCE_ROOT; };
-		8E8FFB4A2E6819F300F20BF0 /* BrowserComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BrowserComponents.swift; path = SufrShield/Screens/InternetBrowser/Components/BrowserComponents.swift; sourceTree = SOURCE_ROOT; };
-		8E8FFB4B2E6819F300F20BF0 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = SufrShield/Screens/InternetBrowser/Components/NavigationBar.swift; sourceTree = SOURCE_ROOT; };
 		8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SufrShield.entitlements; sourceTree = "<group>"; };
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
 		8E9F1AF12E5C94C30093C76B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -536,6 +525,9 @@
 		8EC58DDD2E67E916008D48EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EC58E482E67EDA9008D48EF /* secure.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = secure.entitlements; sourceTree = "<group>"; };
 		8EC58E492E67EDB5008D48EF /* basic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = basic.entitlements; sourceTree = "<group>"; };
+		8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressBarView.swift; sourceTree = "<group>"; };
+		8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewPanel.swift; sourceTree = "<group>"; };
+		8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserNavigationButton.swift; sourceTree = "<group>"; };
 		8EC786DA2E5C64D10024A55C /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC786DC2E5C64D10024A55C /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		8EC786DE2E5C64D10024A55C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -678,25 +670,11 @@
 		8E8FFB412E68162B00F20BF0 /* InternetBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				8E8FFB442E6819DC00F20BF0 /* Components */,
+				8EC73F982E69ACFC00EAA93F /* Components */,
 				8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */,
 				8E8FFB422E68163D00F20BF0 /* WebView.swift */,
 			);
 			path = InternetBrowser;
-			sourceTree = "<group>";
-		};
-		8E8FFB442E6819DC00F20BF0 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				8E8FFB472E6819F300F20BF0 /* AddressBar.swift */,
-				8E8FFB4A2E6819F300F20BF0 /* BrowserComponents.swift */,
-				8E8FFB492E6819F300F20BF0 /* ErrorOverlay.swift */,
-				8E8FFB452E6819F300F20BF0 /* LoadingOverlay.swift */,
-				8E8FFB4B2E6819F300F20BF0 /* NavigationBar.swift */,
-				8E8FFB462E6819F300F20BF0 /* README.md */,
-				8E8FFB482E6819F300F20BF0 /* WebViewContainer.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		8E9F1AF62E5CBBBE0093C76B /* Shared */ = {
@@ -804,6 +782,16 @@
 				8EC58DDD2E67E916008D48EF /* Info.plist */,
 			);
 			path = basic;
+			sourceTree = "<group>";
+		};
+		8EC73F982E69ACFC00EAA93F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */,
+				8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */,
+				8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		8EC786B02E5C58C60024A55C /* Frameworks */ = {
@@ -1273,7 +1261,6 @@
 			files = (
 				8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */,
 				8E7B5E162E61D39B00D5E817 /* common.bin in Resources */,
-				8E8FFB4D2E6819F300F20BF0 /* README.md in Resources */,
 				8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */,
 				8E7B5E222E61D39B00D5E817 /* version.txt in Resources */,
 				8E7B5E1E2E61D39B00D5E817 /* negated.bin in Resources */,
@@ -1599,6 +1586,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */,
 				8E7B5E532E61D70700D5E817 /* BlockerEntryEncoder.swift in Sources */,
 				8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */,
 				8EBB25E42E61C7E200E29966 /* ArrayExtension.swift in Sources */,
@@ -1616,31 +1604,27 @@
 				8EBB25A62E61C7C700E29966 /* NetworkRule.swift in Sources */,
 				8E8FFB402E68159900F20BF0 /* InternetBrowserView.swift in Sources */,
 				8EBB258D2E61C79500E29966 /* ContentBlockerConverter.swift in Sources */,
-				8E8FFB502E6819F300F20BF0 /* ErrorOverlay.swift in Sources */,
 				8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */,
-				8E8FFB4C2E6819F300F20BF0 /* LoadingOverlay.swift in Sources */,
 				8E7B5E5C2E61D7B100D5E817 /* SafariRegex.swift in Sources */,
 				8EBB25BA2E61C7C700E29966 /* CosmeticRuleMarker.swift in Sources */,
 				8EBB25852E61C79500E29966 /* ConversionResult.swift in Sources */,
-				8E8FFB522E6819F300F20BF0 /* NavigationBar.swift in Sources */,
-				8E8FFB4F2E6819F300F20BF0 /* WebViewContainer.swift in Sources */,
-				8E8FFB4E2E6819F300F20BF0 /* AddressBar.swift in Sources */,
 				8EBB25E82E61C7E200E29966 /* DomainUtils.swift in Sources */,
 				8ECF281C2E59BC45000A5748 /* TabBarView.swift in Sources */,
 				8EBB25E02E61C7E200E29966 /* ErrorsCounter.swift in Sources */,
 				8E7B5E432E61D6DA00D5E817 /* Compiler.swift in Sources */,
 				8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */,
 				8E7B5E4F2E61D70700D5E817 /* BlockerEntry.swift in Sources */,
+				8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */,
 				8EBB25C62E61C7C700E29966 /* Rule.swift in Sources */,
 				8EBB25892E61C79500E29966 /* ContentBlockerConverterVersion.swift in Sources */,
 				8EBB25AE2E61C7C700E29966 /* NetworkRuleParser.swift in Sources */,
 				8EBB25912E61C79500E29966 /* WebExtensionHelpers.swift in Sources */,
+				8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */,
 				8E7B5E482E61D6EE00D5E817 /* CompilationResult.swift in Sources */,
 				8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */,
 				8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */,
 				8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */,
 				8EBB25C22E61C7C700E29966 /* SafariVersion.swift in Sources */,
-				8E8FFB512E6819F300F20BF0 /* BrowserComponents.swift in Sources */,
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
 				8EBB25BE2E61C7C700E29966 /* CosmeticRule.swift in Sources */,
 				8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */,

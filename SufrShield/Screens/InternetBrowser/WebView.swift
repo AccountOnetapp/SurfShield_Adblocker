@@ -10,11 +10,6 @@ import WebKit
 
 struct WebView: UIViewRepresentable {
     let url: URL
-    @Binding var isLoading: Bool
-    @Binding var errorMessage: String?
-    @Binding var canGoBack: Bool
-    @Binding var canGoForward: Bool
-    @Binding var currentURL: String
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
@@ -36,23 +31,6 @@ struct WebView: UIViewRepresentable {
         
         init(_ parent: WebView) {
             self.parent = parent
-        }
-        
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            parent.isLoading = true
-            parent.errorMessage = nil
-        }
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            parent.isLoading = false
-            parent.canGoBack = webView.canGoBack
-            parent.canGoForward = webView.canGoForward
-            parent.currentURL = webView.url?.absoluteString ?? ""
-        }
-        
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            parent.isLoading = false
-            parent.errorMessage = error.localizedDescription
         }
     }
 }
