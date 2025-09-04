@@ -58,9 +58,21 @@ struct WebViewPanel: View {
                     onShare(currentURL)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(Color(.black).opacity(0.4))
+            .padding(.horizontal, .regular)
+            .padding(.vertical, .regular)
+            .background(.ultraThinMaterial)
+            .shadow(
+                color: .black.opacity(0.1),
+                radius: 8,
+                x: 0,
+                y: 4
+            )
+            .shadow(
+                color: .black.opacity(0.05),
+                radius: 2,
+                x: 0,
+                y: 1
+            )
             
 //            // Индикатор загрузки
 //            if isLoading {

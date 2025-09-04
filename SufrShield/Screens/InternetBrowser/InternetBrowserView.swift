@@ -12,7 +12,7 @@ import SwiftUI
 struct InternetBrowserView: View {
     @StateObject var interactor = WebViewInteractor()
     
-    private let panelHeight: CGFloat = 54
+    private let panelHeight: CGFloat = 65
     
     var body: some View {
         AnyView(browser)
@@ -23,7 +23,7 @@ struct InternetBrowserView: View {
         ZStack(alignment: .top) {
             // WebView занимает весь экран
             WebView(interactor: interactor)
-                .padding(.top, 55)
+                .padding(.top, panelHeight)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             // Панель навигации поверх WebView

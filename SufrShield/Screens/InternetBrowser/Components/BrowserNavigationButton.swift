@@ -49,10 +49,32 @@ struct BrowserNavigationButton: View {
     
     var body: some View {
         Button(action: action) {
-            Image(systemName: type.iconName)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(isEnabled ? .primary : .secondary)
+            ZStack {
+                // Контейнер с тенью
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(.systemBackground))
+                    .shadow(
+                        color: .black.opacity(0.1),
+                        radius: 2,
+                        x: 0,
+                        y: 1
+                    )
+                    .shadow(
+                        color: .black.opacity(0.05),
+                        radius: 1,
+                        x: 0,
+                        y: 0
+                    )
+                    .frame(width: 36, height: 36)
+                
+                // Иконка
+                Image(systemName: type.iconName)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(isEnabled ? .primary : .secondary)
+            }
         }
         .disabled(!isEnabled)
+        .scaleEffect(isEnabled ? 1.0 : 0.95)
+        .opacity(isEnabled ? 1.0 : 0.6)
     }
 }
