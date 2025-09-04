@@ -27,9 +27,13 @@ struct TabBarView: View {
                 .tabItem { Label("Block Ads", systemImage: "shield.fill") }
                 .tag(0)
             
+            InternetBrowserView()
+                .tabItem { Label("Browser", systemImage: "network") }
+                .tag(1)
+            
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
-                .tag(0)
+                .tag(2)
         }
         )
         .tint(.tm.accentSecondary)

@@ -32,8 +32,21 @@ struct SettingsView: View {
     
     var content: some View {
         ZStack {
+            // Таинственный темный фон
+            LinearGradient(
+                colors: [
+                    Color.black.opacity(0.3),
+                    Color.tm.container.opacity(0.1),
+                    Color.black.opacity(0.4)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea(.all)
+            
             BackgroundGradient()
                 .ignoresSafeArea(.all)
+                .opacity(0.7)
 
             ScrollView {
                 LazyVStack(spacing: Layout.Padding.large) {
@@ -69,23 +82,6 @@ struct SettingsView: View {
                 }
                 
                 Spacer()
-                
-                // Decorative element
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [.tm.accent.opacity(0.3), .tm.accentSecondary.opacity(0.2)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 60, height: 60)
-                    
-                    Image(systemName: "gearshape.fill")
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundColor(.tm.accent)
-                }
             }
         }
         .padding(.bottom, Layout.Padding.regular)
@@ -142,53 +138,62 @@ struct SettingsView: View {
             title: "Protection & Blocking",
             subtitle: "Content blocking management",
             icon: "shield.checkered",
-            accentColor: .tm.accent
+            accentColor: Color(red: 0.3, green: 0.4, blue: 1.0)
         ) {
             VStack(spacing: Layout.Padding.medium) {
                 ModernToggleRow(
-                    title: "Ad Blocker Active",
-                    subtitle: "Main protection from ads",
-                    icon: "power",
+                    title: "Advanced Protection",
+                    subtitle: "Enhanced security features",
+                    icon: "shield.lefthalf.filled",
                     isOn: $isAdBlockerEnabled,
-                    accentColor: .tm.accent
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0)
                 )
                 
                 Divider()
                     .background(Color.tm.subTitle.opacity(0.2))
                 
                 ModernToggleRow(
-                    title: "Block Advertisements",
-                    subtitle: "Hide advertising banners",
+                    title: "Banner Blocking",
+                    subtitle: "Remove advertising banners",
                     icon: "rectangle.slash",
                     isOn: $blockAds,
-                    accentColor: .tm.accent,
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
                     isDisabled: !isAdBlockerEnabled
                 )
                 
                 ModernToggleRow(
-                    title: "Block Trackers",
-                    subtitle: "Protection from tracking",
+                    title: "Basic Protection",
+                    subtitle: "Essential security measures",
+                    icon: "shield",
+                    isOn: $blockTrackers,
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    isDisabled: !isAdBlockerEnabled
+                )
+                
+                ModernToggleRow(
+                    title: "Privacy Guard",
+                    subtitle: "Protect personal information",
+                    icon: "hand.raised.fill",
+                    isOn: $blockPopups,
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    isDisabled: !isAdBlockerEnabled
+                )
+                
+                ModernToggleRow(
+                    title: "Security Shield",
+                    subtitle: "Advanced threat protection",
+                    icon: "lock.shield",
+                    isOn: $enableWhitelist,
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    isDisabled: !isAdBlockerEnabled
+                )
+                
+                ModernToggleRow(
+                    title: "Tracker Blocker",
+                    subtitle: "Block tracking scripts",
                     icon: "eye.slash",
                     isOn: $blockTrackers,
-                    accentColor: .tm.accent,
-                    isDisabled: !isAdBlockerEnabled
-                )
-                
-                ModernToggleRow(
-                    title: "Block Pop-ups",
-                    subtitle: "Block popup windows",
-                    icon: "square.stack.3d.down.right.fill",
-                    isOn: $blockPopups,
-                    accentColor: .tm.accent,
-                    isDisabled: !isAdBlockerEnabled
-                )
-                
-                ModernToggleRow(
-                    title: "Whitelist",
-                    subtitle: "Trusted websites",
-                    icon: "checkmark.shield",
-                    isOn: $enableWhitelist,
-                    accentColor: .tm.success,
+                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
                     isDisabled: !isAdBlockerEnabled
                 )
             }
@@ -200,7 +205,7 @@ struct SettingsView: View {
             title: "Browser & Interface",
             subtitle: "Application behavior settings",
             icon: "safari",
-            accentColor: .tm.accentSecondary
+            accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
         ) {
             VStack(spacing: Layout.Padding.medium) {
                 ModernToggleRow(
@@ -208,7 +213,7 @@ struct SettingsView: View {
                     subtitle: "Script execution",
                     icon: "curlybraces",
                     isOn: $enableJavaScript,
-                    accentColor: .tm.accentSecondary
+                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
                 )
                 
                 ModernToggleRow(
@@ -216,7 +221,7 @@ struct SettingsView: View {
                     subtitle: "Website data storage",
                     icon: "externaldrive.connected.to.line.below",
                     isOn: $enableCookies,
-                    accentColor: .tm.accentSecondary
+                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
                 )
                 
                 Divider()
@@ -227,7 +232,7 @@ struct SettingsView: View {
                     subtitle: "Clear cache on exit",
                     icon: "trash.circle",
                     isOn: $clearCacheOnExit,
-                    accentColor: .tm.error
+                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
                 )
                 
                 ModernToggleRow(
@@ -235,7 +240,7 @@ struct SettingsView: View {
                     subtitle: "Night mode interface",
                     icon: "moon.fill",
                     isOn: $enableDarkMode,
-                    accentColor: .tm.accentTertiary
+                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
                 )
                 
                 ModernToggleRow(
@@ -243,7 +248,7 @@ struct SettingsView: View {
                     subtitle: "Push notifications",
                     icon: "bell.fill",
                     isOn: $showNotifications,
-                    accentColor: .tm.accentSecondary
+                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
                 )
             }
         }
@@ -341,18 +346,25 @@ struct ModernSectionCard<Content: View>: View {
             // Header
             HStack(spacing: Layout.Padding.regularExt) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: 16)
                         .fill(
-                            LinearGradient(
-                                colors: [accentColor.opacity(0.2), accentColor.opacity(0.1)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+//                            LinearGradient(
+//                                colors: [accentColor.opacity(0.3), accentColor.opacity(0.2)],
+//                                startPoint: .topLeading,
+//                                endPoint: .bottomTrailing
+//                            )
+                            accentColor.opacity(0.15)
                         )
-                        .frame(width: 44, height: 44)
+                        .frame(width: 56, height: 56)
+                        .shadow(
+                            color: accentColor.opacity(0.3),
+                            radius: 12,
+                            x: 0,
+                            y: 6
+                        )
                     
                     Image(systemName: icon)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 24, weight: .bold))
                         .foregroundColor(accentColor)
                 }
                 
@@ -380,28 +392,27 @@ struct ModernSectionCard<Content: View>: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.tm.container.opacity(0.4),
-                                Color.tm.container.opacity(0.2)
+                                Color.tm.container.opacity(1.0),
+                                Color.tm.container.opacity(0.95)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(
-                                LinearGradient(
-                                    colors: [
-                                        Color.white.opacity(0.2),
-                                        Color.white.opacity(0.05)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 0.5
-                            )
+                    .shadow(
+                        color: Color.black.opacity(0.5),
+                        radius: 35,
+                        x: 0,
+                        y: 18
+                    )
+                    .shadow(
+                        color: accentColor.opacity(0.1),
+                        radius: 45,
+                        x: 0,
+                        y: 25
                     )
             )
+            .opacity(0.8)
         }
         .padding(.horizontal, Layout.Padding.smallExt)
     }
@@ -432,17 +443,27 @@ struct ModernToggleRow: View {
     }
     
     var body: some View {
-        HStack(spacing: Layout.Padding.medium) {
+//        HStack(spacing: Layout.Padding.medium) {
+        HStack(spacing: .zero) {
             // Icon
             ZStack {
                 Circle()
-                    .fill(accentColor.opacity(isDisabled ? 0.1 : 0.15))
-                    .frame(width: 36, height: 36)
+                    .fill(
+                        .white.opacity(0.1)
+                    )
+                    .frame(width: 46, height: 46)
+                    .shadow(
+                        color: accentColor.opacity(isDisabled ? 0.1 : 0.3),
+                        radius: 12,
+                        x: 0,
+                        y: 6
+                    )
                 
                 Image(systemName: icon)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.system(size: 20, weight: .regular))
                     .foregroundColor(isDisabled ? .tm.subTitle.opacity(0.4) : accentColor)
             }
+            .padding(.trailing, .medium)
             
             // Text content
             VStack(alignment: .leading, spacing: Layout.Padding.small) {
@@ -488,24 +509,15 @@ struct ModernToggle: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(
                     isOn && !isDisabled ?
-                    LinearGradient(
-                        colors: [accentColor, accentColor.opacity(0.8)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ) :
-                    LinearGradient(
-                        colors: [Color.tm.subTitle.opacity(0.2), Color.tm.subTitle.opacity(0.15)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+                    Color.tm.title.opacity(0.8) :
+                    Color.tm.subTitle.opacity(0.2)
                 )
                 .frame(width: 50, height: 30)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(
-                            isOn && !isDisabled ? accentColor.opacity(0.3) : Color.tm.subTitle.opacity(0.1),
-                            lineWidth: 1
-                        )
+                .shadow(
+                    color: Color.black.opacity(0.2),
+                    radius: 8,
+                    x: 0,
+                    y: 4
                 )
             
             // Thumb
@@ -513,7 +525,7 @@ struct ModernToggle: View {
                 .fill(Color.white)
                 .frame(width: 26, height: 26)
                 .shadow(
-                    color: Color.black.opacity(0.15),
+                    color: Color.black.opacity(0.2),
                     radius: 4,
                     x: 0,
                     y: 2
@@ -536,18 +548,24 @@ struct StatCard: View {
     var body: some View {
         VStack(spacing: Layout.Padding.regular) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 16)
                     .fill(
                         LinearGradient(
-                            colors: [color.opacity(0.2), color.opacity(0.1)],
+                            colors: [color.opacity(0.3), color.opacity(0.2)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 40, height: 40)
+                    .frame(width: 48, height: 48)
+                    .shadow(
+                        color: color.opacity(0.3),
+                        radius: 12,
+                        x: 0,
+                        y: 6
+                    )
                 
                 Image(systemName: icon)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 22, weight: .bold))
                     .foregroundColor(color)
             }
             
@@ -566,29 +584,12 @@ struct StatCard: View {
         .padding(.vertical, Layout.Padding.medium)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.tm.container.opacity(0.3),
-                            Color.tm.container.opacity(0.1)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.15),
-                                    Color.white.opacity(0.05)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 0.5
-                        )
+                .fill(Color.tm.container.opacity(0.8))
+                .shadow(
+                    color: Color.black.opacity(0.3),
+                    radius: 20,
+                    x: 0,
+                    y: 10
                 )
         )
     }
