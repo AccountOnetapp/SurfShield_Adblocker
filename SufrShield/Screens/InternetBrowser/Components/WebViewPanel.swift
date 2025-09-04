@@ -34,30 +34,47 @@ struct WebViewPanel: View {
         self.onShare = onShare
     }
     
+    @FocusState var isFocused: Bool
+    
     var body: some View {
         VStack(spacing: 0) {
             // Панель навигации
             HStack(spacing: 12) {
-                // Кнопки навигации
-                HStack(spacing: 8) {
-                    BrowserNavigationButton(.back, isEnabled: observables.canGoBack, action: onGoBack)
-                    BrowserNavigationButton(.forward, isEnabled: observables.canGoForward, action: onGoForward)
-                    BrowserNavigationButton(.refresh, action: onRefresh)
+                // Кнопки навигации (скрываются при фокусе адресной строки)
+                if !isFocused {
+                    HStack(spacing: 8) {
+                        BrowserNavigationButton(.back, isEnabled: observables.canGoBack, action: onGoBack)
+                        BrowserNavigationButton(.forward, isEnabled: observables.canGoForward, action: onGoForward)
+                        BrowserNavigationButton(.refresh, action: onRefresh)
+                    }
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.8).combined(with: .opacity),
+                        removal: .scale(scale: 0.8).combined(with: .opacity)
+                    ))
                 }
                 
-                // Адресная строка
+                // Адресная строка (расширяется при скрытии кнопок)
                 AddressBarView(
                     urlText: $currentURL,
                     onGoAction: {
                         onGoToURL(currentURL)
                     }
                 )
+                .focused($isFocused)
                 
-                // Кнопка поделиться
-                BrowserNavigationButton(.share) {
-                    onShare(currentURL)
+                // Кнопка поделиться (скрывается при фокусе адресной строки)
+                if !isFocused {
+                    BrowserNavigationButton(.share) {
+                        onShare(currentURL)
+                    }
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.8).combined(with: .opacity),
+                        removal: .scale(scale: 0.8).combined(with: .opacity)
+                    ))
                 }
             }
+            .animation(.easeOut(duration: 0.3), value: isFocused)
+            .clipped()
             .padding(.horizontal, .regular)
             .padding(.vertical, .regular)
             .background(.ultraThinMaterial)

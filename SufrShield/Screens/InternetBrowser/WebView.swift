@@ -18,7 +18,7 @@ struct WebView: UIViewRepresentable {
         webView.layer.masksToBounds = false
         webView.scrollView.clipsToBounds = false
         webView.scrollView.layer.masksToBounds = false
-        
+        webView.scrollView.keyboardDismissMode = .interactive
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         

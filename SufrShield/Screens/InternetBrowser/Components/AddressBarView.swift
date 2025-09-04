@@ -11,38 +11,47 @@ struct AddressBarView: View {
     @Binding var urlText: String
     let onGoAction: () -> Void
     
+    @FocusState private var isFocused
+    @State private var displayText: String = ""
+    
     var body: some View {
-        HStack(spacing: 12) {
-            // Иконка безопасности с тенью
-            ZStack {
-                Circle()
-                    .fill(Color.green)
-                    .frame(width: 20, height: 20)
-                    .shadow(
-                        color: .green.opacity(0.3),
-                        radius: 3,
-                        x: 0,
-                        y: 1
-                    )
-                
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(.white)
-            }
-            
+        HStack(alignment: .center, spacing: 12) {
             // Поле ввода
-            TextField("Введите адрес сайта", text: $urlText)
+            TextField("Введите адрес сайта", text: $displayText)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(.system(size: 16))
                 .textInputAutocapitalization(.never)
+                .focused($isFocused)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .onSubmit {
+                    // Восстанавливаем полный URL с протоколом при отправке
+                    urlText = displayText
                     onGoAction()
                 }
+                .onChange(of: isFocused) { focused in
+                    if focused {
+                        // При фокусе показываем полный URL (без анимации для мгновенного отклика)
+                        displayText = urlText
+                        // Устанавливаем курсор в конец строки
+                        setCursorToEnd()
+                    } else {
+                        // При потере фокуса убираем протокол
+                        displayText = removeProtocol(from: urlText)
+                    }
+                }
+                .onChange(of: displayText) { newValue in
+                    // Обновляем urlText при изменении displayText
+                    if isFocused {
+                        urlText = newValue
+                    }
+                }
             
-            // Кнопка очистки с тенью
-            if !urlText.isEmpty {
+            // Кнопка очистки с тенью (показываем только когда поле активно)
+            if isFocused && !displayText.isEmpty {
                 Button(action: {
                     urlText = ""
+                    displayText = ""
                 }) {
                     ZStack {
                         Circle()
@@ -62,8 +71,9 @@ struct AddressBarView: View {
                 }
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, isFocused ? 20 : 16)
         .padding(.vertical, 12)
+        .clipped()
         .background(
             RoundedRectangle(cornerRadius: 25)
                 .fill(Color(.systemBackground))
@@ -80,6 +90,55 @@ struct AddressBarView: View {
                     y: 0
                 )
         )
+        .onAppear {
+            // Инициализируем displayText без протокола
+            displayText = removeProtocol(from: urlText)
+        }
+        .onChange(of: urlText) { newValue in
+            // Обновляем displayText при изменении urlText извне
+            if !isFocused {
+                displayText = removeProtocol(from: newValue)
+            }
+        }
+    }
+    
+    // Функция для удаления протокола из URL
+    private func removeProtocol(from url: String) -> String {
+        var cleanUrl = url
+        
+        // Убираем http://
+        if cleanUrl.hasPrefix("http://") {
+            cleanUrl = String(cleanUrl.dropFirst(7))
+        }
+        
+        // Убираем https://
+        if cleanUrl.hasPrefix("https://") {
+            cleanUrl = String(cleanUrl.dropFirst(8))
+        }
+        
+        return cleanUrl
+    }
+    
+    // Функция для установки курсора в конец строки
+    private func setCursorToEnd() {
+        // Находим UITextField в иерархии представлений
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            findAndSetCursorInTextField(in: window)
+        }
+    }
+    
+    private func findAndSetCursorInTextField(in view: UIView) {
+        for subview in view.subviews {
+            if let textField = subview as? UITextField {
+                // Устанавливаем курсор в конец текста
+                let endPosition = textField.endOfDocument
+                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
+                return
+            } else {
+                findAndSetCursorInTextField(in: subview)
+            }
+        }
     }
 }
 
