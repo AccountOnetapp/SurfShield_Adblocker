@@ -40,14 +40,42 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     weak var navigationDelegate: WebViewNavigationDelegate?
     
     func goToUrl(string: String) {
-        guard let url = URL(string: string) else {
-            print("DEBUG: WRONG URL")
+        let processedURLString = processURLString(string)
+        
+        guard let url = URL(string: processedURLString) else {
+            print("DEBUG: WRONG URL: \(processedURLString)")
             return
         }
-//        self.url = url
         
         navigationDelegate?.loadURL(url)
-//        canGoBack = true
+    }
+    
+    private func processURLString(_ input: String) -> String {
+        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // Если строка пустая, возвращаем поисковую страницу
+        if trimmed.isEmpty {
+            return "https://google.com"
+        }
+        
+        // Если уже есть протокол, возвращаем как есть
+        if trimmed.hasPrefix("http://") || trimmed.hasPrefix("https://") {
+            return trimmed
+        }
+        
+        // Если это IP адрес (содержит только цифры, точки и двоеточия)
+        if trimmed.range(of: #"^\d+\.\d+\.\d+\.\d+(:\d+)?$"#, options: .regularExpression) != nil {
+            return "http://\(trimmed)"
+        }
+        
+        // Если содержит точку (вероятно домен), добавляем https://
+        if trimmed.contains(".") {
+            return "https://\(trimmed)"
+        }
+        
+        // Если не содержит точку, считаем поисковым запросом
+        let encodedQuery = trimmed.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? trimmed
+        return "https://google.com/search?q=\(encodedQuery)"
     }
     
     func refreshPage() {

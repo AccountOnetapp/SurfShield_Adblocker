@@ -13,7 +13,12 @@ struct WebView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
-        webView.scrollView.contentInset = .init(top: 55, left: .zero, bottom: .zero, right: .zero)
+//        webView.scrollView.contentInset = .init(top: 55, left: .zero, bottom: .zero, right: .zero)
+        webView.clipsToBounds = false
+        webView.layer.masksToBounds = false
+        webView.scrollView.clipsToBounds = false
+        webView.scrollView.layer.masksToBounds = false
+        
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         
@@ -24,30 +29,7 @@ struct WebView: UIViewRepresentable {
         return webView
     }
     
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Загружаем новую страницу, если URL изменился
-//        if uiView.url != interactor.url {
-//            uiView.load(URLRequest(url: interactor.url))
-//        }
-        
-//        if interactor.goBack {
-//            if uiView.canGoBack {
-//                uiView.goBack()
-//            }
-//            //            interactor.goBack(false)
-//        }
-        //
-        //        if interactor.goForward {
-        //            if uiView.canGoForward {
-        //                uiView.goForward()
-        //            }
-        //            interactor.goForward(false)
-        //        }
-        //
-        //        if interactor.refresh {
-        //            uiView.reload()
-        //        }
-    }
+    func updateUIView(_ uiView: WKWebView, context: Context) { }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)

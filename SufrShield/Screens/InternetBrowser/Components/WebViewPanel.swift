@@ -60,7 +60,7 @@ struct WebViewPanel: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
-            .background(Color(.systemBackground))
+            .background(Color(.black).opacity(0.4))
             
 //            // Индикатор загрузки
 //            if isLoading {
