@@ -9,10 +9,6 @@ import SwiftUI
 
 struct WebViewPanel: View {
     @State private var currentURL = "https://google.com"
-    @State private var canGoBack = false
-    @State private var canGoForward = false
-    @State private var isLoading = false
-    @State private var progress: Double = 0.0
     
     var observables: WebViewObservables
     // Closures для внешних действий
@@ -44,8 +40,8 @@ struct WebViewPanel: View {
             HStack(spacing: 12) {
                 // Кнопки навигации
                 HStack(spacing: 8) {
-                    BrowserNavigationButton(.back, isEnabled: canGoBack, action: onGoBack)
-                    BrowserNavigationButton(.forward, isEnabled: canGoForward, action: onGoForward)
+                    BrowserNavigationButton(.back, isEnabled: observables.canGoBack, action: onGoBack)
+                    BrowserNavigationButton(.forward, isEnabled: observables.canGoForward, action: onGoForward)
                     BrowserNavigationButton(.refresh, action: onRefresh)
                 }
                 
@@ -66,12 +62,12 @@ struct WebViewPanel: View {
             .padding(.vertical, 8)
             .background(Color(.systemBackground))
             
-            // Индикатор загрузки
-            if isLoading {
-                ProgressView(value: progress)
-                    .progressViewStyle(LinearProgressViewStyle())
-                    .frame(height: 2)
-            }
+//            // Индикатор загрузки
+//            if isLoading {
+//                ProgressView(value: progress)
+//                    .progressViewStyle(LinearProgressViewStyle())
+//                    .frame(height: 2)
+//            }
         }
     }
 }

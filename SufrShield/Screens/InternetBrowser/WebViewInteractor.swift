@@ -21,34 +21,45 @@ protocol WebViewActions {
     func setCanGoForward(_ isAvailable: Bool)
 }
 
+protocol WebViewNavigationDelegate: AnyObject {
+    func goBack()
+    func goForward()
+    func reload()
+    func loadURL(_ url: URL)
+}
+
+
 class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     @Published private (set)var goBack: Bool = false
     @Published private (set)var goForward: Bool = false
-    @Published private(set) var url: URL = URL(string: "https://google.com")!
-    @Published private(set) var canGoBack: Bool = false
-    @Published private(set) var canGoForward: Bool = false
-    @Published private(set) var refresh: Bool = false
+    @Published private (set) var url: URL = URL(string: "https://google.com")!
+    @Published private (set) var canGoBack: Bool = false
+    @Published private (set) var canGoForward: Bool = false
+    @Published private (set) var refresh: Bool = false
     
+    weak var navigationDelegate: WebViewNavigationDelegate?
     
     func goToUrl(string: String) {
         guard let url = URL(string: string) else {
             print("DEBUG: WRONG URL")
             return
         }
+//        self.url = url
         
-        self.url = url
+        navigationDelegate?.loadURL(url)
+//        canGoBack = true
     }
     
-    func refresh(_ isRefresh: Bool) {
-        self.refresh = isRefresh
+    func refreshPage() {
+        navigationDelegate?.reload()
     }
     
     func goBack(_ isGo: Bool) {
-        self.goBack = isGo
+        navigationDelegate?.goBack()
     }
     
     func goForward(_ isGo: Bool) {
-        self.goForward = isGo
+        navigationDelegate?.goForward()
     }
     
     func setCanGoBack(_ isAvailable: Bool) {

@@ -26,13 +26,16 @@ struct InternetBrowserView: View {
                     observables: interactor,
                     onGoBack: {
                         print("Назад")
+                        interactor.goBack(true)
                         // TODO: Реализовать навигацию назад
                     },
                     onGoForward: {
                         print("Вперед")
+                        interactor.goForward(true)
                         // TODO: Реализовать навигацию вперед
                     },
                     onRefresh: {
+                        interactor.refreshPage()
                         print("Обновление страницы")
                         // TODO: Реализовать обновление страницы
                     },

@@ -12,51 +12,104 @@ struct WebView: UIViewRepresentable {
     @ObservedObject var interactor: WebViewInteractor
     
     func makeUIView(context: Context) -> WKWebView {
-        var webView = WKWebView()
+        let webView = WKWebView()
         webView.scrollView.contentInset = .init(top: 55, left: .zero, bottom: .zero, right: .zero)
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
+        
+        // Добавляем наблюдатели для отслеживания состояния навигации
+        webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoBack), options: [.new], context: nil)
+        webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoForward), options: [.new], context: nil)
+        
         return webView
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
         // Загружаем новую страницу, если URL изменился
-        if uiView.url != interactor.url {
-            uiView.load(URLRequest(url: interactor.url))
-        }
+//        if uiView.url != interactor.url {
+//            uiView.load(URLRequest(url: interactor.url))
+//        }
         
-        if interactor.goBack {
-            if uiView.canGoBack {
-                uiView.goBack()
-            }
-            interactor.goBack(false)
-        }
-        
-        if interactor.goForward {
-            if uiView.canGoForward {
-                uiView.goForward()
-            }
-            interactor.goForward(false)
-        }
-        
-        if interactor.refresh {
-            uiView.reload()
-            interactor.refresh(false)
-        }
+//        if interactor.goBack {
+//            if uiView.canGoBack {
+//                uiView.goBack()
+//            }
+//            //            interactor.goBack(false)
+//        }
+        //
+        //        if interactor.goForward {
+        //            if uiView.canGoForward {
+        //                uiView.goForward()
+        //            }
+        //            interactor.goForward(false)
+        //        }
+        //
+        //        if interactor.refresh {
+        //            uiView.reload()
+        //        }
     }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate {
+    static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
+        // Удаляем наблюдатели при уничтожении view
+        uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoBack))
+        uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoForward))
+    }
+    
+    class Coordinator: NSObject, WKNavigationDelegate, WebViewNavigationDelegate {
         var parent: WebView?
         weak var webView: WKWebView?
         
         init(_ parent: WebView) {
             self.parent = parent
+            super.init()
+            self.parent?.interactor.navigationDelegate = self
         }
         
-        // Можно здесь передавать события в interactor по необходимости
+        // MARK: - WKNavigationDelegate
+        
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            // Обновляем состояние навигации при завершении загрузки
+            parent?.interactor.setCanGoBack(webView.canGoBack)
+            parent?.interactor.setCanGoForward(webView.canGoForward)
+        }
+        
+        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+            // Обновляем состояние навигации при начале загрузки
+            parent?.interactor.setCanGoBack(webView.canGoBack)
+            parent?.interactor.setCanGoForward(webView.canGoForward)
+        }
+        
+        // MARK: - KVO Observer
+        
+        override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+            guard let webView = webView else { return }
+            if keyPath == #keyPath(WKWebView.canGoBack) {
+                parent?.interactor.setCanGoBack(webView.canGoBack)
+            } else if keyPath == #keyPath(WKWebView.canGoForward) {
+                parent?.interactor.setCanGoForward(webView.canGoForward)
+            }
+        }
+        
+        func goBack() {
+            webView?.goBack()
+        }
+        
+        func goForward() {
+            webView?.goForward()
+        }
+        
+        func reload() {
+            webView?.reload()
+        }
+        
+        func loadURL(_ url: URL) {
+            webView?.load(URLRequest(url: url))
+        }
     }
 }
+
+
