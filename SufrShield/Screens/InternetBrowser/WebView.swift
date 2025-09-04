@@ -12,7 +12,8 @@ struct WebView: UIViewRepresentable {
     @ObservedObject var interactor: WebViewInteractor
     
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        var webView = WKWebView()
+        webView.scrollView.contentInset = .init(top: 55, left: .zero, bottom: .zero, right: .zero)
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         return webView

@@ -27,7 +27,11 @@ struct SettingsView: View {
     @State private var dataSaved = "156.7 MB"
     
     var body: some View {
-        content
+        NavigationView {
+            content
+                .navigationTitle("Settings")
+                .navigationBarTitleDisplayMode(.large)
+        }
     }
     
     var content: some View {
@@ -50,7 +54,7 @@ struct SettingsView: View {
 
             ScrollView {
                 LazyVStack(spacing: Layout.Padding.large) {
-                    headerView
+//                    headerView
                     
                     statisticsSection
                     
