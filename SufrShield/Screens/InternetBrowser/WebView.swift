@@ -18,7 +18,7 @@ struct WebView: UIViewRepresentable {
         webView.isUserInteractionEnabled = true
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.isScrollEnabled = true
-        webView.scrollView.bounces = false
+//        webView.scrollView.bounces = false
         webView.scrollView.keyboardDismissMode = .interactive
         
         // Убираем проблемные настройки, которые могут блокировать касания
@@ -28,8 +28,9 @@ struct WebView: UIViewRepresentable {
         webView.scrollView.layer.masksToBounds = false
         
         // Настройки для лучшей производительности и взаимодействия
-        webView.configuration.allowsInlineMediaPlayback = false
-        webView.configuration.mediaTypesRequiringUserActionForPlayback = [.all]
+        webView.configuration.allowsInlineMediaPlayback = true
+        webView.configuration.mediaTypesRequiringUserActionForPlayback = [.video]
+        webView.setAllMediaPlaybackSuspended(true)
         
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
