@@ -9,17 +9,19 @@ import SwiftUI
 
 struct SettingsView: View {
     // State variables for settings
-    @State private var isAdBlockerEnabled = true
-    @State private var blockAds = true
-    @State private var blockTrackers = true
+    @State private var isAdBlockerEnabled = false
+    @State private var basicBlock = false
+    @State private var blockAds = false
+    @State private var blockTrackers = false
     @State private var blockPopups = false
     @State private var enableWhitelist = false
     
-    @State private var enableJavaScript = true
-    @State private var enableCookies = true
+    @State private var enableCookies = false
     @State private var clearCacheOnExit = false
     @State private var enableDarkMode = true
-    @State private var showNotifications = true
+    @State private var showNotifications = false
+    @State private var enableBrowserHistory = true
+    @State private var startPage = "https://www.google.com"
     
     // Statistics
     @State private var blockedAdsCount = 12847
@@ -169,7 +171,7 @@ struct SettingsView: View {
                     title: "Basic Protection",
                     subtitle: "Essential security measures",
                     icon: "shield",
-                    isOn: $blockTrackers,
+                    isOn: $basicBlock,
                     accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
@@ -212,13 +214,50 @@ struct SettingsView: View {
             accentColor: .calm
         ) {
             VStack(spacing: Layout.Padding.medium) {
+//                ModernToggleRow(
+//                    title: "JavaScript",
+//                    subtitle: "Script execution",
+//                    icon: "curlybraces",
+//                    isOn: $enableJavaScript,
+//                    accentColor: .calm
+//                )
+                
                 ModernToggleRow(
-                    title: "JavaScript",
-                    subtitle: "Script execution",
-                    icon: "curlybraces",
-                    isOn: $enableJavaScript,
+                    title: "Browser History",
+                    subtitle: "Save previous session",
+                    icon: "clock.arrow.circlepath",
+                    isOn: $enableBrowserHistory,
                     accentColor: .calm
                 )
+                
+                // Start page input - показывается только если история выключена
+                if !enableBrowserHistory {
+                    VStack(alignment: .leading, spacing: Layout.Padding.small) {
+                        HStack {
+                            Image(systemName: "house.fill")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.calm)
+                                .frame(width: 20)
+                            
+                            Text("Start Page")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.tm.title)
+                            
+                            Spacer()
+                        }
+                        
+                        TextField("Enter start page URL", text: $startPage)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .font(.system(size: 14))
+                            .padding(.leading, 24)
+                    }
+                    .padding(.vertical, Layout.Padding.small)
+                    .padding(.horizontal, Layout.Padding.medium)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.tm.container.opacity(0.3))
+                    )
+                }
                 
                 ModernToggleRow(
                     title: "Cookies",

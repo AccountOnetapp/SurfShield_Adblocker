@@ -103,4 +103,29 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
         canGoForward = false
         refresh = false
     }
+    
+    // MARK: - Rules Loading
+    
+    func loadRulesForType(_ type: RulesType) -> String? {
+        let rulesConverter = RulesConverter()
+        guard let rulesURL = rulesConverter.getExtensionFileURLWithFallback(forType: type) else {
+            print("❌ Не удалось получить URL для типа \(type.rawValue)")
+            return nil
+        }
+        
+        print("🔍 Загружаем правила из: \(rulesURL.path)")
+        
+        do {
+            let content = try String(contentsOf: rulesURL, encoding: .utf8)
+            print("✅ Правила \(type.rawValue) загружены (размер: \(content.count) символов)")
+            return content
+        } catch {
+            print("❌ Ошибка загрузки правил \(type.rawValue): \(error)")
+            return nil
+        }
+    }
+    
+    func loadAdBlockRules() -> String? {
+        return loadRulesForType(.adBlock)
+    }
 }

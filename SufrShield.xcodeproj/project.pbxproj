@@ -379,6 +379,7 @@
 		8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF28252E59BC80000A5748 /* Colors.swift */; };
 		8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF28242E59BC80000A5748 /* Padding.swift */; };
 		8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF28232E59BC80000A5748 /* Colors.xcassets */; };
+		8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE1428E2E6B14A400918447 /* test_rules.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -557,6 +558,7 @@
 		8ECF28242E59BC80000A5748 /* Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Padding.swift; sourceTree = "<group>"; };
 		8ECF28252E59BC80000A5748 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		8ED1F97A2E5CD248000900F9 /* privacy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = privacy.entitlements; sourceTree = "<group>"; };
+		8EE1428E2E6B14A400918447 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -872,6 +874,7 @@
 		8ECF28092E59BAFE000A5748 /* SufrShield */ = {
 			isa = PBXGroup;
 			children = (
+				8EE1428E2E6B14A400918447 /* test_rules.txt */,
 				8E78603C2E650542000C7CB5 /* adblock_rules2.txt */,
 				8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */,
 				8E352C582E5B836B00384E52 /* DiagnosticTool.swift */,
@@ -1268,6 +1271,7 @@
 				8E7B5E222E61D39B00D5E817 /* version.txt in Resources */,
 				8E7B5E1E2E61D39B00D5E817 /* negated.bin in Resources */,
 				8E78603D2E650542000C7CB5 /* adblock_rules2.txt in Resources */,
+				8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */,
 				8E7B5E1A2E61D39B00D5E817 /* asterisk.bin in Resources */,
 				8E7B5E612E61DAB000D5E817 /* adblock_rules.txt in Resources */,
 				8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */,

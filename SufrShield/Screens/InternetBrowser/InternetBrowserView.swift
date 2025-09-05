@@ -45,6 +45,7 @@ struct InternetBrowserView: View {
                     // TODO: Реализовать обновление страницы
                 },
                 onGoToURL: { url in
+                
                     interactor.goToUrl(string: url)
                     print("Переход к URL: \(url)")
                     // TODO: Реализовать переход по URL

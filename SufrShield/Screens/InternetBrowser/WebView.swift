@@ -35,10 +35,13 @@ struct WebView: UIViewRepresentable {
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         
+        
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoBack), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoForward), options: [.new], context: nil)
+        
+  
         
         return webView
     }
@@ -63,6 +66,7 @@ struct WebView: UIViewRepresentable {
             self.parent = parent
             super.init()
             self.parent?.interactor.navigationDelegate = self
+            self.addedContentRules()
         }
         
         // MARK: - WKNavigationDelegate
@@ -115,10 +119,29 @@ struct WebView: UIViewRepresentable {
         
         func reload() {
             webView?.reload()
+            addedContentRules()
         }
         
         func loadURL(_ url: URL) {
             webView?.load(URLRequest(url: url))
+        }
+        
+        
+        func addedContentRules() {
+            let contentRuleListStore = WKContentRuleListStore.default()
+            let jsonRules = "..." // JSON с правилами в формате Content Blocker
+            let rules = parent?.interactor.loadRulesForType(.adBlock)
+            print("DEBUG: rules \(rules?.count)")
+            let identifier = "AdBlockRules"
+            
+            contentRuleListStore!.compileContentRuleList(forIdentifier: identifier, encodedContentRuleList: rules) { ruleList, error in
+                print("DEBUG: rules list \(ruleList)")
+                if let ruleList = ruleList {
+                    self.webView?.configuration.userContentController.add(ruleList)
+                } else if let error = error {
+                    print("Ошибка компиляции правил: \(error)")
+                }
+            }
         }
     }
 }
