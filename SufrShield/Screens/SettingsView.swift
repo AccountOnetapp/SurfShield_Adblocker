@@ -142,7 +142,7 @@ struct SettingsView: View {
             title: "Protection & Blocking",
             subtitle: "Content blocking management",
             icon: "shield.checkered",
-            accentColor: Color(red: 0.3, green: 0.4, blue: 1.0)
+            accentColor: .calmSecondary
         ) {
             VStack(spacing: Layout.Padding.medium) {
                 ModernToggleRow(
@@ -150,7 +150,7 @@ struct SettingsView: View {
                     subtitle: "Enhanced security features",
                     icon: "shield.lefthalf.filled",
                     isOn: $isAdBlockerEnabled,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0)
+                    accentColor: .calmSecondary
                 )
                 
                 Divider()
@@ -161,7 +161,7 @@ struct SettingsView: View {
                     subtitle: "Remove advertising banners",
                     icon: "rectangle.slash",
                     isOn: $blockAds,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
                 
@@ -170,7 +170,7 @@ struct SettingsView: View {
                     subtitle: "Essential security measures",
                     icon: "shield",
                     isOn: $blockTrackers,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
                 
@@ -179,7 +179,7 @@ struct SettingsView: View {
                     subtitle: "Protect personal information",
                     icon: "hand.raised.fill",
                     isOn: $blockPopups,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
                 
@@ -188,7 +188,7 @@ struct SettingsView: View {
                     subtitle: "Advanced threat protection",
                     icon: "lock.shield",
                     isOn: $enableWhitelist,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
                 
@@ -197,7 +197,7 @@ struct SettingsView: View {
                     subtitle: "Block tracking scripts",
                     icon: "eye.slash",
                     isOn: $blockTrackers,
-                    accentColor: Color(red: 0.3, green: 0.4, blue: 1.0),
+                    accentColor: .calmSecondary,
                     isDisabled: !isAdBlockerEnabled
                 )
             }
@@ -209,7 +209,7 @@ struct SettingsView: View {
             title: "Browser & Interface",
             subtitle: "Application behavior settings",
             icon: "safari",
-            accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+            accentColor: .calm
         ) {
             VStack(spacing: Layout.Padding.medium) {
                 ModernToggleRow(
@@ -217,7 +217,7 @@ struct SettingsView: View {
                     subtitle: "Script execution",
                     icon: "curlybraces",
                     isOn: $enableJavaScript,
-                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+                    accentColor: .calm
                 )
                 
                 ModernToggleRow(
@@ -225,7 +225,7 @@ struct SettingsView: View {
                     subtitle: "Website data storage",
                     icon: "externaldrive.connected.to.line.below",
                     isOn: $enableCookies,
-                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+                    accentColor: .calm
                 )
                 
                 Divider()
@@ -236,7 +236,7 @@ struct SettingsView: View {
                     subtitle: "Clear cache on exit",
                     icon: "trash.circle",
                     isOn: $clearCacheOnExit,
-                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+                    accentColor: .calm
                 )
                 
                 ModernToggleRow(
@@ -244,7 +244,7 @@ struct SettingsView: View {
                     subtitle: "Night mode interface",
                     icon: "moon.fill",
                     isOn: $enableDarkMode,
-                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+                    accentColor: .calm
                 )
                 
                 ModernToggleRow(
@@ -252,7 +252,7 @@ struct SettingsView: View {
                     subtitle: "Push notifications",
                     icon: "bell.fill",
                     isOn: $showNotifications,
-                    accentColor: Color(red: 1.0, green: 0.3, blue: 0.8)
+                    accentColor: .calm
                 )
             }
         }
@@ -352,11 +352,6 @@ struct ModernSectionCard<Content: View>: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(
-//                            LinearGradient(
-//                                colors: [accentColor.opacity(0.3), accentColor.opacity(0.2)],
-//                                startPoint: .topLeading,
-//                                endPoint: .bottomTrailing
-//                            )
                             accentColor.opacity(0.15)
                         )
                         .frame(width: 56, height: 56)
@@ -513,8 +508,8 @@ struct ModernToggle: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(
                     isOn && !isDisabled ?
-                    Color.tm.title.opacity(0.8) :
-                    Color.tm.subTitle.opacity(0.2)
+                    accentColor.opacity(0.8) :
+                            .title.opacity(0.2)
                 )
                 .frame(width: 50, height: 30)
                 .shadow(
