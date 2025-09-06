@@ -146,19 +146,16 @@ struct WebView: UIViewRepresentable {
         }
         
         
-        
+        /// Added content Blocked Rules
         func addedContentRules() {
             let contentRuleListStore = WKContentRuleListStore.default()
-            let rules = parent?.interactor.loadRulesForType(.adBlock)
-            print("DEBUG: rules \(String(describing: rules?.count))")
+            let rules = parent?.interactor.loadAdBlockRules()
             let identifier = "AdBlockRules"
             
             contentRuleListStore!.compileContentRuleList(forIdentifier: identifier, encodedContentRuleList: rules) { ruleList, error in
-                print("DEBUG: rules list \(String(describing: ruleList))")
                 if let ruleList = ruleList {
                     self.webView?.configuration.userContentController.add(ruleList)
                 } else if let error = error {
-                    print("Ошибка компиляции правил: \(error)")
                 }
             }
         }

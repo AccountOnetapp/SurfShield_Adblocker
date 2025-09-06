@@ -9,13 +9,33 @@ import Foundation
 import WebKit
 
 // MARK: - Resource Analysis Data
-struct ResourceAnalysisData {
-    let pageResources: [String]
-    let loadedResources: [String]
-    let blockedCount: Int
-    let totalPageResources: Int
-    let totalLoadedResources: Int
-    let timestamp: Date
+struct ResourceAnalysisData: Codable, Equatable {
+    var pageResources: [String]
+    var loadedResources: [String]
+    var blockedCount: Int
+    var totalPageResources: Int
+    var totalLoadedResources: Int
+    var timestamp: Date
+    
+    
+    init() {
+        self.pageResources = []
+        self.loadedResources = []
+        self.blockedCount = 0
+        self.totalPageResources = 0
+        self.totalLoadedResources = 0
+        self.timestamp = Date()
+    }
+    
+    init(pageResources: [String], loadedResources: [String], blockedCount: Int, totalPageResources: Int, totalLoadedResources: Int, timestamp: Date) {
+        self.pageResources = pageResources
+        self.loadedResources = loadedResources
+        self.blockedCount = blockedCount
+        self.totalPageResources = totalPageResources
+        self.totalLoadedResources = totalLoadedResources
+        self.timestamp = timestamp
+    }
+    
     
     var blockedPercentage: Double {
         guard totalPageResources > 0 else { return 0.0 }

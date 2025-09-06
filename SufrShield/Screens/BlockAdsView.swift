@@ -18,6 +18,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
     let rulesConverter = RulesConverter()
+    let userDefaultsInteractor = UserDefaultsService.shared
     
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
@@ -25,8 +26,8 @@ class BlockAdsViewModel: ObservableObject {
     
     init() {
         // Инициализируем блокировщик с сохраненным состоянием
-        let isEnabled = UserDefaults.standard.bool(forKey: "adBlockerEnabled")
-        self.isEnabled = isEnabled
+        let isEnabled = userDefaultsInteractor.load(Bool.self, forKey: .adBlockerEnabled)
+        self.isEnabled = isEnabled ?? false
     }
     
     func toggleBlocking() {
@@ -51,7 +52,7 @@ class BlockAdsViewModel: ObservableObject {
             if !Task.isCancelled {
                 // Применяем новое состояние через RulesConverter
                 await rulesConverter.applyBlockingState(newState)
-                
+                userDefaultsInteractor.save(newState, forKey: .adBlockerEnabled)
                 await MainActor.run {
                     // Обновляем состояние с анимацией
                     withAnimation(.bouncy(duration: 0.2)) {

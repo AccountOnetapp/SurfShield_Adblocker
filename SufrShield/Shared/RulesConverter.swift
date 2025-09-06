@@ -63,7 +63,6 @@ public class RulesConverter {
         } else {
             await generateEmptyRules()
         }
-        await AdBlockerStateManager.saveState(isEnabled)
     }
     
     //MARK: Main Method

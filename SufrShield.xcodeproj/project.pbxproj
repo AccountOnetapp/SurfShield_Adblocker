@@ -185,6 +185,9 @@
 		8EBEA2382E6440350034A1A9 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBEA2372E6440350034A1A9 /* blockerList.json */; };
 		8EBEA23A2E6440350034A1A9 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEA2392E6440350034A1A9 /* ContentBlockerRequestHandler.swift */; };
 		8EBEA23E2E6440350034A1A9 /* trackers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBEA2352E6440350034A1A9 /* trackers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8EBEC6562E6C630F005E5AF4 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */; };
+		8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */; };
+		8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */; };
 		8EC58DAC2E67D387008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAB2E67D387008D48EF /* Punycode */; };
 		8EC58DAE2E67D38E008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAD2E67D38E008D48EF /* Punycode */; };
 		8EC58DB02E67D393008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAF2E67D393008D48EF /* Punycode */; };
@@ -380,7 +383,6 @@
 		8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF28242E59BC80000A5748 /* Padding.swift */; };
 		8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF28232E59BC80000A5748 /* Colors.xcassets */; };
 		8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE1428E2E6B14A400918447 /* test_rules.txt */; };
-		8EE142992E6B6E3900918447 /* TrafficDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142962E6B6E3900918447 /* TrafficDataModels.swift */; };
 		8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A12E6B737900918447 /* ResourceMonitor.swift */; };
 		8EE142A72E6B7D6300918447 /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE142A62E6B7D6300918447 /* domains.txt */; };
 /* End PBXBuildFile section */
@@ -520,6 +522,9 @@
 		8EBEA2372E6440350034A1A9 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBEA2392E6440350034A1A9 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		8EBEA23B2E6440350034A1A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsService.swift; path = SufrShield/Shared/UserDefaultsService.swift; sourceTree = SOURCE_ROOT; };
+		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SufrShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
+		8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsObserver.swift; sourceTree = "<group>"; };
 		8EC58DC62E67E8A3008D48EF /* secure.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = secure.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC58DC82E67E8A3008D48EF /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC58DCA2E67E8A3008D48EF /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -562,7 +567,6 @@
 		8ECF28252E59BC80000A5748 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		8ED1F97A2E5CD248000900F9 /* privacy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = privacy.entitlements; sourceTree = "<group>"; };
 		8EE1428E2E6B14A400918447 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
-		8EE142962E6B6E3900918447 /* TrafficDataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficDataModels.swift; sourceTree = "<group>"; };
 		8EE142A12E6B737900918447 /* ResourceMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMonitor.swift; sourceTree = "<group>"; };
 		8EE142A62E6B7D6300918447 /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -773,6 +777,24 @@
 			path = trackers;
 			sourceTree = "<group>";
 		};
+		8EBEC6522E6C62EF005E5AF4 /* UserDefaultsService */ = {
+			isa = PBXGroup;
+			children = (
+				8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */,
+				8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */,
+				8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */,
+			);
+			path = UserDefaultsService;
+			sourceTree = "<group>";
+		};
+		8EBEC6532E6C62FC005E5AF4 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8EBEC6522E6C62EF005E5AF4 /* UserDefaultsService */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		8EC58DC72E67E8A3008D48EF /* secure */ = {
 			isa = PBXGroup;
 			children = (
@@ -799,7 +821,6 @@
 			isa = PBXGroup;
 			children = (
 				8EE142A12E6B737900918447 /* ResourceMonitor.swift */,
-				8EE142962E6B6E3900918447 /* TrafficDataModels.swift */,
 				8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */,
 				8EC73F9B2E69AD4300EAA93F /* WebViewPanel.swift */,
 				8EC73F992E69AD1D00EAA93F /* AddressBarView.swift */,
@@ -888,6 +909,7 @@
 				8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */,
 				8E352C582E5B836B00384E52 /* DiagnosticTool.swift */,
 				8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */,
+				8EBEC6532E6C62FC005E5AF4 /* Services */,
 				8E9F1AF62E5CBBBE0093C76B /* Shared */,
 				8ECF28182E59BC33000A5748 /* App */,
 				8ECF28282E59BDCB000A5748 /* Screens */,
@@ -1630,6 +1652,7 @@
 				8EBB25E02E61C7E200E29966 /* ErrorsCounter.swift in Sources */,
 				8E7B5E432E61D6DA00D5E817 /* Compiler.swift in Sources */,
 				8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */,
+				8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */,
 				8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */,
 				8E7B5E4F2E61D70700D5E817 /* BlockerEntry.swift in Sources */,
 				8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */,
@@ -1645,12 +1668,13 @@
 				8EBB25C22E61C7C700E29966 /* SafariVersion.swift in Sources */,
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
 				8EBB25BE2E61C7C700E29966 /* CosmeticRule.swift in Sources */,
+				8EBEC6562E6C630F005E5AF4 /* UserDefaultsService.swift in Sources */,
 				8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */,
-				8EE142992E6B6E3900918447 /* TrafficDataModels.swift in Sources */,
 				8EC73FA02E69EAD100EAA93F /* WebViewInteractor.swift in Sources */,
 				8EBB25AA2E61C7C700E29966 /* Chars.swift in Sources */,
 				8EBB25A22E61C7C700E29966 /* RuleFactory.swift in Sources */,
 				8E7B5DF72E61D0C200D5E817 /* ByteArraySuffixTrie.swift in Sources */,
+				8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */,
 				8ECF28202E59BC57000A5748 /* Screen.swift in Sources */,
 				8EBB25EC2E61C7E200E29966 /* PrefixMatcher.swift in Sources */,
 				8EBB25B62E61C7C700E29966 /* SyntaxError.swift in Sources */,

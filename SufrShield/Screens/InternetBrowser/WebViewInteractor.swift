@@ -28,7 +28,6 @@ protocol WebViewNavigationDelegate: AnyObject {
     func loadURL(_ url: URL)
 }
 
-
 class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     @Published private (set)var goBack: Bool = false
     @Published private (set)var goForward: Bool = false
@@ -39,14 +38,14 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     weak var navigationDelegate: WebViewNavigationDelegate?
     
-    // MARK: - Traffic Statistics
-    @Published private (set) var trafficStatistics = TrafficStatistics()
-    
     // MARK: - Resource Analysis
     @Published private (set) var resourceAnalysis: ResourceAnalysisData?
     
+    
+    private let rulesConverter = RulesConverter()
     // MARK: - Resource Monitor
     private var resourceMonitor: ResourceMonitor?
+    private let userDefaultsObserver = UserDefaultsObserver.shared
     
     init() {
         setupResourceMonitor()
@@ -124,10 +123,10 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     // MARK: - Rules Loading
     
-    func loadRulesForType(_ type: RulesType) -> String? {
-        let rulesConverter = RulesConverter()
-        guard let rulesURL = rulesConverter.getExtensionFileURLWithFallback(forType: type) else {
-            print("❌ Не удалось получить URL для типа \(type.rawValue)")
+    func loadAdBlockRules() -> String? {
+        
+        guard let rulesURL = rulesConverter.getExtensionFileURLWithFallback(forType: .adBlock) else {
+            print("❌ Не удалось получить URL для типа ")
             return nil
         }
         
@@ -135,29 +134,24 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
         
         do {
             let content = try String(contentsOf: rulesURL, encoding: .utf8)
-            print("✅ Правила \(type.rawValue) загружены (размер: \(content.count) символов)")
             return content
         } catch {
-            print("❌ Ошибка загрузки правил \(type.rawValue): \(error)")
+            print("❌ Ошибка загрузки правил : \(error)")
             return nil
         }
     }
     
-    func loadAdBlockRules() -> String? {
-        return loadRulesForType(.adBlock)
-    }
-    
     // MARK: - Traffic Statistics Methods
     
-    /// Получает текущую статистику трафика
-    func getTrafficStatistics() -> TrafficStatistics {
-        return trafficStatistics
-    }
-    
-    /// Сбрасывает статистику трафика
-    func resetTrafficStatistics() {
-        trafficStatistics = TrafficStatistics()
-    }
+//    /// Получает текущую статистику трафика
+//    func getTrafficStatistics() -> TrafficStatistics {
+//        return trafficStatistics
+//    }
+//    
+//    /// Сбрасывает статистику трафика
+//    func resetTrafficStatistics() {
+//        trafficStatistics = TrafficStatistics()
+//    }
     
     /// Получает ResourceMonitor для настройки WebView
     func getResourceMonitor() -> ResourceMonitor? {
@@ -178,6 +172,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
 // MARK: - ResourceMonitorDelegate
 extension WebViewInteractor: ResourceMonitorDelegate {
     
+    /// Calls when Script are executed in ResourceMonitor
     func resourceAnalysisCompleted(_ data: ResourceAnalysisData) {
         DispatchQueue.main.async {
             self.resourceAnalysis = data
@@ -191,6 +186,7 @@ extension WebViewInteractor: ResourceMonitorDelegate {
         
         // Детальная информация о заблокированных ресурсах
         if data.blockedCount > 0 {
+            userDefaultsObserver.updateWebViewBlockedStatistics(data)
             let blockedResources = Set(data.pageResources).subtracting(Set(data.loadedResources))
             print("🚫 Заблокированные ресурсы:")
             for resource in Array(blockedResources).prefix(10) { // Показываем первые 10
