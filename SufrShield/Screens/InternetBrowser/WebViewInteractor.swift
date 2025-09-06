@@ -14,11 +14,13 @@ protocol WebViewObservables {
     var canGoForward: Bool { get }
     var goForward: Bool { get }
     var refresh: Bool { get }
+    var progress: Double { get }
 }
 
 protocol WebViewActions {
     func setCanGoBack(_ isAvailable: Bool)
     func setCanGoForward(_ isAvailable: Bool)
+    func updateLoadingProgress(_ progress: Double)
 }
 
 protocol WebViewNavigationDelegate: AnyObject {
@@ -29,12 +31,14 @@ protocol WebViewNavigationDelegate: AnyObject {
 }
 
 class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
+    
     @Published private (set) var goBack: Bool = false
     @Published private (set) var goForward: Bool = false
     @Published private (set) var url: URL = URL(string: "https://google.com")!
     @Published private (set) var canGoBack: Bool = false
     @Published private (set) var canGoForward: Bool = false
     @Published private (set) var refresh: Bool = false
+    @Published private (set) var progress: Double = 0
     
     weak var navigationDelegate: WebViewNavigationDelegate?
     
@@ -113,6 +117,11 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     func setCanGoForward(_ isAvailable: Bool) {
         self.canGoForward = isAvailable
+    }
+    
+    func updateLoadingProgress(_ progress: Double) {
+        print("DEBUG: progress \(progress)")
+        self.progress = progress
     }
     
     func resetCommands() {

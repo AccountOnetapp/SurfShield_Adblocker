@@ -97,7 +97,7 @@ struct SettingsView: View {
             HStack {
                 Text("Browser Statistics")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.tm.title)
+                    .foregroundStyle(.tm.title)
                 
                 Spacer()
                 
@@ -121,21 +121,24 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: .regular) {
                     Text("This statistics shows data about the app browser:")
                         .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.tm.subTitle.opacity(0.8))
+                        .foregroundStyle(.tm.subTitle.opacity(0.8))
                     
                     VStack(alignment: .leading, spacing: .regular) {
                         StatisticsInfoRow(
                             iconColor: .tm.accent,
-                            text: "Blocked - number of blocked advertising and tracking resources"
+                            title: "Blocked - ",
+                            text: "number of blocked advertising and tracking resources"
                         )
                         
                         StatisticsInfoRow(
                             iconColor: .tm.accentSecondary,
-                            text: "Allowed - number of allowed resources (images, styles, scripts)"
+                            title: "Allowed - ",
+                            text: "number of allowed resources (images, styles, scripts)"
                         )
                         
                         StatisticsInfoRow(
                             iconColor: .tm.success,
+                            title: "Efficiency - ",
                             text: "Efficiency - percentage of blocked resources from total amount"
                         )
                     }
@@ -319,7 +322,7 @@ struct SettingsView: View {
                             
                             Text("Start Page")
                                 .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(.tm.title)
+                                .foregroundStyle(.tm.title)
                             
                             Spacer()
                         }
@@ -421,11 +424,11 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: Layout.Padding.small) {
                         Text("Version 1.0.0")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.tm.title.opacity(0.8))
+                            .foregroundStyle(.tm.title.opacity(0.8))
                         
                         Text("Build 2025.1")
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.tm.subTitle.opacity(0.6))
+                            .foregroundStyle(.tm.subTitle.opacity(0.6))
                     }
                     
                     Spacer()
@@ -458,18 +461,18 @@ struct StatisticsRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.tm.title)
+                    .foregroundStyle(.tm.title)
                 
                 Text(subtitle)
                     .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(.tm.subTitle.opacity(0.7))
+                    .foregroundStyle(.tm.subTitle.opacity(0.7))
             }
             
             Spacer()
             
             Text(value)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundColor(.tm.subTitle)
+                .foregroundStyle(.tm.subTitle)
         }
         .padding(.horizontal, Layout.Padding.medium)
         .padding(.vertical, Layout.Padding.medium)
@@ -478,14 +481,20 @@ struct StatisticsRow: View {
 
 struct StatisticsInfoRow: View {
     let iconColor: Color
+    let title: String
     let text: String
     
     var body: some View {
         HStack(alignment: .top, spacing: .smallExt) {
             Text("•")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundColor(iconColor)
+                .foregroundStyle(iconColor)
+
             
+            Text(title)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(.tm.title)
+            +
             Text(text)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(.tm.subTitle.opacity(0.7))
@@ -541,11 +550,11 @@ struct ModernSectionCard<Content: View>: View {
                 VStack(alignment: .leading, spacing: Layout.Padding.small) {
                     Text(title)
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
-                        .foregroundColor(.tm.title)
+                        .foregroundStyle(.tm.title)
                     
                     Text(subtitle)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.tm.subTitle.opacity(0.7))
+                        .foregroundStyle(.tm.subTitle.opacity(0.7))
                 }
                 
                 Spacer()
@@ -639,11 +648,11 @@ struct ModernToggleRow: View {
             VStack(alignment: .leading, spacing: Layout.Padding.small) {
                 Text(title)
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(isDisabled ? .tm.title.opacity(0.5) : .tm.title)
+                    .foregroundStyle(isDisabled ? .tm.title.opacity(0.5) : .tm.title)
                 
                 Text(subtitle)
                     .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(isDisabled ? .tm.subTitle.opacity(0.4) : .tm.subTitle.opacity(0.7))
+                    .foregroundStyle(isDisabled ? .tm.subTitle.opacity(0.4) : .tm.subTitle.opacity(0.7))
             }
             
             Spacer()
@@ -742,11 +751,11 @@ struct StatCard: View {
             VStack(spacing: Layout.Padding.small) {
                 Text(value)
                     .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundColor(.tm.title)
+                    .foregroundStyle(.tm.title)
                 
                 Text(title)
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.tm.subTitle.opacity(0.7))
+                    .foregroundStyle(.tm.subTitle.opacity(0.7))
                     .multilineTextAlignment(.center)
             }
         }
@@ -790,11 +799,11 @@ struct ActionRow: View {
                 VStack(alignment: .leading, spacing: Layout.Padding.small) {
                     Text(title)
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.tm.title)
+                        .foregroundStyle(.tm.title)
                     
                     Text(subtitle)
                         .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.tm.subTitle.opacity(0.7))
+                        .foregroundStyle(.tm.subTitle.opacity(0.7))
                 }
                 
                 Spacer()

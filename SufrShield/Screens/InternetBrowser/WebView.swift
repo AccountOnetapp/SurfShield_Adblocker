@@ -43,6 +43,7 @@ struct WebView: UIViewRepresentable {
         // Добавляем наблюдатели для отслеживания состояния навигации
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoBack), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoForward), options: [.new], context: nil)
+        webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: [.new], context: nil)
         
         return webView
     }
@@ -57,6 +58,7 @@ struct WebView: UIViewRepresentable {
         // Удаляем наблюдатели при уничтожении view
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoBack))
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoForward))
+        uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
     
     class Coordinator: NSObject, WKNavigationDelegate, WebViewNavigationDelegate, WKUIDelegate {
@@ -124,6 +126,8 @@ struct WebView: UIViewRepresentable {
                 parent?.interactor.setCanGoBack(webView.canGoBack)
             } else if keyPath == #keyPath(WKWebView.canGoForward) {
                 parent?.interactor.setCanGoForward(webView.canGoForward)
+            } else if keyPath == #keyPath(WKWebView.estimatedProgress) {
+                parent?.interactor.updateLoadingProgress(webView.estimatedProgress)
             }
         }
         

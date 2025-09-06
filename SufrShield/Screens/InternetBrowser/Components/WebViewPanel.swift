@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WebViewPanel: View {
     @State private var currentURL = "https://google.com"
+    @State private var showProgress = false
     
     var observables: WebViewObservables
     // Closures для внешних действий
@@ -93,12 +94,32 @@ struct WebViewPanel: View {
                 y: 1
             )
             
-//            // Индикатор загрузки
-//            if isLoading {
-//                ProgressView(value: progress)
-//                    .progressViewStyle(LinearProgressViewStyle())
-//                    .frame(height: 2)
-//            }
+        }
+        .overlay(alignment: .bottom) {
+            // Индикатор загрузки
+            if showProgress {
+                ProgressView(value: observables.progress)
+                    .progressViewStyle(LinearProgressViewStyle(tint: .tm.success))
+                    .frame(height: 3)
+                    .background(Color.blue.opacity(0.2))
+                    .clipShape(RoundedRectangle(cornerRadius: 2))
+                    .animation(.easeInOut(duration: 0.3), value: observables.progress)
+            }
+
+        }
+        .onChange(of: observables.progress) { newProgress in
+            if newProgress > 0 {
+                showProgress = true
+            }
+            
+            if newProgress >= 1.0 {
+                // Задержка перед исчезновением, чтобы показать полную загрузку
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.easeOut(duration: 0.05)) {
+                        showProgress = false
+                    }
+                }
+            }
         }
     }
 }

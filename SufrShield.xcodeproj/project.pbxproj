@@ -795,6 +795,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		8EBEC6612E6CCEF3005E5AF4 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		8EC58DC72E67E8A3008D48EF /* secure */ = {
 			isa = PBXGroup;
 			children = (
@@ -963,6 +970,7 @@
 		8ECF28282E59BDCB000A5748 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				8EBEC6612E6CCEF3005E5AF4 /* Onboarding */,
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
 				8E0384CE2E5E4939001D5E9D /* SettingsView.swift */,
 				8E8FFB412E68162B00F20BF0 /* InternetBrowser */,
