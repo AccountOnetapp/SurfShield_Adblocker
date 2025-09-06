@@ -18,6 +18,7 @@ enum UserDefaultsKeys: String, CaseIterable {
     case userSettings = "user_settings"
     case adBlockerEnabled = "adBlockerEnabled"
     case webViewBlockedStatistics = "webViewBlockedStatistics"
+    case onboardingCompleted = "onboardingCompleted"
     
     var key: String {
         return self.rawValue

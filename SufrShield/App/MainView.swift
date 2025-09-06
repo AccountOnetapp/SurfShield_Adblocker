@@ -12,7 +12,8 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack(path: $coordinator.mainPath) {
-            TabBarView()
+//            TabBarView()
+            OnboardingView()
                 .navigationDestination(for: Screen.self) { screen in
                     coordinator.build(screen: screen)
                 }

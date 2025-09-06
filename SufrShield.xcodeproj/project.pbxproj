@@ -188,6 +188,7 @@
 		8EBEC6562E6C630F005E5AF4 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */; };
 		8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */; };
 		8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */; };
+		8EBEC6632E6CD829005E5AF4 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6622E6CD829005E5AF4 /* OnboardingView.swift */; };
 		8EC58DAC2E67D387008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAB2E67D387008D48EF /* Punycode */; };
 		8EC58DAE2E67D38E008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAD2E67D38E008D48EF /* Punycode */; };
 		8EC58DB02E67D393008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAF2E67D393008D48EF /* Punycode */; };
@@ -525,6 +526,7 @@
 		8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsService.swift; path = SufrShield/Shared/UserDefaultsService.swift; sourceTree = SOURCE_ROOT; };
 		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SufrShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
 		8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsObserver.swift; sourceTree = "<group>"; };
+		8EBEC6622E6CD829005E5AF4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		8EC58DC62E67E8A3008D48EF /* secure.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = secure.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC58DC82E67E8A3008D48EF /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC58DCA2E67E8A3008D48EF /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -798,6 +800,7 @@
 		8EBEC6612E6CCEF3005E5AF4 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				8EBEC6622E6CD829005E5AF4 /* OnboardingView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -1663,6 +1666,7 @@
 				8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */,
 				8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */,
 				8E7B5E4F2E61D70700D5E817 /* BlockerEntry.swift in Sources */,
+				8EBEC6632E6CD829005E5AF4 /* OnboardingView.swift in Sources */,
 				8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */,
 				8EBB25C62E61C7C700E29966 /* Rule.swift in Sources */,
 				8EBB25892E61C79500E29966 /* ContentBlockerConverterVersion.swift in Sources */,
