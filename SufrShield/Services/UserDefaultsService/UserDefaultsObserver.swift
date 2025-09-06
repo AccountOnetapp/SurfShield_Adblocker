@@ -21,8 +21,6 @@ class UserDefaultsObserver: ObservableObject {
             UserDefaultsService.shared.save(isAdbockerInabled, forKey: .adBlockerEnabled)
         }
     }
-
-    
     
     // Инициализируем из UserDefaults
     init() {

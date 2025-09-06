@@ -19,7 +19,6 @@ final class SettingsViewModel: ObservableObject {
         subscribe()
     }
     
-    
     private func subscribe() {
         userDefaultsObserver.$webViewBlockedStatistics
             .receive(on: DispatchQueue.main)
@@ -50,6 +49,7 @@ struct SettingsView: View {
     @State private var blockedAdsCount = 12847
     @State private var blockedTrackersCount = 3291
     @State private var dataSaved = "156.7 MB"
+    @State private var isInfoExpanded = false
     
     var body: some View {
         NavigationView {
@@ -79,16 +79,10 @@ struct SettingsView: View {
 
             ScrollView {
                 LazyVStack(spacing: Layout.Padding.large) {
-//                    headerView
-                    
                     statisticsSection
-                    
                     adBlockerSection
-                    
                     browserSection
-                    
                     aboutSection
-                    
                     Spacer(minLength: 100)
                 }
                 .padding(.horizontal, Layout.Padding.mediumExt)
@@ -96,70 +90,131 @@ struct SettingsView: View {
             }
         }
     }
-    
-    var headerView: some View {
-        VStack(spacing: Layout.Padding.regularExt) {
-            HStack {
-                VStack(alignment: .leading, spacing: Layout.Padding.smallExt) {
-                    Text("Settings")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundColor(.tm.title)
-                    
-                    Text("Customize your experience")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.tm.subTitle.opacity(0.8))
-                }
-                
-                Spacer()
-            }
-        }
-        .padding(.bottom, Layout.Padding.regular)
-    }
-    
+
     var statisticsSection: some View {
-        VStack(spacing: Layout.Padding.medium) {
+        VStack(spacing: 0) {
+            // Заголовок внутри секции
             HStack {
-                Text("Protection Stats")
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                Text("Browser Statistics")
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.tm.title)
                 
                 Spacer()
                 
                 Button(action: {
-                    // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        isInfoExpanded.toggle()
+                    }
                 }) {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.tm.accent)
+                    Image(systemName: "info.circle.fill")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.tm.subTitle)
                 }
             }
-            .padding(.horizontal, Layout.Padding.smallExt)
+            .padding(.horizontal, Layout.Padding.medium)
+            .padding(.vertical, Layout.Padding.medium)
             
-            HStack(spacing: Layout.Padding.regularExt) {
-                StatCard(
-                    title: "Ads Blocked",
-                    value: "\(viewModel.userDefaultsObserver.webViewBlockedStatistics.blockedCount.formatted())",
-                    icon: "shield.slash",
-                    color: .tm.accent
-                )
-                
-                StatCard(
-                    title: "Trackers Blocked",
-                    value: "\(blockedTrackersCount.formatted())",
-                    icon: "eye.slash",
-                    color: .tm.accentSecondary
-                )
-                
-                StatCard(
-                    title: "Data Saved",
-                    value: dataSaved,
-                    icon: "arrow.down.circle",
-                    color: .tm.success
-                )
+            // Выпадающая информация
+            if isInfoExpanded {
+                VStack(alignment: .leading, spacing: .regular) {
+                    Text("This statistics shows data about the app browser:")
+                        .font(.system(size: 13, weight: .regular))
+                        .foregroundColor(.tm.subTitle.opacity(0.8))
+                    
+                    VStack(alignment: .leading, spacing: .regular) {
+                        StatisticsInfoRow(
+                            iconColor: .tm.accent,
+                            text: "Blocked - number of blocked advertising and tracking resources"
+                        )
+                        
+                        StatisticsInfoRow(
+                            iconColor: .tm.accentSecondary,
+                            text: "Allowed - number of allowed resources (images, styles, scripts)"
+                        )
+                        
+                        StatisticsInfoRow(
+                            iconColor: .tm.success,
+                            text: "Efficiency - percentage of blocked resources from total amount"
+                        )
+                    }
+                }
+                .padding(.horizontal, Layout.Padding.medium)
+                .padding(.bottom, Layout.Padding.medium)
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .move(edge: .top)),
+                    removal: .opacity.combined(with: .move(edge: .top))
+                ))
             }
+            
+            // Разделитель между заголовком и строчками
+            Divider()
+                .background(Color.tm.subTitle.opacity(0.2))
+                .padding(.horizontal, Layout.Padding.medium)
+            
+            // Строка 1: Заблокированные ресурсы
+            StatisticsRow(
+                icon: "shield.slash.fill",
+                iconColor: .tm.accent,
+                title: "Blocked",
+                subtitle: "Blocked resources",
+                value: "\(viewModel.resourceStatistics.blockedCount.formatted())"
+            )
+            
+            // Разделитель
+            Divider()
+                .background(Color.tm.subTitle.opacity(0.2))
+                .padding(.horizontal, Layout.Padding.medium)
+            
+            // Строка 2: Разрешенные ресурсы
+            StatisticsRow(
+                icon: "checkmark.shield.fill",
+                iconColor: .tm.accentSecondary,
+                title: "Allowed",
+                subtitle: "Allowed resources",
+                value: "\(viewModel.resourceStatistics.totalLoadedResources.formatted())"
+            )
+            
+            // Разделитель
+            Divider()
+                .background(Color.tm.subTitle.opacity(0.2))
+                .padding(.horizontal, Layout.Padding.medium)
+            
+            // Строка 3: Эффективность
+            StatisticsRow(
+                icon: "chart.pie.fill",
+                iconColor: .tm.success,
+                title: "Efficiency",
+                subtitle: "Block percentage",
+                value: "\(Int(viewModel.resourceStatistics.blockedPercentage))%"
+            )
         }
+        .clipped()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.tm.container.opacity(0.6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.tm.accent.opacity(0.1),
+                                    Color.tm.accentSecondary.opacity(0.1)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(
+                    color: Color.black.opacity(0.1),
+                    radius: 12,
+                    x: 0,
+                    y: 6
+                )
+        )
     }
     
     var adBlockerSection: some View {
@@ -380,6 +435,60 @@ struct SettingsView: View {
                 }
                 .padding(.top, Layout.Padding.regular)
             }
+        }
+    }
+}
+
+// MARK: - Statistics Components
+
+struct StatisticsRow: View {
+    let icon: String
+    let iconColor: Color
+    let title: String
+    let subtitle: String
+    let value: String
+    
+    var body: some View {
+        HStack(spacing: Layout.Padding.medium) {
+            Image(systemName: icon)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(iconColor)
+                .frame(width: 24)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.tm.title)
+                
+                Text(subtitle)
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(.tm.subTitle.opacity(0.7))
+            }
+            
+            Spacer()
+            
+            Text(value)
+                .font(.system(size: 16, weight: .medium, design: .rounded))
+                .foregroundColor(.tm.subTitle)
+        }
+        .padding(.horizontal, Layout.Padding.medium)
+        .padding(.vertical, Layout.Padding.medium)
+    }
+}
+
+struct StatisticsInfoRow: View {
+    let iconColor: Color
+    let text: String
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: .smallExt) {
+            Text("•")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(iconColor)
+            
+            Text(text)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(.tm.subTitle.opacity(0.7))
         }
     }
 }

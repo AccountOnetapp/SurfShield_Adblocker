@@ -29,8 +29,8 @@ protocol WebViewNavigationDelegate: AnyObject {
 }
 
 class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
-    @Published private (set)var goBack: Bool = false
-    @Published private (set)var goForward: Bool = false
+    @Published private (set) var goBack: Bool = false
+    @Published private (set) var goForward: Bool = false
     @Published private (set) var url: URL = URL(string: "https://google.com")!
     @Published private (set) var canGoBack: Bool = false
     @Published private (set) var canGoForward: Bool = false
