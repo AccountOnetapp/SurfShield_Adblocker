@@ -35,13 +35,13 @@ struct WebView: UIViewRepresentable {
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         
+        // Настраиваем мониторинг ресурсов после создания webView
+        context.coordinator.setupResourceMonitoring()
         
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoBack), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoForward), options: [.new], context: nil)
-        
-  
         
         return webView
     }
@@ -125,6 +125,26 @@ struct WebView: UIViewRepresentable {
         func loadURL(_ url: URL) {
             webView?.load(URLRequest(url: url))
         }
+        
+        // MARK: - Resource Monitoring
+        
+        public func setupResourceMonitoring() {
+            guard let webView = webView,
+                  let resourceMonitor = parent?.interactor.getResourceMonitor() else { return }
+            
+            // Добавляем обработчики сообщений
+            webView.configuration.userContentController.add(resourceMonitor, name: "resourceBlocked")
+            webView.configuration.userContentController.add(resourceMonitor, name: "resourceLoaded")
+            
+            // Внедряем JavaScript с правилами блокировки
+            let script = WKUserScript(
+                source: parent?.interactor.getMonitoringScript() ?? ResourceMonitor.getFallbackMonitoringScript(),
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: false
+            )
+            webView.configuration.userContentController.addUserScript(script)
+        }
+        
         
         
         func addedContentRules() {

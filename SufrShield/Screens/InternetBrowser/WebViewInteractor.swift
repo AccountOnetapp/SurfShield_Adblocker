@@ -39,6 +39,32 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     weak var navigationDelegate: WebViewNavigationDelegate?
     
+    // MARK: - Traffic Statistics
+    @Published private (set) var trafficStatistics = TrafficStatistics()
+    
+    // MARK: - Resource Monitor
+    private var resourceMonitor: ResourceMonitor?
+    private var parsedRules: RulesParser.ParsedRules?
+    
+    init() {
+        setupResourceMonitor()
+    }
+    
+    private func setupResourceMonitor() {
+        resourceMonitor = ResourceMonitor()
+        resourceMonitor?.delegate = self
+        loadBlockingRules()
+    }
+    
+    private func loadBlockingRules() {
+        if let rules = loadRulesForType(.adBlock) {
+            parsedRules = RulesParser.parseRules(from: rules)
+            print("📋 Правила загружены: \(parsedRules?.domains.count ?? 0) доменов, \(parsedRules?.patterns.count ?? 0) паттернов")
+        } else {
+            print("⚠️ Не удалось загрузить правила блокировки")
+        }
+    }
+    
     func goToUrl(string: String) {
         let processedURLString = processURLString(string)
         
@@ -127,5 +153,43 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     func loadAdBlockRules() -> String? {
         return loadRulesForType(.adBlock)
+    }
+    
+    // MARK: - Traffic Statistics Methods
+    
+    /// Получает текущую статистику трафика
+    func getTrafficStatistics() -> TrafficStatistics {
+        return trafficStatistics
+    }
+    
+    /// Сбрасывает статистику трафика
+    func resetTrafficStatistics() {
+        trafficStatistics = TrafficStatistics()
+    }
+    
+    /// Получает ResourceMonitor для настройки WebView
+    func getResourceMonitor() -> ResourceMonitor? {
+        return resourceMonitor
+    }
+    
+    /// Получает JavaScript код с правилами блокировки
+    func getMonitoringScript() -> String {
+//        if let rules = parsedRules, !rules.isEmpty {
+//            return ResourceMonitor.getMonitoringScript(with: rules)
+//        } else {
+//            print("⚠️ Используются fallback правила")
+            return ResourceMonitor.getFallbackMonitoringScript()
+//        }
+    }
+}
+
+// MARK: - ResourceMonitorDelegate
+extension WebViewInteractor: ResourceMonitorDelegate {
+    func resourceWasBlocked(_ resource: BlockedResource) {
+        print("🚫 ResourceMonitor: Заблокирован ресурс: \(resource.url) (\(resource.type.rawValue)) - \(resource.size) байт")
+    }
+    
+    func resourceWasLoaded(_ url: String, size: Int64) {
+        print("✅ ResourceMonitor: Загружен ресурс: \(url) - \(size) байт")
     }
 }
