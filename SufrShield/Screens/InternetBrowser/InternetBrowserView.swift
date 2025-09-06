@@ -12,7 +12,7 @@ import SwiftUI
 struct InternetBrowserView: View {
     @StateObject var interactor = WebViewInteractor()
     
-    private let panelHeight: CGFloat = 60
+    private let panelHeight: CGFloat = 56
     
     var body: some View {
         AnyView(browser)

@@ -24,6 +24,7 @@ struct AddressBarView: View {
                 .focused($isFocused)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 36, alignment: .center)
                 .onSubmit {
                     // Восстанавливаем полный URL с протоколом при отправке
                     urlText = displayText
@@ -73,7 +74,7 @@ struct AddressBarView: View {
 //            }
         }
         .padding(.horizontal, isFocused ? 20 : 16)
-        .padding(.vertical, 12)
+        .padding(.vertical, 2)
         .background(
             RoundedRectangle(cornerRadius: 25)
                 .fill(Color(.systemBackground))
@@ -108,6 +109,7 @@ struct AddressBarView: View {
                 displayText = removeProtocol(from: newValue)
             }
         }
+        
     }
     
     // Функция для удаления протокола из URL

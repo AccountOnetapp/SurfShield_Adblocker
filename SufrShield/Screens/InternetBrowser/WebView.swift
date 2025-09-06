@@ -35,6 +35,7 @@ struct WebView: UIViewRepresentable {
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
         
+        webView.uiDelegate = context.coordinator
         // Настраиваем мониторинг ресурсов после создания webView
         context.coordinator.setupResourceMonitoring()
         
@@ -58,7 +59,7 @@ struct WebView: UIViewRepresentable {
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoForward))
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate, WebViewNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WebViewNavigationDelegate, WKUIDelegate {
         var parent: WebView?
         weak var webView: WKWebView?
         
@@ -96,6 +97,22 @@ struct WebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             // Разрешаем все навигационные действия для корректной работы ссылок
             decisionHandler(.allow)
+        }
+        
+        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
+                     for navigationAction: WKNavigationAction,
+                     windowFeatures: WKWindowFeatures) -> WKWebView? {
+            
+            // Если запрос не из-за клика (например, form submit), разрешаем обычную навигацию
+            guard navigationAction.targetFrame == nil || !(navigationAction.targetFrame?.isMainFrame ?? false) else {
+                return nil
+            }
+
+            // Загружаем URL в том же WKWebView вместо создания нового
+            if let url = navigationAction.request.url {
+                webView.load(URLRequest(url: url))
+            }
+            return nil
         }
         
          
@@ -144,7 +161,6 @@ struct WebView: UIViewRepresentable {
             )
             webView.configuration.userContentController.addUserScript(analysisScript)
         }
-        
         
         /// Added content Blocked Rules
         func addedContentRules() {

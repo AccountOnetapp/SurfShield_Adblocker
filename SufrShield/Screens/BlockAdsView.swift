@@ -245,7 +245,7 @@ struct BlockAdsView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.tm.accentSecondary)
                     
-                    Text("Click the button to activate or deactivate advertising blocking in Safari")
+                    Text("Click the button to activate or deactivate advertising blocking in Safari and App Browser")
                         .font(.body)
                         .foregroundColor(.tm.subTitle.opacity(0.8))
                         .multilineTextAlignment(.center)
