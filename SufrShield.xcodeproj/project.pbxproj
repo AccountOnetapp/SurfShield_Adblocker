@@ -382,7 +382,6 @@
 		8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE1428E2E6B14A400918447 /* test_rules.txt */; };
 		8EE142992E6B6E3900918447 /* TrafficDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142962E6B6E3900918447 /* TrafficDataModels.swift */; };
 		8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A12E6B737900918447 /* ResourceMonitor.swift */; };
-		8EE142A52E6B7B2000918447 /* RulesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A42E6B7B2000918447 /* RulesParser.swift */; };
 		8EE142A72E6B7D6300918447 /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE142A62E6B7D6300918447 /* domains.txt */; };
 /* End PBXBuildFile section */
 
@@ -565,7 +564,6 @@
 		8EE1428E2E6B14A400918447 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
 		8EE142962E6B6E3900918447 /* TrafficDataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficDataModels.swift; sourceTree = "<group>"; };
 		8EE142A12E6B737900918447 /* ResourceMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMonitor.swift; sourceTree = "<group>"; };
-		8EE142A42E6B7B2000918447 /* RulesParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesParser.swift; sourceTree = "<group>"; };
 		8EE142A62E6B7D6300918447 /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -800,7 +798,6 @@
 		8EC73F982E69ACFC00EAA93F /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				8EE142A42E6B7B2000918447 /* RulesParser.swift */,
 				8EE142A12E6B737900918447 /* ResourceMonitor.swift */,
 				8EE142962E6B6E3900918447 /* TrafficDataModels.swift */,
 				8EC73F9D2E69D90900EAA93F /* BrowserNavigationButton.swift */,
@@ -1612,7 +1609,6 @@
 				8EBB25E42E61C7E200E29966 /* ArrayExtension.swift in Sources */,
 				8E7B5E572E61D70700D5E817 /* BlockerEntryFactory.swift in Sources */,
 				8E7B5E3E2E61D6C700D5E817 /* SafariCbBuilder.swift in Sources */,
-				8EE142A52E6B7B2000918447 /* RulesParser.swift in Sources */,
 				8EBB25D82E61C7E200E29966 /* StringExtension.swift in Sources */,
 				8ECF281A2E59BC3F000A5748 /* MainView.swift in Sources */,
 				8E352C592E5B836B00384E52 /* DiagnosticTool.swift in Sources */,

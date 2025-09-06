@@ -8,10 +8,24 @@
 import Foundation
 import WebKit
 
+// MARK: - Resource Analysis Data
+struct ResourceAnalysisData {
+    let pageResources: [String]
+    let loadedResources: [String]
+    let blockedCount: Int
+    let totalPageResources: Int
+    let totalLoadedResources: Int
+    let timestamp: Date
+    
+    var blockedPercentage: Double {
+        guard totalPageResources > 0 else { return 0.0 }
+        return Double(blockedCount) / Double(totalPageResources) * 100.0
+    }
+}
+
 // MARK: - Resource Monitor Protocol
 protocol ResourceMonitorDelegate: AnyObject {
-    func resourceWasBlocked(_ resource: BlockedResource)
-    func resourceWasLoaded(_ url: String, size: Int64)
+    func resourceAnalysisCompleted(_ data: ResourceAnalysisData)
 }
 
 // MARK: - Resource Monitor
@@ -25,93 +39,134 @@ class ResourceMonitor: NSObject, WKScriptMessageHandler {
         super.init()
     }
     
-    // MARK: - WKScriptMessageHandler
-    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard let body = message.body as? [String: Any] else { return }
+        guard let body =   message.body as? [String: Any] else { return }
         
         switch message.name {
-        case "resourceBlocked":
-            handleResourceBlocked(body)
-        case "resourceLoaded":
-            handleResourceLoaded(body)
+        case "resourceAnalysis":
+            handleResourceAnalysis(body)
+            break
         default:
             break
         }
     }
     
-    // MARK: - Private Methods
-    
-    private func handleResourceBlocked(_ data: [String: Any]) {
-        guard let url = data["url"] as? String,
-              let size = data["size"] as? Int64 else { return }
+    private func handleResourceAnalysis(_ data: [String: Any]) {
+        guard let pageResources = data["pageResources"] as? [String],
+              let loadedResources = data["loadedResources"] as? [String],
+              let blockedCount = data["blockedCount"] as? Int,
+              let totalPageResources = data["totalPageResources"] as? Int,
+              let totalLoadedResources = data["totalLoadedResources"] as? Int else { return }
         
-        let resource = BlockedResource(
-            url: url,
-            size: size,
-            type: .init(from: url),
-            timestamp: Date(),
-            reason: .adDomain
+        let analysisData = ResourceAnalysisData(
+            pageResources: pageResources,
+            loadedResources: loadedResources,
+            blockedCount: blockedCount,
+            totalPageResources: totalPageResources,
+            totalLoadedResources: totalLoadedResources,
+            timestamp: Date()
         )
         
         DispatchQueue.main.async {
-            self.delegate?.resourceWasBlocked(resource)
+            self.delegate?.resourceAnalysisCompleted(analysisData)
         }
+        
+        print("📊 ResourceMonitor: Анализ ресурсов завершен")
+        print("   - Всего ресурсов на странице: \(totalPageResources)")
+        print("   - Загружено ресурсов: \(totalLoadedResources)")
+        print("   - Заблокировано ресурсов: \(blockedCount)")
+        print("   - Процент блокировки: \(String(format: "%.1f", analysisData.blockedPercentage))%")
     }
     
-    private func handleResourceLoaded(_ data: [String: Any]) {
-        guard let url = data["url"] as? String,
-              let size = data["size"] as? Int64 else { return }
-        
-        DispatchQueue.main.async {
-            self.delegate?.resourceWasLoaded(url, size: size)
+    static func buildResourceInfoJavascript() -> String {
+        let script = """
+        function extractUrls(fromCss) {
+            let matches = fromCss.match(/url\\(.+?\\)/g);
+            if (!matches) {
+                return [];
+            }
+            let urls = matches.map(url => url.replace(/url\\(['\\"]?(.+?)['\\"]?\\)/g, "$1"));
+            return urls;
         }
-    }
-    
-    // MARK: - JavaScript Injection
-    
-    /// Генерирует JavaScript код с правилами блокировки
-    static func getMonitoringScript(with rules: RulesParser.ParsedRules) -> String {
-        return RulesParser.generateJavaScript(with: rules)
-    }
-    
-    /// Генерирует JavaScript код с fallback правилами
-    static func getFallbackMonitoringScript() -> String {
         
-        let fallbackRules = RulesParser.ParsedRules(
-            domains: loadDomainsFromFile(),
-            patterns: [
-                "/ads/", "/advertisement/", "/banner/", "/popup/", "/tracking/",
-                "googleads", "doubleclick", "googlesyndication", "analytics", "adservice",
-                "adtracker", "adnetwork", "affiliate", "sponsor", "clicks", "conversion",
-                "impression", "trackingpixel", "leadbolt", "popunder", "interstitial",
-                "videoad", "ad_placement", "adsystem", "adserver", "adclick",
-                "advertising", "adtech", "adexchange", "admob", "adsafe", "adskeeper",
-                "adpush", "adroll", "taboola", "outbrain"
-            ],
-            urlFilters: []
-        )
+        function getPageResources() {
+            let pageResources = [...document.images].map(x => x.src);
+            pageResources = [...pageResources, ...[...document.scripts].map(x => x.src)];
+            pageResources = [...pageResources, ...[...document.getElementsByTagName("link")].map(x => x.href)];
         
-        return RulesParser.generateJavaScript(with: fallbackRules)
-    }
-    
-    /// Загружает домены из файла domains.txt
-    private static func loadDomainsFromFile() -> [String] {
-        // Загружаем из файла в проекте
-        do {
-            let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt")!
-            let rulesString = try String(contentsOfFile: rulesPath, encoding: .utf8)
-            let lines = rulesString.components(separatedBy: .newlines)
-            return lines
-        } catch {
-            print("⚠️ Не удалось загрузить domains.txt, используем базовые домены")
-            return [
-//                "googleadservices.com", "googlesyndication.com", "doubleclick.net",
-//                "facebook.com/tr", "analytics.google.com", "googletagmanager.com",
-//                "google-analytics.com", "amazon-adsystem.com", "adsystem.amazon.com"
-            ]
+            [...document.styleSheets].forEach(sheet => {
+                // Игнорируем кросс-доменные стили
+                if (sheet.href && !sheet.href.startsWith(window.location.origin)) {
+                    return;
+                }
+                try {
+                    if (!sheet.cssRules) {
+                        return;
+                    }
+                    [...sheet.cssRules].forEach(rule => {
+                        pageResources = [...pageResources, ...extractUrls(rule.cssText)];
+                    });
+                } catch(e) {
+                    // Нет доступа к cssRules, пропускаем
+                    return;
+                }
+            });
+        
+            let inlineStyles = document.querySelectorAll('*[style]');
+            [...inlineStyles].forEach(x => {
+                pageResources = [...pageResources, ...extractUrls(x.getAttributeNode("style").value)];
+            });
+        
+            let backgrounds = document.querySelectorAll('td[background], tr[background], table[background]');
+            [...backgrounds].forEach(x => {
+                pageResources.push(x.getAttributeNode("background").value);
+            });
+        
+            return pageResources.filter(x => (x != null && x != ''));
         }
+        
+        function analyzeResources() {
+            let pageResources = getPageResources();
+            let loadedResources = window.performance.getEntriesByType('resource').map(x => x.name);
+            
+            // Фильтруем пустые, null, undefined ресурсы
+            let cleanPageResources = pageResources.filter(x => x && x !== '' && x !== 'null' && x !== 'undefined');
+            let cleanLoadedResources = loadedResources.filter(x => x && x !== '' && x !== 'null' && x !== 'undefined');
+            
+            // Убираем дубликаты
+            let uniquePageResources = [...new Set(cleanPageResources)];
+            let uniqueLoadedResources = [...new Set(cleanLoadedResources)];
+        
+            let resourceInfo = {
+                'pageResources': uniquePageResources,
+                'loadedResources': uniqueLoadedResources,
+                'blockedCount': uniquePageResources.length - uniqueLoadedResources.length,
+                'totalPageResources': uniquePageResources.length,
+                'totalLoadedResources': uniqueLoadedResources.length
+            };
+        
+            // Отправляем данные в нативное приложение
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.resourceAnalysis) {
+                window.webkit.messageHandlers.resourceAnalysis.postMessage(resourceInfo);
+            }
+        
+            console.log('📊 ResourceMonitor: Анализ ресурсов завершен');
+            console.log('   - Всего ресурсов на странице:', resourceInfo.totalPageResources);
+            console.log('   - Загружено ресурсов:', resourceInfo.totalLoadedResources);
+            console.log('   - Заблокировано ресурсов:', resourceInfo.blockedCount);
+            console.log('   - Процент блокировки:', (resourceInfo.blockedCount / resourceInfo.totalPageResources * 100).toFixed(1) + '%');
+            
+            // Примеры для отладки
+            console.log('📋 Примеры ресурсов на странице:', uniquePageResources.slice(0, 5));
+            console.log('📋 Примеры загруженных ресурсов:', uniqueLoadedResources.slice(0, 5));
+            return JSON.stringify(resourceInfo);
+        }
+        
+        // Запускаем анализ сразу
+        analyzeResources();
+        """
+        
+        return script
     }
-    
-   
+
 }

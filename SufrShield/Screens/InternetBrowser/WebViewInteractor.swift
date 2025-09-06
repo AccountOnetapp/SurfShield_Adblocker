@@ -42,9 +42,11 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     // MARK: - Traffic Statistics
     @Published private (set) var trafficStatistics = TrafficStatistics()
     
+    // MARK: - Resource Analysis
+    @Published private (set) var resourceAnalysis: ResourceAnalysisData?
+    
     // MARK: - Resource Monitor
     private var resourceMonitor: ResourceMonitor?
-    private var parsedRules: RulesParser.ParsedRules?
     
     init() {
         setupResourceMonitor()
@@ -53,16 +55,6 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     private func setupResourceMonitor() {
         resourceMonitor = ResourceMonitor()
         resourceMonitor?.delegate = self
-        loadBlockingRules()
-    }
-    
-    private func loadBlockingRules() {
-        if let rules = loadRulesForType(.adBlock) {
-            parsedRules = RulesParser.parseRules(from: rules)
-            print("📋 Правила загружены: \(parsedRules?.domains.count ?? 0) доменов, \(parsedRules?.patterns.count ?? 0) паттернов")
-        } else {
-            print("⚠️ Не удалось загрузить правила блокировки")
-        }
     }
     
     func goToUrl(string: String) {
@@ -171,25 +163,42 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     func getResourceMonitor() -> ResourceMonitor? {
         return resourceMonitor
     }
+
+    /// Получает данные анализа ресурсов
+    func getResourceAnalysis() -> ResourceAnalysisData? {
+        return resourceAnalysis
+    }
     
-    /// Получает JavaScript код с правилами блокировки
-    func getMonitoringScript() -> String {
-//        if let rules = parsedRules, !rules.isEmpty {
-//            return ResourceMonitor.getMonitoringScript(with: rules)
-//        } else {
-//            print("⚠️ Используются fallback правила")
-            return ResourceMonitor.getFallbackMonitoringScript()
-//        }
+    /// Сбрасывает данные анализа ресурсов
+    func resetResourceAnalysis() {
+        resourceAnalysis = nil
     }
 }
 
 // MARK: - ResourceMonitorDelegate
 extension WebViewInteractor: ResourceMonitorDelegate {
-    func resourceWasBlocked(_ resource: BlockedResource) {
-        print("🚫 ResourceMonitor: Заблокирован ресурс: \(resource.url) (\(resource.type.rawValue)) - \(resource.size) байт")
-    }
     
-    func resourceWasLoaded(_ url: String, size: Int64) {
-        print("✅ ResourceMonitor: Загружен ресурс: \(url) - \(size) байт")
+    func resourceAnalysisCompleted(_ data: ResourceAnalysisData) {
+        DispatchQueue.main.async {
+            self.resourceAnalysis = data
+        }
+        
+        print("📊 ResourceMonitor: Анализ ресурсов завершен")
+        print("   - Всего ресурсов на странице: \(data.totalPageResources)")
+        print("   - Загружено ресурсов: \(data.totalLoadedResources)")
+        print("   - Заблокировано ресурсов: \(data.blockedCount)")
+        print("   - Эффективность блокировки: \(String(format: "%.1f", data.blockedPercentage))%")
+        
+        // Детальная информация о заблокированных ресурсах
+        if data.blockedCount > 0 {
+            let blockedResources = Set(data.pageResources).subtracting(Set(data.loadedResources))
+            print("🚫 Заблокированные ресурсы:")
+            for resource in Array(blockedResources).prefix(10) { // Показываем первые 10
+                print("   - \(resource)")
+            }
+            if blockedResources.count > 10 {
+                print("   ... и еще \(blockedResources.count - 10) ресурсов")
+            }
+        }
     }
 }

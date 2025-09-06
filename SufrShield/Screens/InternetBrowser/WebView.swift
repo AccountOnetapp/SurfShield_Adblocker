@@ -98,6 +98,7 @@ struct WebView: UIViewRepresentable {
             decisionHandler(.allow)
         }
         
+         
         // MARK: - KVO Observer
         
         override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -133,29 +134,27 @@ struct WebView: UIViewRepresentable {
                   let resourceMonitor = parent?.interactor.getResourceMonitor() else { return }
             
             // Добавляем обработчики сообщений
-            webView.configuration.userContentController.add(resourceMonitor, name: "resourceBlocked")
-            webView.configuration.userContentController.add(resourceMonitor, name: "resourceLoaded")
+            webView.configuration.userContentController.add(resourceMonitor, name: "resourceAnalysis")
             
-            // Внедряем JavaScript с правилами блокировки
-            let script = WKUserScript(
-                source: parent?.interactor.getMonitoringScript() ?? ResourceMonitor.getFallbackMonitoringScript(),
-                injectionTime: .atDocumentStart,
-                forMainFrameOnly: false
+            // Внедряем JavaScript для анализа ресурсов
+            let analysisScript = WKUserScript(
+                source: ResourceMonitor.buildResourceInfoJavascript(),
+                injectionTime: .atDocumentEnd,
+                forMainFrameOnly: true
             )
-            webView.configuration.userContentController.addUserScript(script)
+            webView.configuration.userContentController.addUserScript(analysisScript)
         }
         
         
         
         func addedContentRules() {
             let contentRuleListStore = WKContentRuleListStore.default()
-            let jsonRules = "..." // JSON с правилами в формате Content Blocker
             let rules = parent?.interactor.loadRulesForType(.adBlock)
-            print("DEBUG: rules \(rules?.count)")
+            print("DEBUG: rules \(String(describing: rules?.count))")
             let identifier = "AdBlockRules"
             
             contentRuleListStore!.compileContentRuleList(forIdentifier: identifier, encodedContentRuleList: rules) { ruleList, error in
-                print("DEBUG: rules list \(ruleList)")
+                print("DEBUG: rules list \(String(describing: ruleList))")
                 if let ruleList = ruleList {
                     self.webView?.configuration.userContentController.add(ruleList)
                 } else if let error = error {
