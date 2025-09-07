@@ -26,7 +26,6 @@ struct TabBarView: View {
             BlockAdsView()
                 .tabItem { Label("Block Ads", systemImage: "shield.fill") }
                 .tag(0)
-//                .preferredColorScheme(.dark)
             
             InternetBrowserView()
                 .tabItem { Label("Browser", systemImage: "network") }
@@ -35,7 +34,6 @@ struct TabBarView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(2)
-            //                .preferredColorScheme(.dark)
         }
         )
         .tint(.tm.accentSecondary)
