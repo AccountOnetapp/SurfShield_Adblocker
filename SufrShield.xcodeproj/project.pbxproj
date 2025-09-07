@@ -387,6 +387,7 @@
 		8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE1428E2E6B14A400918447 /* test_rules.txt */; };
 		8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A12E6B737900918447 /* ResourceMonitor.swift */; };
 		8EE142A72E6B7D6300918447 /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE142A62E6B7D6300918447 /* domains.txt */; };
+		8EE294712E6E120F0060471B /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE294702E6E120F0060471B /* PaywallView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -573,6 +574,7 @@
 		8EE1428E2E6B14A400918447 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
 		8EE142A12E6B737900918447 /* ResourceMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMonitor.swift; sourceTree = "<group>"; };
 		8EE142A62E6B7D6300918447 /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
+		8EE294702E6E120F0060471B /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -980,6 +982,7 @@
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
 				8E0384CE2E5E4939001D5E9D /* SettingsView.swift */,
 				8E8FFB412E68162B00F20BF0 /* InternetBrowser */,
+				8EE294702E6E120F0060471B /* PaywallView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1693,6 +1696,7 @@
 				8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */,
 				8ECF28202E59BC57000A5748 /* Screen.swift in Sources */,
 				8EBB25EC2E61C7E200E29966 /* PrefixMatcher.swift in Sources */,
+				8EE294712E6E120F0060471B /* PaywallView.swift in Sources */,
 				8EBB25B62E61C7C700E29966 /* SyntaxError.swift in Sources */,
 				8EBB25B22E61C7C700E29966 /* RuleConverter.swift in Sources */,
 				8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */,

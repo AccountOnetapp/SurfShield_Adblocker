@@ -12,12 +12,21 @@ struct MainView: View {
     @StateObject var appState = AppState()
     
     var body: some View {
+        content
+            .environmentObject(appState)
+            .environmentObject(coordinator)
+            .fullScreenCover(item: $coordinator.presentedScreen) { screen in
+                coordinator.build(screen: screen)
+            }
+    }
+    
+    
+    @ViewBuilder
+    var content: some View {
         switch appState.viewState {
         case .onboarding:
             OnboardingView()
-                .environmentObject(appState)
         case .main:
-            
             mainContent
         }
     }
@@ -28,7 +37,13 @@ struct MainView: View {
                 .navigationDestination(for: Screen.self) { screen in
                     coordinator.build(screen: screen)
                 }
+                .onAppear {
+                    if appState.isFirstLoad {
+                        coordinator.fullScreenCover(to: .paywall)
+                    }
+                }
         }
+
     }
 }
 

@@ -11,6 +11,8 @@ import SwiftUI
 struct TabBarView: View {
     @State var selection: Int = 0
     
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
         content
     }

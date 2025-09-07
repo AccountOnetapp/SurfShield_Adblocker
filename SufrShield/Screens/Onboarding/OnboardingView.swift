@@ -233,8 +233,8 @@ struct OnboardingView: View {
                 .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
         }
         .opacity(showContent ? 1 : 0)
-//        .scaleEffect(showContent ? 1 : 0.9)
-//        .animation(.easeOut(duration: 0.6), value: showContent)
+        .scaleEffect(showContent ? 1 : 0.9)
+        .animation(.easeOut(duration: 0.6), value: showContent)
     }
     
     

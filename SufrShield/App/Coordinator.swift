@@ -10,7 +10,11 @@ import SwiftUI
 final class Coordinator: ObservableObject {
     @Published var tabsPaths = [NavigationPath(), NavigationPath(), NavigationPath()]
     @Published var mainPath = NavigationPath()
-
+    @Published var presentedScreen: Screen? = nil
+    
+    func fullScreenCover(to screen: Screen) {
+        presentedScreen = screen
+    }
     
     func push(to screen: Screen) {
         mainPath.append(screen)
@@ -22,8 +26,8 @@ final class Coordinator: ObservableObject {
     
     @ViewBuilder func build(screen: Screen) -> some View {
         switch screen {
-        default:
-            EmptyView()
+        case .paywall:
+            PaywallView()
         }
     }
 }

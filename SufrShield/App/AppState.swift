@@ -12,6 +12,7 @@ final class AppState: ObservableObject {
     private let userDefaultsService = UserDefaultsService.shared
     
     @Published var viewState: AppViewState
+    var isFirstLoad: Bool = true
     
     enum AppViewState {
         case onboarding

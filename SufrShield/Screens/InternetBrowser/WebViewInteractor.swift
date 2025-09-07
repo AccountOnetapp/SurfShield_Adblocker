@@ -120,7 +120,6 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     }
     
     func updateLoadingProgress(_ progress: Double) {
-        print("DEBUG: progress \(progress)")
         self.progress = progress
     }
     

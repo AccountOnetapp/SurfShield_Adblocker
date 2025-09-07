@@ -7,9 +7,17 @@
 
 import Foundation
 
-enum Screen: Hashable {
-    case calendar
-    case role
+enum Screen: Hashable, Identifiable {
+    
+    case paywall
+    
+    
+    var id: String {
+        switch self {
+        case .paywall:
+            return "payWall"
+        }
+    }
     
     static func == (lhs: Screen, rhs: Screen) -> Bool {
         lhs.hashValue == rhs.hashValue
@@ -17,10 +25,8 @@ enum Screen: Hashable {
     
     func hash(into hasher: inout Hasher) {
         switch self {
-        case .calendar:
-            hasher.combine("calendar")
-        case .role:
-            hasher.combine("role")
+        case .paywall:
+            return hasher.combine(UUID())
         }
     }
 }
