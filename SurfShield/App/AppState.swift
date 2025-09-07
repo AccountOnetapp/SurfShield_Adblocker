@@ -12,7 +12,7 @@ final class AppState: ObservableObject {
     private let userDefaultsService = UserDefaultsService.shared
     
     @Published var viewState: AppViewState
-    var isFirstLoad: Bool = true
+    var isFirstLoad: Bool = false
     
     enum AppViewState {
         case onboarding
@@ -22,7 +22,7 @@ final class AppState: ObservableObject {
     init() {
         let isOnboardingShown = userDefaultsService.load(Bool.self, forKey: .onboardingCompleted) ?? false
 //        self.viewState = isOnboardingShown ? .main : .onboarding
-        self.viewState = .onboarding
+        self.viewState = .main
     }
     
     
