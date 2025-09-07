@@ -374,7 +374,7 @@
 		8EC857592E65981500936348 /* PublicSuffixList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */; };
 		8ECD7C7C2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
 		8ECD7C7E2E5F3EA700584DC3 /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
-		8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */; };
+		8ECF280B2E59BAFE000A5748 /* SurfShieldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280A2E59BAFE000A5748 /* SurfShieldApp.swift */; };
 		8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */; };
 		8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ECF28112E59BB03000A5748 /* Preview Assets.xcassets */; };
 		8ECF281A2E59BC3F000A5748 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECF28192E59BC3F000A5748 /* MainView.swift */; };
@@ -490,7 +490,7 @@
 		8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules.txt; sourceTree = "<group>"; };
 		8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetBrowserView.swift; sourceTree = "<group>"; };
 		8E8FFB422E68163D00F20BF0 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SufrShield.entitlements; sourceTree = "<group>"; };
+		8E9F1AEF2E5C8C8B0093C76B /* SurfShield.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SurfShield.entitlements; sourceTree = "<group>"; };
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
 		8E9F1AF12E5C94C30093C76B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E9F1AFA2E5CD15A0093C76B /* sequrity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sequrity.entitlements; sourceTree = "<group>"; };
@@ -500,34 +500,34 @@
 		8EBA84002E5BB15600206493 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EBA84072E5BBA0900206493 /* RulesConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesConverter.swift; sourceTree = "<group>"; };
 		8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBlockerStateManager.swift; sourceTree = "<group>"; };
-		8EBB25812E61C79500E29966 /* ConversionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversionResult.swift; path = SufrShield/Shared/ContentBlockerConverter/ConversionResult.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25822E61C79500E29966 /* ContentBlockerConverterVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentBlockerConverterVersion.swift; path = SufrShield/Shared/ContentBlockerConverter/ContentBlockerConverterVersion.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25832E61C79500E29966 /* ContentBlockerConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentBlockerConverter.swift; path = SufrShield/Shared/ContentBlockerConverter/ContentBlockerConverter.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25842E61C79500E29966 /* WebExtensionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebExtensionHelpers.swift; path = SufrShield/Shared/ContentBlockerConverter/WebExtensionHelpers.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25962E61C7C600E29966 /* RuleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RuleFactory.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/RuleFactory.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25972E61C7C600E29966 /* NetworkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkRule.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/NetworkRule.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25982E61C7C600E29966 /* Chars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chars.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/Chars.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25992E61C7C700E29966 /* NetworkRuleParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkRuleParser.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/NetworkRuleParser.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259A2E61C7C700E29966 /* RuleConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RuleConverter.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/RuleConverter.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259B2E61C7C700E29966 /* SyntaxError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SyntaxError.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/SyntaxError.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259C2E61C7C700E29966 /* CosmeticRuleMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CosmeticRuleMarker.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/CosmeticRuleMarker.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259D2E61C7C700E29966 /* CosmeticRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CosmeticRule.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/CosmeticRule.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259E2E61C7C700E29966 /* SafariVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SafariVersion.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/SafariVersion.swift; sourceTree = SOURCE_ROOT; };
-		8EBB259F2E61C7C700E29966 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Rule.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/Rule.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25A02E61C7C700E29966 /* SimpleRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimpleRegex.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/SimpleRegex.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25A12E61C7C700E29966 /* ScriptletParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScriptletParser.swift; path = SufrShield/Shared/ContentBlockerConverter/Rules/ScriptletParser.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D22E61C7E100E29966 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringExtension.swift; path = SufrShield/Shared/ContentConverter/Utils/StringExtension.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D32E61C7E100E29966 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = SufrShield/Shared/ContentConverter/Utils/Logger.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D42E61C7E200E29966 /* ErrorsCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ErrorsCounter.swift; path = SufrShield/Shared/ContentConverter/Utils/ErrorsCounter.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D52E61C7E200E29966 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ArrayExtension.swift; path = SufrShield/Shared/ContentConverter/Utils/ArrayExtension.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D62E61C7E200E29966 /* DomainUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DomainUtils.swift; path = SufrShield/Shared/ContentConverter/Utils/DomainUtils.swift; sourceTree = SOURCE_ROOT; };
-		8EBB25D72E61C7E200E29966 /* PrefixMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrefixMatcher.swift; path = SufrShield/Shared/ContentConverter/Utils/PrefixMatcher.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25812E61C79500E29966 /* ConversionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversionResult.swift; path = SurfShield/Shared/ContentBlockerConverter/ConversionResult.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25822E61C79500E29966 /* ContentBlockerConverterVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentBlockerConverterVersion.swift; path = SurfShield/Shared/ContentBlockerConverter/ContentBlockerConverterVersion.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25832E61C79500E29966 /* ContentBlockerConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentBlockerConverter.swift; path = SurfShield/Shared/ContentBlockerConverter/ContentBlockerConverter.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25842E61C79500E29966 /* WebExtensionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebExtensionHelpers.swift; path = SurfShield/Shared/ContentBlockerConverter/WebExtensionHelpers.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25962E61C7C600E29966 /* RuleFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RuleFactory.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/RuleFactory.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25972E61C7C600E29966 /* NetworkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkRule.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/NetworkRule.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25982E61C7C600E29966 /* Chars.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chars.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/Chars.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25992E61C7C700E29966 /* NetworkRuleParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkRuleParser.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/NetworkRuleParser.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259A2E61C7C700E29966 /* RuleConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RuleConverter.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/RuleConverter.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259B2E61C7C700E29966 /* SyntaxError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SyntaxError.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/SyntaxError.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259C2E61C7C700E29966 /* CosmeticRuleMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CosmeticRuleMarker.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/CosmeticRuleMarker.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259D2E61C7C700E29966 /* CosmeticRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CosmeticRule.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/CosmeticRule.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259E2E61C7C700E29966 /* SafariVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SafariVersion.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/SafariVersion.swift; sourceTree = SOURCE_ROOT; };
+		8EBB259F2E61C7C700E29966 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Rule.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/Rule.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25A02E61C7C700E29966 /* SimpleRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimpleRegex.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/SimpleRegex.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25A12E61C7C700E29966 /* ScriptletParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScriptletParser.swift; path = SurfShield/Shared/ContentBlockerConverter/Rules/ScriptletParser.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D22E61C7E100E29966 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringExtension.swift; path = SurfShield/Shared/ContentConverter/Utils/StringExtension.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D32E61C7E100E29966 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = SurfShield/Shared/ContentConverter/Utils/Logger.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D42E61C7E200E29966 /* ErrorsCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ErrorsCounter.swift; path = SurfShield/Shared/ContentConverter/Utils/ErrorsCounter.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D52E61C7E200E29966 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ArrayExtension.swift; path = SurfShield/Shared/ContentConverter/Utils/ArrayExtension.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D62E61C7E200E29966 /* DomainUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DomainUtils.swift; path = SurfShield/Shared/ContentConverter/Utils/DomainUtils.swift; sourceTree = SOURCE_ROOT; };
+		8EBB25D72E61C7E200E29966 /* PrefixMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrefixMatcher.swift; path = SurfShield/Shared/ContentConverter/Utils/PrefixMatcher.swift; sourceTree = SOURCE_ROOT; };
 		8EBEA2352E6440350034A1A9 /* trackers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = trackers.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBEA2372E6440350034A1A9 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBEA2392E6440350034A1A9 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		8EBEA23B2E6440350034A1A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsService.swift; path = SufrShield/Shared/UserDefaultsService.swift; sourceTree = SOURCE_ROOT; };
-		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SufrShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
+		8EBEC6542E6C630F005E5AF4 /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsService.swift; path = SurfShield/Shared/UserDefaultsService.swift; sourceTree = SOURCE_ROOT; };
+		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SurfShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
 		8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsObserver.swift; sourceTree = "<group>"; };
 		8EBEC6622E6CD829005E5AF4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		8EC58DC62E67E8A3008D48EF /* secure.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = secure.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -558,8 +558,8 @@
 		8EC856FB2E65974A00936348 /* banners.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = banners.entitlements; sourceTree = "<group>"; };
 		8EC856FC2E65975C00936348 /* trackers.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = trackers.entitlements; sourceTree = "<group>"; };
 		8EC856FD2E65976E00936348 /* advanced.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = advanced.entitlements; sourceTree = "<group>"; };
-		8ECF28072E59BAFE000A5748 /* SufrShield.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SufrShield.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SufrShieldApp.swift; sourceTree = "<group>"; };
+		8ECF28072E59BAFE000A5748 /* SurfShield.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SurfShield.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8ECF280A2E59BAFE000A5748 /* SurfShieldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfShieldApp.swift; sourceTree = "<group>"; };
 		8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockAdsView.swift; sourceTree = "<group>"; };
 		8ECF280E2E59BB03000A5748 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8ECF28112E59BB03000A5748 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -885,7 +885,7 @@
 		8ECF27FE2E59BAFE000A5748 = {
 			isa = PBXGroup;
 			children = (
-				8ECF28092E59BAFE000A5748 /* SufrShield */,
+				8ECF28092E59BAFE000A5748 /* SurfShield */,
 				8EBA83FB2E5BB15600206493 /* adblocker */,
 				8EC786D92E5C64D10024A55C /* sequrity */,
 				8EC786EA2E5C64F30024A55C /* privacy */,
@@ -902,7 +902,7 @@
 		8ECF28082E59BAFE000A5748 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8ECF28072E59BAFE000A5748 /* SufrShield.app */,
+				8ECF28072E59BAFE000A5748 /* SurfShield.app */,
 				8EBA83FA2E5BB15600206493 /* adblocker.appex */,
 				8EC786E92E5C64F30024A55C /* privacy.appex */,
 				8E39339C2E625F70003FDE0A /* banners.appex */,
@@ -914,13 +914,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8ECF28092E59BAFE000A5748 /* SufrShield */ = {
+		8ECF28092E59BAFE000A5748 /* SurfShield */ = {
 			isa = PBXGroup;
 			children = (
 				8EE142A62E6B7D6300918447 /* domains.txt */,
 				8EE1428E2E6B14A400918447 /* test_rules.txt */,
 				8E78603C2E650542000C7CB5 /* adblock_rules2.txt */,
-				8E9F1AEF2E5C8C8B0093C76B /* SufrShield.entitlements */,
+				8E9F1AEF2E5C8C8B0093C76B /* SurfShield.entitlements */,
 				8E352C582E5B836B00384E52 /* DiagnosticTool.swift */,
 				8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */,
 				8ECF28182E59BC33000A5748 /* App */,
@@ -933,7 +933,7 @@
 				8E9F1AF12E5C94C30093C76B /* Constants.swift */,
 				8E0384D02E5E4B23001D5E9D /* ViewComponents */,
 			);
-			path = SufrShield;
+			path = SurfShield;
 			sourceTree = "<group>";
 		};
 		8ECF28102E59BB03000A5748 /* Preview Content */ = {
@@ -947,7 +947,7 @@
 		8ECF28182E59BC33000A5748 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				8ECF280A2E59BAFE000A5748 /* SufrShieldApp.swift */,
+				8ECF280A2E59BAFE000A5748 /* SurfShieldApp.swift */,
 				8ECF28192E59BC3F000A5748 /* MainView.swift */,
 				8ECF281B2E59BC45000A5748 /* TabBarView.swift */,
 				8ECF281D2E59BC4E000A5748 /* Coordinator.swift */,
@@ -1130,9 +1130,9 @@
 			productReference = 8EC856EE2E65966B00936348 /* advanced.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		8ECF28062E59BAFE000A5748 /* SufrShield */ = {
+		8ECF28062E59BAFE000A5748 /* SurfShield */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8ECF28152E59BB03000A5748 /* Build configuration list for PBXNativeTarget "SufrShield" */;
+			buildConfigurationList = 8ECF28152E59BB03000A5748 /* Build configuration list for PBXNativeTarget "SurfShield" */;
 			buildPhases = (
 				8ECF28032E59BAFE000A5748 /* Sources */,
 				8ECF28042E59BAFE000A5748 /* Frameworks */,
@@ -1150,12 +1150,12 @@
 				8EC58DCE2E67E8A3008D48EF /* PBXTargetDependency */,
 				8EC58DDF2E67E916008D48EF /* PBXTargetDependency */,
 			);
-			name = SufrShield;
+			name = SurfShield;
 			packageProductDependencies = (
 				8E7B5E282E61D4B800D5E817 /* Punycode */,
 			);
-			productName = SufrShield;
-			productReference = 8ECF28072E59BAFE000A5748 /* SufrShield.app */;
+			productName = SurfShield;
+			productReference = 8ECF28072E59BAFE000A5748 /* SurfShield.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1194,7 +1194,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8ECF28022E59BAFE000A5748 /* Build configuration list for PBXProject "SufrShield" */;
+			buildConfigurationList = 8ECF28022E59BAFE000A5748 /* Build configuration list for PBXProject "SurfShield" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1210,7 +1210,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8ECF28062E59BAFE000A5748 /* SufrShield */,
+				8ECF28062E59BAFE000A5748 /* SurfShield */,
 				8EBA83F92E5BB15600206493 /* adblocker */,
 				8EC786E82E5C64F30024A55C /* privacy */,
 				8E39339B2E625F70003FDE0A /* banners */,
@@ -1683,7 +1683,7 @@
 				8E7B5E482E61D6EE00D5E817 /* CompilationResult.swift in Sources */,
 				8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */,
 				8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */,
-				8ECF280B2E59BAFE000A5748 /* SufrShieldApp.swift in Sources */,
+				8ECF280B2E59BAFE000A5748 /* SurfShieldApp.swift in Sources */,
 				8EBB25C22E61C7C700E29966 /* SafariVersion.swift in Sources */,
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
 				8EBB25BE2E61C7C700E29966 /* CosmeticRule.swift in Sources */,
@@ -2262,10 +2262,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SufrShield/SufrShield.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SurfShield/SurfShield.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SufrShield/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SurfShield/Preview Content\"";
 				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2294,10 +2294,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SufrShield/SufrShield.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SurfShield/SurfShield.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SufrShield/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SurfShield/Preview Content\"";
 				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2386,7 +2386,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8ECF28022E59BAFE000A5748 /* Build configuration list for PBXProject "SufrShield" */ = {
+		8ECF28022E59BAFE000A5748 /* Build configuration list for PBXProject "SurfShield" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8ECF28132E59BB03000A5748 /* Debug */,
@@ -2395,7 +2395,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8ECF28152E59BB03000A5748 /* Build configuration list for PBXNativeTarget "SufrShield" */ = {
+		8ECF28152E59BB03000A5748 /* Build configuration list for PBXNativeTarget "SurfShield" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8ECF28162E59BB03000A5748 /* Debug */,
