@@ -10,6 +10,7 @@ import SwiftUI
 enum Layout {
     enum Radius {
         static let regular: CGFloat = 8
+        static let medium: CGFloat = 16
     }
     
     enum Padding: CGFloat {

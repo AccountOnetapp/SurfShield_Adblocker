@@ -82,59 +82,46 @@ struct SubscriptionCard: View {
     var body: some View {
         HStack {
             // Header
-            VStack(alignment: .leading, spacing: Layout.Padding.small) {
-                HStack {
-                    Text(plan.title)
-                        .font(.headline)
-                        .foregroundColor(.tm.title)
-                    
-                    if plan.isPopular {
-                        Text("Популярно")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, Layout.Padding.regular)
-                            .padding(.vertical, Layout.Padding.small)
-                            .background(.tm.accent)
-                            .clipShape(Capsule())
-                    }
-                }
-            }
+//            VStack(alignment: .leading, spacing: Layout.Padding.small) {
+                Text(plan.title)
+                    .font(.headline)
+                    .foregroundColor(.tm.title)
+//            }
             
             Spacer()
             
             // Price
-            VStack(alignment: .trailing, spacing: Layout.Padding.small) {
-                HStack(alignment: .bottom) {
+            HStack(alignment: .center, spacing: .smallExt) {
                     Text(plan.price)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.tm.title)
                     
                     Text(plan.period)
-                        .font(.caption)
-                        .foregroundColor(.tm.subTitle)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.tm.title.opacity(0.5))
                 }
-                
-                if let discount = plan.discount {
-                    Text(discount)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.tm.success)
-                        .padding(.horizontal, Layout.Padding.regular)
-                        .padding(.vertical, Layout.Padding.small)
-                        .background(.tm.success.opacity(0.1))
-                        .clipShape(Capsule())
-                }
-            }
         }
         .padding(Layout.Padding.medium)
         .background(
-            RoundedRectangle(cornerRadius: Layout.Radius.regular)
-                .fill(.tm.container)
+            RoundedRectangle(cornerRadius: Layout.Radius.medium)
+                .fill(.tm.title.opacity(0.1))
                 .overlay(
-                    RoundedRectangle(cornerRadius: Layout.Radius.regular)
-                        .stroke(isSelected ? .tm.accent : .clear, lineWidth: 2)
+                    RoundedRectangle(cornerRadius: Layout.Radius.medium)
+                        .stroke(
+                            isSelected ? 
+                            LinearGradient(
+                                gradient: Gradient(colors: [.tm.accentSecondary, .tm.success]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ) : 
+                            LinearGradient(
+                                gradient: Gradient(colors: [.clear]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
                 )
         )
         .onTapGesture {
@@ -149,7 +136,7 @@ struct PricingView: View {
     let plans: [SubscriptionPlan]
     
     var body: some View {
-        VStack(spacing: Layout.Padding.regular) {
+        VStack(spacing: .medium) {
             ForEach(plans, id: \.id) { plan in
                 SubscriptionCard(plan: plan, selectedPlan: $selectedPlan)
             }
@@ -166,10 +153,10 @@ struct PaywallView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: Layout.Padding.medium) {
+            VStack(spacing: .medium) {
                 // Header
                 VStack(spacing: Layout.Padding.regular) {
-                    Text("SufrShield Premium")
+                    Text("SurfShield Premium")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.tm.title)
@@ -184,7 +171,7 @@ struct PaywallView: View {
                         
                         Text("Интеллектуальная блокировка рекламы, защита от трекеров и ускорение загрузки страниц")
                             .font(.subheadline)
-                            .foregroundColor(.tm.subTitle)
+                            .foregroundColor(.tm.title)
                             .multilineTextAlignment(.center)
                             .lineLimit(3)
                     }
@@ -204,7 +191,7 @@ struct PaywallView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, Layout.Padding.medium)
-                        .background(.tm.accent)
+                        .background(.tm.accentSecondary.opacity(0.7))
                         .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.regular))
                 }
                 .padding(.horizontal, Layout.Padding.medium)
@@ -212,25 +199,25 @@ struct PaywallView: View {
                 // Terms
                 VStack(spacing: Layout.Padding.small) {
                     Text("Подписка продлевается автоматически")
-                        .font(.caption2)
-                        .foregroundColor(.tm.subTitle)
+                        .font(.callout)
+                        .foregroundColor(.tm.title.opacity(0.6))
                         .multilineTextAlignment(.center)
                     
                     HStack(spacing: Layout.Padding.small) {
                         Button("Условия") {
                             // Handle terms
                         }
-                        .font(.caption2)
+                        .font(.callout)
                         .foregroundColor(.tm.accent)
                         
                         Text("•")
-                            .font(.caption2)
+                            .font(.callout)
                             .foregroundColor(.tm.subTitle)
                         
                         Button("Конфиденциальность") {
                             // Handle privacy
                         }
-                        .font(.caption2)
+                        .font(.callout)
                         .foregroundColor(.tm.accent)
                     }
                 }
@@ -238,15 +225,47 @@ struct PaywallView: View {
             }
             .padding(.horizontal, Layout.Padding.medium)
             .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        .tm.accent,
-                        .tm.accentSecondary,
-                        .tm.accentTertiary
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                ZStack {
+                    // Первый радиальный градиент - верхний левый
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            .tm.accentSecondary.opacity(0.6),
+                            .tm.accentSecondary.opacity(0.3),
+                            .tm.accentSecondary.opacity(0.1)
+                        ]),
+                        center: .topLeading,
+                        startRadius: 0,
+                        endRadius: 600
+                    )
+                    
+                    // Второй радиальный градиент - нижний правый
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            .tm.success.opacity(0.5),
+                            .tm.success.opacity(0.25),
+                            .tm.success.opacity(0.08)
+                        ]),
+                        center: .bottomTrailing,
+                        startRadius: 0,
+                        endRadius: 700
+                    )
+                    
+                    // Третий радиальный градиент - центр
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            .tm.accentSecondary.opacity(0.4),
+                            .tm.success.opacity(0.3),
+                            .tm.accentSecondary.opacity(0.15)
+                        ]),
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: 500
+                    )
+                    
+                    // Базовый цвет фона - более светлый
+                    Color.tm.background.opacity(0.1)
+                }
+                    .ignoresSafeArea(.all)
             )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

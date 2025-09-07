@@ -17,6 +17,8 @@ enum ThemeColors: String {
     case container = "Container"
     case error = "Error"
     case success = "Success"
+    case calm = "Calm"
+    case calmSecondary = "CalmSecondary"
     
     // Тут будет дополнительное вычисляемое свойство для определения выбора темы из экрана настроек
     var color: Color {
@@ -35,6 +37,8 @@ struct Colors {
     var success: Color { ThemeColors.success.color }
     var title: Color { ThemeColors.title.color }
     var subTitle: Color { ThemeColors.subTitle.color }
+    var calm: Color { ThemeColors.calm.color }
+    var calmSecondary: Color { ThemeColors.calmSecondary.color }
 }
 
 
