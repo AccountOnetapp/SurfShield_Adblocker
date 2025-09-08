@@ -19,6 +19,7 @@ struct BackgroundGradient: View {
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
+        .background(Color.tm.background)
     }
 }
 

@@ -122,6 +122,7 @@ struct OnboardingView: View {
                 .scaleEffect(isAnimating ? 0.8 : 1.2)
                 .animation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true).delay(0.5), value: isAnimating)
         }
+        .background(Color.background)
     }
     
     // MARK: - Page Content

@@ -23,49 +23,47 @@ struct SubscriptionPlan {
 extension SubscriptionPlan {
     static let mockPlans: [SubscriptionPlan] = [
         SubscriptionPlan(
-            id: "monthly",
-            title: "Месячная",
-            description: "Базовый план",
-            price: "₽299",
-            period: "/мес",
+            id: "weekly",
+            title: "Weekly",
+            description: "Trial period",
+            price: "₽99",
+            period: "/week",
             isPopular: false,
             features: [
-                "Умная блокировка рекламы",
-                "Защита от трекеров",
-                "Быстрый браузер"
+                "Smart ad blocking",
+                "Tracker protection",
+                "Fast browser"
+            ],
+            discount: "Try first"
+        ),
+        SubscriptionPlan(
+            id: "monthly",
+            title: "Monthly",
+            description: "Basic plan",
+            price: "₽299",
+            period: "/month",
+            isPopular: false,
+            features: [
+                "Smart ad blocking",
+                "Tracker protection",
+                "Fast browser"
             ],
             discount: nil
         ),
         SubscriptionPlan(
             id: "yearly",
-            title: "Годовая",
-            description: "Популярный",
+            title: "Yearly",
+            description: "Popular",
             price: "₽1,999",
-            period: "/год",
+            period: "/year",
             isPopular: true,
             features: [
-                "Продвинутая блокировка рекламы",
-                "Защита от трекеров",
-                "Быстрый браузер",
-                "Синхронизация"
+                "Advanced ad blocking",
+                "Tracker protection",
+                "Fast browser",
+                "Synchronization"
             ],
-            discount: "Экономия 44%"
-        ),
-        SubscriptionPlan(
-            id: "lifetime",
-            title: "Навсегда",
-            description: "Лучшая цена",
-            price: "₽4,999",
-            period: "одноразово",
-            isPopular: false,
-            features: [
-                "Максимальная блокировка рекламы",
-                "Защита от трекеров",
-                "Быстрый браузер",
-                "Синхронизация",
-                "Все обновления"
-            ],
-            discount: "Лучшая цена"
+            discount: "Save 44%"
         )
     ]
 }
@@ -146,14 +144,14 @@ struct PricingView: View {
 
 // MARK: - Main PaywallView
 struct PaywallView: View {
-    @State private var selectedPlan: String = "yearly"
+    @State private var selectedPlan: String = "monthly"
     @Environment(\.dismiss) private var dismiss
     
     private let plans = SubscriptionPlan.mockPlans
     
     var body: some View {
         NavigationView {
-            VStack(spacing: .medium) {
+            VStack(spacing: .extraLarge) {
                 // Header
                 VStack(spacing: Layout.Padding.regular) {
                     Text("SurfShield Premium")
@@ -163,13 +161,13 @@ struct PaywallView: View {
                         .multilineTextAlignment(.center)
                     
                     VStack(spacing: Layout.Padding.small) {
-                        Text("Максимальная защита от рекламы")
+                        Text("Maximum ad protection")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundColor(.tm.title)
                             .multilineTextAlignment(.center)
                         
-                        Text("Интеллектуальная блокировка рекламы, защита от трекеров и ускорение загрузки страниц")
+                        Text("Intelligent ad blocking, tracker protection and faster page loading")
                             .font(.subheadline)
                             .foregroundColor(.tm.title)
                             .multilineTextAlignment(.center)
@@ -178,6 +176,7 @@ struct PaywallView: View {
                 }
                 .padding(.top, Layout.Padding.large)
                 
+                Spacer()
                 // Pricing
                 PricingView(selectedPlan: $selectedPlan, plans: plans)
                 
@@ -185,7 +184,7 @@ struct PaywallView: View {
                 
                 // Subscribe Button
                 Button(action: subscribeAction) {
-                    Text("Подписаться")
+                    Text("Subscribe")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
@@ -198,13 +197,13 @@ struct PaywallView: View {
                 
                 // Terms
                 VStack(spacing: Layout.Padding.small) {
-                    Text("Подписка продлевается автоматически")
+                    Text("Subscription renews automatically")
                         .font(.callout)
                         .foregroundColor(.tm.title.opacity(0.6))
                         .multilineTextAlignment(.center)
                     
                     HStack(spacing: Layout.Padding.small) {
-                        Button("Условия") {
+                        Button("Terms") {
                             // Handle terms
                         }
                         .font(.callout)
@@ -214,7 +213,7 @@ struct PaywallView: View {
                             .font(.callout)
                             .foregroundColor(.tm.subTitle)
                         
-                        Button("Конфиденциальность") {
+                        Button("Privacy") {
                             // Handle privacy
                         }
                         .font(.callout)
@@ -266,12 +265,17 @@ struct PaywallView: View {
                     Color.tm.background.opacity(0.1)
                 }
                     .ignoresSafeArea(.all)
+                    .background(Color.tm.background)
             )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Закрыть") {
+                    Button {
                         dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .fontWeight(.bold)
+                            .foregroundStyle(.background.opacity(0.6))
                     }
                     .foregroundColor(.tm.accent)
                 }
@@ -281,7 +285,7 @@ struct PaywallView: View {
     
     private func subscribeAction() {
         // Handle subscription logic
-        print("Подписка на план: \(selectedPlan)")
+        print("Subscription to plan: \(selectedPlan)")
     }
 }
 

@@ -46,9 +46,6 @@ struct SettingsView: View {
     @State private var startPage = "https://www.google.com"
     
     // Statistics
-    @State private var blockedAdsCount = 12847
-    @State private var blockedTrackersCount = 3291
-    @State private var dataSaved = "156.7 MB"
     @State private var isInfoExpanded = false
     
     var body: some View {

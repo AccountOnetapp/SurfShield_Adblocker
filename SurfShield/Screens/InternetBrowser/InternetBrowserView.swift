@@ -25,7 +25,7 @@ struct InternetBrowserView: View {
             WebView(interactor: interactor)
                 .padding(.top, panelHeight)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
+//                .preferredColorScheme(.light)
             // Панель навигации поверх WebView
             WebViewPanel(
                 observables: interactor,

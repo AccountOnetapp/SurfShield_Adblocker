@@ -48,7 +48,10 @@ struct WebView: UIViewRepresentable {
         return webView
     }
     
-    func updateUIView(_ uiView: WKWebView, context: Context) { }
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        print("DEBUG: update view")
+        uiView.overrideUserInterfaceStyle = .light
+    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
