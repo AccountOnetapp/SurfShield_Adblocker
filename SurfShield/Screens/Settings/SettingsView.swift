@@ -6,37 +6,6 @@
 //
 
 import SwiftUI
-import Combine
-
-final class SettingsViewModel: ObservableObject {
-    
-    @Published var resourceStatistics: ResourceAnalysisData = .init()
-    @Published var appSettings: AppSettings = .default {
-        didSet {
-            userDefaultsObserver.updateAppSettings(appSettings)
-        }
-    }
-    
-    private var cancellables = Set<AnyCancellable>()
-    let userDefaultsObserver = UserDefaultsObserver.shared
-    
-    init() {
-        subscribe()
-    }
-    
-    private func subscribe() {
-        userDefaultsObserver.$webViewBlockedStatistics
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.resourceStatistics, on: self)
-            .store(in: &cancellables)
-        
-        appSettings = userDefaultsObserver.appSettings
-//        userDefaultsObserver.$appSettings
-//            .receive(on: DispatchQueue.main)
-//            .assign(to: \.appSettings, on: self)
-//            .store(in: &cancellables)
-    }
-}
 
 struct SettingsView: View {
     

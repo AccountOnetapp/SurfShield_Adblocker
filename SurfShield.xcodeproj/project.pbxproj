@@ -388,6 +388,7 @@
 		8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A12E6B737900918447 /* ResourceMonitor.swift */; };
 		8EE142A72E6B7D6300918447 /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE142A62E6B7D6300918447 /* domains.txt */; };
 		8EE294712E6E120F0060471B /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE294702E6E120F0060471B /* PaywallView.swift */; };
+		8EE69D072E6F0F0F00BA1BF1 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE69D062E6F0F0F00BA1BF1 /* SettingsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -575,6 +576,7 @@
 		8EE142A12E6B737900918447 /* ResourceMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMonitor.swift; sourceTree = "<group>"; };
 		8EE142A62E6B7D6300918447 /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
 		8EE294702E6E120F0060471B /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		8EE69D062E6F0F0F00BA1BF1 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -988,11 +990,20 @@
 			children = (
 				8EBEC6612E6CCEF3005E5AF4 /* Onboarding */,
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
-				8E0384CE2E5E4939001D5E9D /* SettingsView.swift */,
+				8EE69D052E6F0F0000BA1BF1 /* Settings */,
 				8E8FFB412E68162B00F20BF0 /* InternetBrowser */,
 				8EE294702E6E120F0060471B /* PaywallView.swift */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		8EE69D052E6F0F0000BA1BF1 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				8E0384CE2E5E4939001D5E9D /* SettingsView.swift */,
+				8EE69D062E6F0F0F00BA1BF1 /* SettingsViewModel.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1685,6 +1696,7 @@
 				8EBB25C62E61C7C700E29966 /* Rule.swift in Sources */,
 				8EBB25892E61C79500E29966 /* ContentBlockerConverterVersion.swift in Sources */,
 				8EBB25AE2E61C7C700E29966 /* NetworkRuleParser.swift in Sources */,
+				8EE69D072E6F0F0F00BA1BF1 /* SettingsViewModel.swift in Sources */,
 				8EBB25912E61C79500E29966 /* WebExtensionHelpers.swift in Sources */,
 				8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */,
 				8E7B5E482E61D6EE00D5E817 /* CompilationResult.swift in Sources */,
