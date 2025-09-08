@@ -111,6 +111,7 @@
 		8E9F1AF32E5C94EC0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF52E5C94EE0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF82E5CD12B0093C76B /* RulesConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* RulesConverter.swift */; };
+		8EADC1192E6F319300B52000 /* BrowserTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EADC1182E6F319300B52000 /* BrowserTheme.swift */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -494,6 +495,7 @@
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
 		8E9F1AF12E5C94C30093C76B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E9F1AFA2E5CD15A0093C76B /* sequrity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sequrity.entitlements; sourceTree = "<group>"; };
+		8EADC1182E6F319300B52000 /* BrowserTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserTheme.swift; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -814,6 +816,7 @@
 		8EC4E9102E6F072500822E21 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8EADC1182E6F319300B52000 /* BrowserTheme.swift */,
 				8EDC48282E6F086B00D934F7 /* AppSettings.swift */,
 			);
 			path = Models;
@@ -1720,6 +1723,7 @@
 				8EBB25B62E61C7C700E29966 /* SyntaxError.swift in Sources */,
 				8EBB25B22E61C7C700E29966 /* RuleConverter.swift in Sources */,
 				8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */,
+				8EADC1192E6F319300B52000 /* BrowserTheme.swift in Sources */,
 				8E7B5DFB2E61D0C200D5E817 /* SuffixTrie.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -15,7 +15,7 @@ struct InternetBrowserView: View {
     private let panelHeight: CGFloat = 56
     
     var body: some View {
-        AnyView(browser)
+        browser
     }
     
     @ViewBuilder
@@ -25,7 +25,6 @@ struct InternetBrowserView: View {
             WebView(interactor: interactor)
                 .padding(.top, panelHeight)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                .preferredColorScheme(.light)
             // Панель навигации поверх WebView
             WebViewPanel(
                 observables: interactor,

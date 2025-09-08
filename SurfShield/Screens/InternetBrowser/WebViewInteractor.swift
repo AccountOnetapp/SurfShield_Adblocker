@@ -49,7 +49,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     private let rulesConverter = RulesConverter()
     // MARK: - Resource Monitor
     private var resourceMonitor: ResourceMonitor?
-    private let userDefaultsObserver = UserDefaultsObserver.shared
+    let userDefaultsObserver = UserDefaultsObserver.shared
     
     init() {
         setupResourceMonitor()
@@ -174,6 +174,146 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     /// Сбрасывает данные анализа ресурсов
     func resetResourceAnalysis() {
         resourceAnalysis = nil
+    }
+    
+    // MARK: - Dark Theme Override
+    
+    /// Возвращает JavaScript код для применения красного цвета текста
+    func getDarkThemeScript() -> String {
+        return """
+        (function() {
+            'use strict';
+            
+            // Мгновенно применяем красный цвет к существующим элементам
+            function applyRedTextInstantly() {
+                // Применяем красный цвет ко всем существующим элементам
+                const allElements = document.querySelectorAll('*');
+                for (let i = 0; i < allElements.length; i++) {
+                    allElements[i].style.setProperty('color', 'red', 'important');
+                }
+                
+                // Применяем к body и html
+                if (document.body) {
+                    document.body.style.setProperty('color', 'red', 'important');
+                }
+                if (document.documentElement) {
+                    document.documentElement.style.setProperty('color', 'red', 'important');
+                }
+            }
+            
+            // Функция для создания CSS стилей
+            function createRedTextCSS() {
+                const redTextStyle = document.createElement('style');
+                redTextStyle.id = 'surfshield-red-text';
+                redTextStyle.textContent = `
+                    /* МАКСИМАЛЬНО АГРЕССИВНЫЙ CSS для красного текста */
+                    *, *::before, *::after {
+                        color: red !important;
+                    }
+                    
+                    /* Переопределяем ВСЕ возможные селекторы */
+                    body, html, div, p, span, a, h1, h2, h3, h4, h5, h6, 
+                    section, article, main, header, footer, nav,
+                    ul, ol, li, table, tr, td, th, thead, tbody,
+                    button, input, select, textarea, label, strong, em, b, i, u,
+                    .card, .container, .box, .panel, .widget,
+                    .nav, .navbar, .menu, .sidebar, .side-panel,
+                    .modal, .popup, .overlay,
+                    [class*="text"], [class*="title"], [class*="content"],
+                    [class*="label"], [class*="caption"], [class*="description"] {
+                        color: red !important;
+                    }
+                    
+                    /* Ссылки */
+                    a:link, a:visited, a:hover, a:active {
+                        color: red !important;
+                    }
+                    
+                    /* Кнопки и формы */
+                    button, input, select, textarea {
+                        color: red !important;
+                    }
+                    
+                    /* Таблицы */
+                    th, td {
+                        color: red !important;
+                    }
+                    
+                    /* Списки */
+                    li {
+                        color: red !important;
+                    }
+                    
+                    /* Заголовки */
+                    h1, h2, h3, h4, h5, h6 {
+                        color: red !important;
+                    }
+                `;
+                
+                // Удаляем предыдущий стиль
+                const existingStyle = document.getElementById('surfshield-red-text');
+                if (existingStyle) {
+                    existingStyle.remove();
+                }
+                
+                // Добавляем стиль
+                if (document.head) {
+                    document.head.appendChild(redTextStyle);
+                } else {
+                    // Если head еще не готов, создаем его
+                    const head = document.createElement('head');
+                    head.appendChild(redTextStyle);
+                    if (document.documentElement) {
+                        document.documentElement.insertBefore(head, document.documentElement.firstChild);
+                    }
+                }
+            }
+            
+            // Применяем мгновенно
+            applyRedTextInstantly();
+            createRedTextCSS();
+            
+            // Применяем при загрузке DOM
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    applyRedTextInstantly();
+                    createRedTextCSS();
+                });
+            }
+            
+            // Применяем при полной загрузке
+            window.addEventListener('load', function() {
+                applyRedTextInstantly();
+                createRedTextCSS();
+            });
+            
+            // Применяем при изменении DOM (для динамического контента)
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach(function(node) {
+                                if (node.nodeType === 1) { // Element node
+                                    node.style.setProperty('color', 'red', 'important');
+                                    const children = node.querySelectorAll('*');
+                                    children.forEach(function(child) {
+                                        child.style.setProperty('color', 'red', 'important');
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+                
+                observer.observe(document.body || document.documentElement, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+            
+            console.log('SurfShield: Красный цвет текста применен МГНОВЕННО');
+        })();
+        """
     }
 }
 

@@ -12,7 +12,19 @@ struct WebView: UIViewRepresentable {
     @ObservedObject var interactor: WebViewInteractor
     
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        // Создаем конфигурацию с предустановленным скриптом
+        let config = WKWebViewConfiguration()
+        
+        // Добавляем скрипт красного текста в конфигурацию ДО создания WebView
+        let redTextScript = interactor.getDarkThemeScript()
+        let userScript = WKUserScript(
+            source: redTextScript,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true
+        )
+        config.userContentController.addUserScript(userScript)
+        
+        let webView = WKWebView(frame: .zero, configuration: config)
         
         // Настройки для корректного взаимодействия с элементами страницы
         webView.isUserInteractionEnabled = true
@@ -20,7 +32,6 @@ struct WebView: UIViewRepresentable {
         webView.scrollView.isScrollEnabled = true
 //        webView.scrollView.bounces = false
         webView.scrollView.keyboardDismissMode = .interactive
-        
         // Убираем проблемные настройки, которые могут блокировать касания
         webView.clipsToBounds = false
         webView.layer.masksToBounds = false
@@ -34,10 +45,18 @@ struct WebView: UIViewRepresentable {
         
         context.coordinator.webView = webView
         webView.navigationDelegate = context.coordinator
-        
         webView.uiDelegate = context.coordinator
+        
         // Настраиваем мониторинг ресурсов после создания webView
         context.coordinator.setupResourceMonitoring()
+        
+        // Устанавливаем автоматическое определение темы
+//        webView.overrideUserInterfaceStyle = .unspecified
+        
+        // Устанавливаем прозрачный фон для WebView, чтобы CSS работал корректно
+        webView.backgroundColor = UIColor.clear
+        webView.isOpaque = false
+        webView.scrollView.backgroundColor = UIColor.clear
         
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
@@ -49,8 +68,8 @@ struct WebView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        print("DEBUG: update view")
-        uiView.overrideUserInterfaceStyle = .light
+        // Позволяем WebView автоматически определять тему
+//        uiView.overrideUserInterfaceStyle = .unspecified
     }
     
     func makeCoordinator() -> Coordinator {
@@ -92,6 +111,7 @@ struct WebView: UIViewRepresentable {
             // Обновляем состояние навигации при завершении загрузки
             parent?.interactor.setCanGoBack(webView.canGoBack)
             parent?.interactor.setCanGoForward(webView.canGoForward)
+            
             print("DEBUG: Загрузка страницы завершена")
         }
         
