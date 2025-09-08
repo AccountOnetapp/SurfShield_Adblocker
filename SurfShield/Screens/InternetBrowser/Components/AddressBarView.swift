@@ -20,6 +20,8 @@ struct AddressBarView: View {
             TextField("Введите адрес сайта", text: $displayText)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(.system(size: 16))
+                .autocorrectionDisabled(true)
+                .keyboardType(.webSearch)
                 .textInputAutocapitalization(.never)
                 .focused($isFocused)
                 .multilineTextAlignment(.leading)

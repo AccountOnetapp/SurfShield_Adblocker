@@ -53,10 +53,10 @@ struct WebView: UIViewRepresentable {
         // Устанавливаем автоматическое определение темы
 //        webView.overrideUserInterfaceStyle = .unspecified
         
-        // Устанавливаем прозрачный фон для WebView, чтобы CSS работал корректно
-        webView.backgroundColor = UIColor.clear
-        webView.isOpaque = false
-        webView.scrollView.backgroundColor = UIColor.clear
+        // Устанавливаем черный фон для WebView
+        webView.backgroundColor = UIColor(named: "Container")
+        webView.isOpaque = true
+        webView.scrollView.backgroundColor = UIColor(named: "Container")
         
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
