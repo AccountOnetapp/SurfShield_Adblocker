@@ -14,22 +14,23 @@ class UserDefaultsObserver: ObservableObject {
     let userDefaultsService = UserDefaultsService.shared
     
     @Published var webViewBlockedStatistics: ResourceAnalysisData = .init()
-    
-    // Здесь пример одного наблюдаемого свойства — замените на ваши ключи и типы
-    @Published var isAdbockerInabled: Bool {
-        didSet {
-            UserDefaultsService.shared.save(isAdbockerInabled, forKey: .adBlockerEnabled)
-        }
-    }
+    // App settings
+    @Published var appSettings: AppSettings = .default
     
     // Инициализируем из UserDefaults
     init() {
-        self.isAdbockerInabled = userDefaultsService.load(Bool.self, forKey: .adBlockRules) ?? false
         self.webViewBlockedStatistics = userDefaultsService.load(ResourceAnalysisData.self, forKey: .webViewBlockedStatistics) ?? .init()
+        self.appSettings = loadAppSettings()
     }
     
     func updateAdblockerState(_ isOn: Bool) {
-        isAdbockerInabled = isOn
+        appSettings.advancedProtection = isOn
+    }
+    
+    func updateAppSettings(_ settings: AppSettings) {
+        self.appSettings = settings
+        userDefaultsService.save(settings, forKey: .appSettings)
+//        self.saveAppSettings()
     }
     
     func updateWebViewBlockedStatistics(_ statistics: ResourceAnalysisData) {
@@ -40,5 +41,18 @@ class UserDefaultsObserver: ObservableObject {
         
         webViewBlockedStatistics = newStatistics
         userDefaultsService.save(newStatistics, forKey: .webViewBlockedStatistics)
+    }
+    
+    private func loadAppSettings() -> AppSettings {
+        guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.appSettings.key),
+              let settings = try? JSONDecoder().decode(AppSettings.self, from: data) else {
+            return .default
+        }
+        return settings
+    }
+    
+    /// Сброс настроек к значениям по умолчанию
+    func resetSettingsToDefault() {
+        appSettings = .default
     }
 }

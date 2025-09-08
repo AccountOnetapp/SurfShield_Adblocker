@@ -11,6 +11,11 @@ import Combine
 final class SettingsViewModel: ObservableObject {
     
     @Published var resourceStatistics: ResourceAnalysisData = .init()
+    @Published var appSettings: AppSettings = .default {
+        didSet {
+            userDefaultsObserver.updateAppSettings(appSettings)
+        }
+    }
     
     private var cancellables = Set<AnyCancellable>()
     let userDefaultsObserver = UserDefaultsObserver.shared
@@ -24,26 +29,18 @@ final class SettingsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: \.resourceStatistics, on: self)
             .store(in: &cancellables)
+        
+        appSettings = userDefaultsObserver.appSettings
+//        userDefaultsObserver.$appSettings
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: \.appSettings, on: self)
+//            .store(in: &cancellables)
     }
 }
 
 struct SettingsView: View {
     
     @StateObject var viewModel = SettingsViewModel()
-    // State variables for settings
-    @State private var isAdBlockerEnabled = false
-    @State private var basicBlock = false
-    @State private var blockAds = false
-    @State private var blockTrackers = false
-    @State private var blockPopups = false
-    @State private var enableWhitelist = false
-    
-    @State private var enableCookies = false
-    @State private var clearCacheOnExit = false
-    @State private var enableDarkMode = true
-    @State private var showNotifications = false
-    @State private var enableBrowserHistory = true
-    @State private var startPage = "https://www.google.com"
     
     // Statistics
     @State private var isInfoExpanded = false
@@ -229,7 +226,7 @@ struct SettingsView: View {
                     title: "Advanced Protection",
                     subtitle: "Enhanced security features",
                     icon: "shield.lefthalf.filled",
-                    isOn: $isAdBlockerEnabled,
+                    isOn: $viewModel.appSettings.advancedProtection,
                     accentColor: .calmSecondary
                 )
                 
@@ -240,45 +237,45 @@ struct SettingsView: View {
                     title: "Banner Blocking",
                     subtitle: "Remove advertising banners",
                     icon: "rectangle.slash",
-                    isOn: $blockAds,
+                    isOn: $viewModel.appSettings.blockAds,
                     accentColor: .calmSecondary,
-                    isDisabled: !isAdBlockerEnabled
+                    isDisabled: !viewModel.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Basic Protection",
                     subtitle: "Essential security measures",
                     icon: "shield",
-                    isOn: $basicBlock,
+                    isOn: $viewModel.appSettings.basicBlock,
                     accentColor: .calmSecondary,
-                    isDisabled: !isAdBlockerEnabled
+                    isDisabled: !viewModel.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Privacy Guard",
                     subtitle: "Protect personal information",
                     icon: "hand.raised.fill",
-                    isOn: $blockPopups,
+                    isOn: $viewModel.appSettings.blockPopups,
                     accentColor: .calmSecondary,
-                    isDisabled: !isAdBlockerEnabled
+                    isDisabled: !viewModel.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Security Shield",
                     subtitle: "Advanced threat protection",
                     icon: "lock.shield",
-                    isOn: $enableWhitelist,
+                    isOn: $viewModel.appSettings.security,
                     accentColor: .calmSecondary,
-                    isDisabled: !isAdBlockerEnabled
+                    isDisabled: !viewModel.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Tracker Blocker",
                     subtitle: "Block tracking scripts",
                     icon: "eye.slash",
-                    isOn: $blockTrackers,
+                    isOn: $viewModel.appSettings.blockTrackers,
                     accentColor: .calmSecondary,
-                    isDisabled: !isAdBlockerEnabled
+                    isDisabled: !viewModel.appSettings.advancedProtection
                 )
             }
         }
@@ -304,12 +301,12 @@ struct SettingsView: View {
                     title: "Browser History",
                     subtitle: "Save previous session",
                     icon: "clock.arrow.circlepath",
-                    isOn: $enableBrowserHistory,
+                    isOn: $viewModel.appSettings.enableBrowserHistory,
                     accentColor: .calm
                 )
                 
                 // Start page input - показывается только если история выключена
-                if !enableBrowserHistory {
+                if !viewModel.appSettings.enableBrowserHistory {
                     VStack(alignment: .leading, spacing: Layout.Padding.small) {
                         HStack {
                             Image(systemName: "house.fill")
@@ -324,7 +321,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         
-                        TextField("Enter start page URL", text: $startPage)
+                        TextField("Enter start page URL", text: $viewModel.appSettings.startPage)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .font(.system(size: 14))
                             .padding(.leading, 24)
@@ -341,36 +338,36 @@ struct SettingsView: View {
                     title: "Cookies",
                     subtitle: "Website data storage",
                     icon: "externaldrive.connected.to.line.below",
-                    isOn: $enableCookies,
-                    accentColor: .calm
-                )
-                
-                Divider()
-                    .background(Color.tm.subTitle.opacity(0.2))
-                
-                ModernToggleRow(
-                    title: "Auto-Clear Cache",
-                    subtitle: "Clear cache on exit",
-                    icon: "trash.circle",
-                    isOn: $clearCacheOnExit,
+                    isOn: $viewModel.appSettings.enableCookies,
                     accentColor: .calm
                 )
                 
                 ModernToggleRow(
                     title: "Dark Theme",
-                    subtitle: "Night mode interface",
+                    subtitle: "Night mode browser",
                     icon: "moon.fill",
-                    isOn: $enableDarkMode,
+                    isOn: $viewModel.appSettings.enableBrowserDarkMode,
                     accentColor: .calm
                 )
-                
-                ModernToggleRow(
-                    title: "Notifications",
-                    subtitle: "Push notifications",
-                    icon: "bell.fill",
-                    isOn: $showNotifications,
-                    accentColor: .calm
-                )
+//                
+//                Divider()
+//                    .background(Color.tm.subTitle.opacity(0.2))
+//                
+//                ModernToggleRow(
+//                    title: "Auto-Clear Cache",
+//                    subtitle: "Clear cache on exit",
+//                    icon: "trash.circle",
+//                    isOn: $clearCacheOnExit,
+//                    accentColor: .calm
+//                )
+//                
+//                ModernToggleRow(
+//                    title: "Notifications",
+//                    subtitle: "Push notifications",
+//                    icon: "bell.fill",
+//                    isOn: $showNotifications,
+//                    accentColor: .calm
+//                )
             }
         }
     }
@@ -382,7 +379,7 @@ struct SettingsView: View {
             icon: "info.circle",
             accentColor: .tm.accentTertiary
         ) {
-            VStack(spacing: Layout.Padding.medium) {
+            VStack(spacing: Layout.Padding.regular) {
                 ActionRow(
                     title: "Rate App",
                     subtitle: "Share your experience",
