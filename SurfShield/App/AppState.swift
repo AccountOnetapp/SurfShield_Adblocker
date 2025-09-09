@@ -21,7 +21,8 @@ final class AppState: ObservableObject {
     
     init() {
         let isOnboardingShown = userDefaultsService.load(Bool.self, forKey: .onboardingCompleted) ?? false
-        self.viewState = isOnboardingShown ? .main : .onboarding
+//        self.viewState = isOnboardingShown ? .main : .onboarding
+        self.viewState = .onboarding
     }
     
     
