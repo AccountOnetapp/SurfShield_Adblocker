@@ -56,8 +56,8 @@ struct WebViewPanel: View {
                 
                 // Адресная строка (расширяется при скрытии кнопок)
                 AddressBarView(
-                    urlText: $currentURL,
-                    onGoAction: {
+                    urlText: observables.url.absoluteString,
+                    onGoAction: { currentURL in
                         onGoToURL(currentURL)
                     }
                 )

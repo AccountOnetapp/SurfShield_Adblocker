@@ -154,6 +154,8 @@ struct WebView: UIViewRepresentable {
             } else if keyPath == #keyPath(WKWebView.estimatedProgress) {
                 parent?.interactor.updateLoadingProgress(webView.estimatedProgress)
             } else if  keyPath == #keyPath(WKWebView.url) {
+                print("DEBUG: new url \(webView.url!.absoluteString)")
+                parent?.interactor.updateAddress(webView.url)
 //                parent?.interactor.goToUrl(string: webView.url!.absoluteString) //TODO: MAKE UPDATING ADDRESS BAR
             }
         }

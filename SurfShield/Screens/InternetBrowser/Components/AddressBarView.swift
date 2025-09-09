@@ -8,13 +8,23 @@
 import SwiftUI
 
 struct AddressBarView: View {
-    @Binding var urlText: String
-    let onGoAction: () -> Void
+    var urlText: String
+    let onGoAction: (String) -> Void
     
     @FocusState private var isFocused
     @State private var displayText: String = ""
     
     var body: some View {
+        content
+            .onChange(of: urlText) { newValue in
+                print("DEBUG: newValue \(newValue)")
+            }
+            .onAppear {
+                print("DEBUG: url text \(urlText)")
+            }
+    }
+    
+    var content: some View {
         HStack(alignment: .center, spacing: 12) {
             // Поле ввода
             TextField("Введите адрес сайта", text: $displayText)
@@ -29,15 +39,16 @@ struct AddressBarView: View {
                 .frame(height: 36, alignment: .center)
                 .onSubmit {
                     // Восстанавливаем полный URL с протоколом при отправке
-                    urlText = displayText
-                    onGoAction()
+                    onGoAction(displayText)
                 }
                 .onChange(of: isFocused) { focused in
                     if focused {
                         // При фокусе показываем полный URL (без анимации для мгновенного отклика)
                         displayText = urlText
-                        // Устанавливаем курсор в конец строки
-                        setCursorToEnd()
+                        // Выделяем весь текст
+                        DispatchQueue.main.async {
+                            selectAllText()
+                        }
                     } else {
                         // При потере фокуса убираем протокол
                         displayText = removeProtocol(from: urlText)
@@ -46,14 +57,14 @@ struct AddressBarView: View {
                 .onChange(of: displayText) { newValue in
                     // Обновляем urlText при изменении displayText
                     if isFocused {
-                        urlText = newValue
+//                        urlText = newValue
                     }
                 }
             
             // Кнопка очистки с тенью (показываем только когда поле активно)
 //            if isFocused && !displayText.isEmpty {
                 Button(action: {
-                    urlText = ""
+//                    urlText = ""
                     displayText = ""
                 }) {
                     ZStack {
@@ -111,7 +122,6 @@ struct AddressBarView: View {
                 displayText = removeProtocol(from: newValue)
             }
         }
-        
     }
     
     // Функция для удаления протокола из URL
@@ -131,29 +141,28 @@ struct AddressBarView: View {
         return cleanUrl
     }
     
-    // Функция для установки курсора в конец строки
-    private func setCursorToEnd() {
+    // Функция для выделения всего текста
+    private func selectAllText() {
         // Находим UITextField в иерархии представлений
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
-            findAndSetCursorInTextField(in: window)
+            findAndSelectAllInTextField(in: window)
         }
     }
     
-    private func findAndSetCursorInTextField(in view: UIView) {
+    private func findAndSelectAllInTextField(in view: UIView) {
         for subview in view.subviews {
             if let textField = subview as? UITextField {
-                // Устанавливаем курсор в конец текста
-                let endPosition = textField.endOfDocument
-                textField.selectedTextRange = textField.textRange(from: endPosition, to: endPosition)
+                // Выделяем весь текст
+                textField.selectAll(nil)
                 return
             } else {
-                findAndSetCursorInTextField(in: subview)
+                findAndSelectAllInTextField(in: subview)
             }
         }
     }
 }
 
 #Preview {
-    AddressBarView(urlText: .constant("https://google.com"), onGoAction: {})
+    AddressBarView(urlText: "https://google.com", onGoAction: { url in })
 }

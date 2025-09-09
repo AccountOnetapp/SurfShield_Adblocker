@@ -60,6 +60,11 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
         resourceMonitor?.delegate = self
     }
     
+    func updateAddress(_ url: URL?) {
+        guard let url = url else { return }
+        self.url = url
+    }
+    
     func goToUrl(string: String) {
         let processedURLString = processURLString(string)
         
