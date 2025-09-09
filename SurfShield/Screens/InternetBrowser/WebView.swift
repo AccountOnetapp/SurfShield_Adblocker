@@ -60,6 +60,7 @@ struct WebView: UIViewRepresentable {
         
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
+        webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.url), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoBack), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.canGoForward), options: [.new], context: nil)
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: [.new], context: nil)
@@ -78,6 +79,7 @@ struct WebView: UIViewRepresentable {
     
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
         // Удаляем наблюдатели при уничтожении view
+        uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.url))
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoBack))
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.canGoForward))
         uiView.removeObserver(coordinator, forKeyPath: #keyPath(WKWebView.estimatedProgress))
@@ -151,6 +153,8 @@ struct WebView: UIViewRepresentable {
                 parent?.interactor.setCanGoForward(webView.canGoForward)
             } else if keyPath == #keyPath(WKWebView.estimatedProgress) {
                 parent?.interactor.updateLoadingProgress(webView.estimatedProgress)
+            } else if  keyPath == #keyPath(WKWebView.url) {
+//                parent?.interactor.goToUrl(string: webView.url!.absoluteString) //TODO: MAKE UPDATING ADDRESS BAR
             }
         }
         
