@@ -305,22 +305,11 @@ triggering:
         - pattern: 'main'
           include: true
           source: true
+        - pattern: 'release/*'
+          include: true
+          source: true
     - tag
       tag_patterns:
         - pattern: 'v*'
           include: true
           source: true
-  branch_patterns:
-    - pattern: 'main'
-      include: true
-      source: true
-    - pattern: 'develop'
-      include: true
-      source: true
-    - pattern: 'release/*'
-      include: true
-      source: true
-  tag_patterns:
-    - pattern: 'v*'
-      include: true
-      source: true
