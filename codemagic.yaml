@@ -5,7 +5,7 @@ workflows:
     max_build_duration: 30
     environment:
       vars:
-        XCODE_WORKSPACE: "SurfShield.xcodeproj"
+        XCODE_PROJECT: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
         # Явно указываем все значения
@@ -20,7 +20,7 @@ workflows:
       - name: Build app (without signing)
         script: |
           xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
             --archive-flags "-destination 'generic/platform=iOS'" \
             --export-options-plist export_options.plist
