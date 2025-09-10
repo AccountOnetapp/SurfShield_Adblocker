@@ -11,6 +11,8 @@ struct OnboardingView: View {
     @State private var currentScreen = 1
     @State private var isAnimating = false
     
+    @EnvironmentObject var appState: AppState
+    
     private let totalScreens = 4
     
     
@@ -72,29 +74,14 @@ struct OnboardingView: View {
             
             // Кнопка Continue
             
-            // Кнопка Continue
-            Button(action: {
+            MainButton(title: "Continue") {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     if currentScreen < totalScreens - 1 {
                         currentScreen += 1
                     } else {
-                        // Завершение онбординга
-                        // Здесь можно добавить логику завершения
+                        appState.onboardingCompleted()
                     }
                 }
-            }) {
-                Text("Continue")
-                    .font(.sfProText(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 60)
-                    .background(
-                        Image(uiImage: createGradientImage())
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                        //                              .frame(width: 280)
-                    )
-                    .clipShape(.rect(cornerRadius: 16))
             }
         }
         .padding(.bottom, 14)
@@ -109,7 +96,32 @@ struct OnboardingView: View {
             .ignoresSafeArea()
         )
     }
+
+
+}
+
+struct MainButton: View {
+    var title: String
+    var onTap: () -> Void
     
+    var body: some View {
+        Button(action: {
+            onTap()
+        }) {
+            Text(title)
+                .font(.sfProText(size: 16, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60)
+                .background(
+                    Image(uiImage: createGradientImage())
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                    //                              .frame(width: 280)
+                )
+                .clipShape(.rect(cornerRadius: 16))
+        }
+    }
     
     // Функция для создания градиента через CALayer
     private func createGradientImage() -> UIImage {

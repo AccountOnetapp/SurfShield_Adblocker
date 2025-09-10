@@ -27,7 +27,7 @@ final class Coordinator: ObservableObject {
     @ViewBuilder func build(screen: Screen) -> some View {
         switch screen {
         case .paywall:
-            PaywallViewOld()
+            PaywallView()
         }
     }
 }

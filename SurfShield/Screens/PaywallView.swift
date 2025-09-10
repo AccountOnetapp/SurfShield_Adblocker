@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PayWallView: View {
+struct PaywallView: View {
     
     
     var body: some View {
@@ -29,6 +29,11 @@ struct PayWallView: View {
                 .padding(.horizontal, .large)
                 .padding(.bottom, .large)
             guaranteesTextContainer
+                .padding(.bottom, .large)
+            proposedText
+            Spacer(minLength: .zero)
+            continueButton
+                .padding(.bottom, 34)
         }
     }
     
@@ -86,8 +91,22 @@ struct PayWallView: View {
             Text("No extra cost".uppercased())
                 .opacity(0.6)
         }
-        .font(.sfProText(size: 24, weight: .bold))
+        .font(.sfProRoundedBold(size: 24))
+        .kerning(1)
         .foregroundStyle(.calmAccent)
+    }
+    
+    var proposedText: some View {
+        Text("Try 3 days free, after $8.99/week\n Cancel anytime")
+            .font(.sfProText(size: 15, weight: .medium))
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.tm.subTitleSecondary)
+    }
+    
+    var continueButton: some View {
+        MainButton(title: "Continue") {
+            //TODO: make purchase logic
+        }
     }
     
     func makeCheckmarkRow(text: String) -> some View {
@@ -103,6 +122,7 @@ struct PayWallView: View {
                 .foregroundStyle(.calmAccent)
         }
     }
+    
 }
 
 struct VerticalLabelView: View {
@@ -132,5 +152,5 @@ struct VerticalLabelView: View {
 }
 
 #Preview {
-    PayWallView()
+    PaywallView()
 }

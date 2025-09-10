@@ -190,8 +190,9 @@
 		8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */; };
 		8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */; };
 		8EBEC6632E6CD829005E5AF4 /* OnboardingViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6622E6CD829005E5AF4 /* OnboardingViewOld.swift */; };
-		8EC396BA2E7175CC00D340E1 /* PayWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC396B92E7175CC00D340E1 /* PayWallView.swift */; };
+		8EC396BA2E7175CC00D340E1 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC396B92E7175CC00D340E1 /* PaywallView.swift */; };
 		8EC396BD2E7177B800D340E1 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC396BC2E7177B800D340E1 /* String+Extensions.swift */; };
+		8EC396BE2E7189C200D340E1 /* SF-Pro-Rounded-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E42E70CB3C0090F1AD /* SF-Pro-Rounded-Bold.otf */; };
 		8EC58DAC2E67D387008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAB2E67D387008D48EF /* Punycode */; };
 		8EC58DAE2E67D38E008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAD2E67D38E008D48EF /* Punycode */; };
 		8EC58DB02E67D393008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAF2E67D393008D48EF /* Punycode */; };
@@ -540,7 +541,7 @@
 		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SurfShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
 		8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsObserver.swift; sourceTree = "<group>"; };
 		8EBEC6622E6CD829005E5AF4 /* OnboardingViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewOld.swift; sourceTree = "<group>"; };
-		8EC396B92E7175CC00D340E1 /* PayWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayWallView.swift; sourceTree = "<group>"; };
+		8EC396B92E7175CC00D340E1 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		8EC396BC2E7177B800D340E1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8EC58DC62E67E8A3008D48EF /* secure.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = secure.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC58DC82E67E8A3008D48EF /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
@@ -1027,7 +1028,7 @@
 				8EE69D052E6F0F0000BA1BF1 /* Settings */,
 				8E8FFB412E68162B00F20BF0 /* InternetBrowser */,
 				8EE294702E6E120F0060471B /* PaywallViewOld.swift */,
-				8EC396B92E7175CC00D340E1 /* PayWallView.swift */,
+				8EC396B92E7175CC00D340E1 /* PaywallView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1398,6 +1399,7 @@
 			files = (
 				8ECF28292E59BF64000A5748 /* Colors.xcassets in Resources */,
 				8E7B5E162E61D39B00D5E817 /* common.bin in Resources */,
+				8EC396BE2E7189C200D340E1 /* SF-Pro-Rounded-Bold.otf in Resources */,
 				8ECF28122E59BB03000A5748 /* Preview Assets.xcassets in Resources */,
 				8E7B5E222E61D39B00D5E817 /* version.txt in Resources */,
 				8E7B5E1E2E61D39B00D5E817 /* negated.bin in Resources */,
@@ -1731,7 +1733,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */,
-				8EC396BA2E7175CC00D340E1 /* PayWallView.swift in Sources */,
+				8EC396BA2E7175CC00D340E1 /* PaywallView.swift in Sources */,
 				8E7B5E532E61D70700D5E817 /* BlockerEntryEncoder.swift in Sources */,
 				8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */,
 				8EBB25E42E61C7E200E29966 /* ArrayExtension.swift in Sources */,

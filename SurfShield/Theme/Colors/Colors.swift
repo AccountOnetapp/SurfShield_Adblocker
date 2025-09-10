@@ -13,6 +13,7 @@ public enum ThemeColors: String {
     case accentTertiary = "AccentTertiary"
     case title = "Title"
     case subTitle = "Subtitle"
+    case subTitleSecondary = "SubtitleSecondary"
     case background = "Background"
     case backgroundSecondary = "BackgroundSecondary"
     case container = "Container"
@@ -41,6 +42,7 @@ public struct Colors {
     public var success: Color { ThemeColors.success.color }
     public var title: Color { ThemeColors.title.color }
     public var subTitle: Color { ThemeColors.subTitle.color }
+    public var subTitleSecondary: Color { ThemeColors.subTitleSecondary.color }
     public var calm: Color { ThemeColors.calm.color }
     public var calmSecondary: Color { ThemeColors.calmSecondary.color }
     public var calmAccent: Color { ThemeColors.calmAccent.color }
