@@ -5,7 +5,7 @@
     <key>method</key>
     <string>app-store</string>
     <key>teamID</key>
-    <string>YOUR_TEAM_ID</string>
+    <string>6TVC5Q5R78</string>
     <key>uploadBitcode</key>
     <false/>
     <key>uploadSymbols</key>
@@ -19,19 +19,19 @@
     <key>provisioningProfiles</key>
     <dict>
         <key>com.surfshield.app.banners</key>
-        <string>YOUR_BANNERS_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.banners</string>
         <key>com.surfshield.app.adblocker</key>
-        <string>YOUR_ADBLOCKER_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.adblocker</string>
         <key>com.surfshield.app.trackers</key>
-        <string>YOUR_TRACKERS_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.trackers</string>
         <key>com.surfshield.app.secure</key>
-        <string>YOUR_SECURE_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.secure</string>
         <key>com.surfshield.app.basic</key>
-        <string>YOUR_BASIC_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.basic</string>
         <key>com.surfshield.app.privacy</key>
-        <string>YOUR_PRIVACY_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.privacy</string>
         <key>com.surfshield.app.advanced</key>
-        <string>YOUR_ADVANCED_PROVISIONING_PROFILE</string>
+        <string>match AppStore com.surfshield.app.advanced</string>
     </dict>
 </dict>
 </plist>

@@ -8,10 +8,10 @@ workflows:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(...) # Замените на ваш Issuer ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(...) # Замените на ваш Key ID
-        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(...) # Замените на ваш Private Key
-        CERTIFICATE_PRIVATE_KEY: Encrypted(...) # Замените на ваш Certificate Private Key
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
+        CERTIFICATE_PRIVATE_KEY: Encrypted(CERTIFICATE_PRIVATE_KEY)
       xcode: latest
       cocoapods: default
     scripts:
@@ -68,6 +68,11 @@ workflows:
           - "com.surfshield.app.basic"
           - "com.surfshield.app.privacy"
           - "com.surfshield.app.advanced"
+        # Добавьте эти переменные:
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
+        CERTIFICATE_PRIVATE_KEY: Encrypted(CERTIFICATE_PRIVATE_KEY)
       xcode: latest
       cocoapods: default
     scripts:
@@ -188,10 +193,10 @@ workflows:
           - "com.surfshield.app.basic"
           - "com.surfshield.app.privacy"
           - "com.surfshield.app.advanced"
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(...)
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(...)
-        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(...)
-        CERTIFICATE_PRIVATE_KEY: Encrypted(...)
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
+        CERTIFICATE_PRIVATE_KEY: Encrypted(CERTIFICATE_PRIVATE_KEY)
       xcode: latest
       cocoapods: default
     scripts:
