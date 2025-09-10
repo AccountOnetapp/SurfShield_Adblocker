@@ -21,6 +21,7 @@ workflows:
           -----END PRIVATE KEY-----
         # Явно указываем сертификат
         CERTIFICATE_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
           MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCq7QwGRlqEqAqx
           WtU8GFp5SZqI5kZr3Fe7YsQMgTWzWFiiam/3PY6H0uMIzTh1OACgO9SBW7Fo6DjQ
           +XuxeG5T6w/YTD4c5Mv8fZO4/OiwtCcgA7d4MYM0gCqmLW5g0a8JKVeb9C/3Am9G
