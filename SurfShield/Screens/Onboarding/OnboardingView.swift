@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @State private var currentScreen = 1
+    @State private var currentScreen = 0
     @State private var isAnimating = false
     
     @EnvironmentObject var appState: AppState
@@ -28,6 +28,7 @@ struct OnboardingView: View {
                 FirstOnboardingScreen()
                     .tag(0)
                     .id(0)
+                    .padding(.bottom, 44)
                 
                 Group {
                     OnboardingScreen(
@@ -164,46 +165,46 @@ struct MainButton: View {
 // MARK: - Первый экран
 struct FirstOnboardingScreen: View {
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
-            
-            VStack(spacing: 16) {
-                // Заголовок
-                Text("Добро пожаловать в SurfShield")
-                    .font(.system(size: 36, weight: .bold, design: .default))
-                    .foregroundColor(.tm.title)
-                    .multilineTextAlignment(.center)
-                
-                // Подзаголовок
-                Text("Защитите себя от рекламы и трекеров")
-                    .font(.system(size: 16, weight: .regular, design: .default))
-                    .foregroundColor(.tm.subTitle)
-                    .multilineTextAlignment(.center)
-            }
-            
-            // Видео (заглушка)
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.tm.container)
-                .frame(height: 200)
-                .overlay(
-                    VStack(spacing: 12) {
-                        Image(systemName: "play.circle.fill")
-                            .font(.system(size: 48))
-                            .foregroundColor(.tm.accent)
-                        
-                        Text("Видео-инструкция")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.tm.title)
-                    }
-                )
-                .padding(.horizontal, 24)
-            
-            // Текст
-            Text("Следуйте инструкциям в видео, чтобы настроить блокировщик рекламы в Safari")
-                .font(.system(size: 16, weight: .regular, design: .default))
+        
+        VStack(spacing: .zero) {
+            // Заголовок
+            Text("How to\nEnable Blocking".attributed(phrases: ["Enable Blocking"], color: .tm.calmAccent, font: .sfProText(size: 36, weight: .bold)))
+                .font(.system(size: 36, weight: .bold, design: .default))
+                .foregroundColor(.tm.title)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 42)
+            // Подзаголовок
+            Text("Before we can start, SufrShield extensions need to be enabled in Safari settings")
+                .font(.sfProText(size: 16, weight: .regular))
                 .foregroundColor(.tm.subTitle)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 24)
+       
+            Spacer(minLength: .zero)
+        // Видео (заглушка)
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.clear)
+                .frame(width: 260, height: 230)
+                .overlay(alignment: .bottomTrailing) {
+                    Image(.onboarding0Safari)
+                        .resizable()
+                        .frame(width: 144, height: 144)
+                }
+                .overlay(alignment: .topLeading) {
+                    Image(.onboarding0AppIcon)
+                        .resizable()
+                        .frame(width: 144, height: 144)
+                        .shadow(color: .black.opacity(0.4), radius: 60, x: .zero, y: 30)
+                }
+    
+            Spacer(minLength: .zero)
+        
+        // Текст
+        Text("Settings → Apps → Safari → Extensions → Content Blockers and turn on the SufrShield switches")
+            .font(.system(size: 16, weight: .regular, design: .default))
+            .lineSpacing(3.5)
+            .foregroundStyle(.tm.subTitle)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 22)
         }
     }
 }
