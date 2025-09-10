@@ -9,7 +9,7 @@ workflows:
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
         # Только одна переменная для тестирования
-        APP_STORE_CONNECT_ISSUER_ID: APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_ISSUER_ID: "c128b816-fa99-4aae-be3b-0962f391fa08"
       xcode: latest
     scripts:
       - name: Build app (without signing)
