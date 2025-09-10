@@ -8,8 +8,13 @@ workflows:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
-        # Явно указываем значение
+        # Явно указываем все значения
         APP_STORE_CONNECT_ISSUER_ID: "c128b816-fa99-4aae-be3b-0962f391fa08"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "GLJ7NML7J4"
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgeERGWjCvJD84GJEA2rRKdlSOgOP1Ng7yTBwdeU8MNmgCgYIKoZIzj0DAQehRANCAAQfzvzqxS7wR5YgJDpN0S2jEaknmmfc116JQ9vIK8O3FX82NhM29q13BqqrFVR1mUiw9C+LmqgVZtCl6Zzxaya4
+          -----END PRIVATE KEY-----
       xcode: latest
       cocoapods: default
     scripts:
