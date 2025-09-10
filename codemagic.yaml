@@ -10,7 +10,7 @@ workflows:
         BUNDLE_ID: "com.surfshield.app"
         # Подключаем всю группу переменных
         groups:
-          - surfshield_group  # название вашей группы переменных в CodeMagic
+          "surfshield_group"  # название вашей группы переменных в CodeMagic
       xcode: latest
     scripts:
       - name: Set up keychain to be used for codesigning
