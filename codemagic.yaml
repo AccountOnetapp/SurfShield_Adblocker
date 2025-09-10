@@ -1,53 +1,10 @@
 workflows:
-  # Простейший workflow для тестирования
-  simple-test:
-    name: Simple Test
-    max_build_duration: 30
+  test_satin_ios:
+    name: iOS Native
+    max_build_duration: 120
+    instance_type: mac_mini_m2
     environment:
-      vars:
-        XCODE_PROJECT: "SurfShield.xcodeproj"
-        XCODE_SCHEME: "SurfShield"
-        BUNDLE_ID: "com.surfshield.app"
-        # Подключаем всю группу переменных
-        groups:
-          "surfshield_group"  # название вашей группы переменных в CodeMagic
-      xcode: latest
-    scripts:
-      - name: Set up keychain to be used for codesigning
-        script: |
-          keychain initialize
-      - name: Fetch signing files for main app
-        script: |
-          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
-      - name: Fetch signing files for all extensions
-        script: |
-          app-store-connect fetch-signing-files "com.surfshield.app.banners" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.adblocker" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.trackers" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.secure" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.basic" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.privacy" --type IOS_APP_EXTENSION --create
-          app-store-connect fetch-signing-files "com.surfshield.app.advanced" --type IOS_APP_EXTENSION --create
-      - name: Set up signing certificate
-        script: |
-          keychain add-certificates
-      - name: Set up code signing settings on Xcode project
-        script: |
-          xcode-project use-profiles
-      - name: Build app
-        script: |
-          xcode-project build-ipa \
-            --project "$XCODE_PROJECT" \
-            --scheme "$XCODE_SCHEME" \
-            --archive-flags "-destination 'generic/platform=iOS'" \
-            --export-options-plist export_options.plist
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/xcarchive/*.xcarchive
-    publishing:
-      email:
-        recipients:
-        - your-email@example.com
-        notify:
-          success: true
-          failure: true
+      groups:
+        - surfshield_group
+    integrations:
+      app_store_connect: Surf Adbcloker Team
