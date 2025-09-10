@@ -297,19 +297,18 @@ workflows:
 # Триггеры для автоматического запуска
 triggering:
   events:
-    - push
-      branch_patterns:
-        - pattern: 'develop'
-          include: true
-          source: true
-        - pattern: 'main'
-          include: true
-          source: true
-        - pattern: 'release/*'
-          include: true
-          source: true
-    - tag
-      tag_patterns:
-        - pattern: 'v*'
-          include: true
-          source: true
+    - push:
+        branch_patterns:
+          - pattern: 'develop'
+            include: true
+            source: true
+          - pattern: 'main'
+            include: true
+            source: true
+          - pattern: 'release/*'
+            include: true
+            source: true
+    - tag:
+        tag_patterns:
+          - pattern: 'v*'
+            include: true
