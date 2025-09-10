@@ -40,6 +40,8 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/xcarchive/*.xcarchive
+    integrations:
+      app_store_connect: Surf Adbcloker Team
     publishing:
       app_store_connect:
         auth: integration
@@ -263,6 +265,8 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/xcarchive/*.xcarchive
+    integrations:
+      app_store_connect: Surf Adbcloker Team
     publishing:
       app_store_connect:
         auth: integration
