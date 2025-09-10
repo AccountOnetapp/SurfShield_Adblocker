@@ -42,7 +42,7 @@ workflows:
       - build/ios/xcarchive/*.xcarchive
     publishing:
       app_store_connect:
-        auth: api_key
+        auth: integration
         submit_to_testflight: true
         submit_to_app_store: false
       email:
@@ -59,14 +59,7 @@ workflows:
     environment:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
-        BUNDLE_IDS:
-          - "com.surfshield.app.banners"
-          - "com.surfshield.app.adblocker"
-          - "com.surfshield.app.trackers"
-          - "com.surfshield.app.secure"
-          - "com.surfshield.app.basic"
-          - "com.surfshield.app.privacy"
-          - "com.surfshield.app.advanced"
+        BUNDLE_IDS: "com.surfshield.app.banners,com.surfshield.app.adblocker,com.surfshield.app.trackers,com.surfshield.app.secure,com.surfshield.app.basic,com.surfshield.app.privacy,com.surfshield.app.advanced"
         APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
         APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
         APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
@@ -181,14 +174,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         BUNDLE_ID: "com.surfshield.app"
-        BUNDLE_IDS:
-          - "com.surfshield.app.banners"
-          - "com.surfshield.app.adblocker"
-          - "com.surfshield.app.trackers"
-          - "com.surfshield.app.secure"
-          - "com.surfshield.app.basic"
-          - "com.surfshield.app.privacy"
-          - "com.surfshield.app.advanced"
+        BUNDLE_IDS: "com.surfshield.app.banners,com.surfshield.app.adblocker,com.surfshield.app.trackers,com.surfshield.app.secure,com.surfshield.app.basic,com.surfshield.app.privacy,com.surfshield.app.advanced"
         APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
         APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
         APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
@@ -279,7 +265,7 @@ workflows:
       - build/ios/xcarchive/*.xcarchive
     publishing:
       app_store_connect:
-        auth: api_key
+        auth: integration
         submit_to_testflight: true
         submit_to_app_store: false
       email:
