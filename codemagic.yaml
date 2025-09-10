@@ -11,7 +11,14 @@ workflows:
         # Используем переменные напрямую (если они secret)
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+        # Явно указываем приватный ключ
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg/eERGWjCvJD84GJE
+          A2rRKdlSOgOP1Ng7yTBwdeU8MNmgCgYIKoZIzj0DAQehRANCAAQfzvzqxS7wR5Yg
+          JDpN0S2jEaknmmfc116JQ9vIK8O3FX82NhM29q13BqqrFVR1mUiw9C+LmqgVZtCl
+          6Zzxaya4
+          -----END PRIVATE KEY-----
         CERTIFICATE_PRIVATE_KEY: $CERTIFICATE_PRIVATE_KEY
       xcode: latest
     scripts:
