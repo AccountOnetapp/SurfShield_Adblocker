@@ -60,19 +60,6 @@ workflows:
     environment:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
-        BUNDLE_IDS:
-          - "com.surfshield.app.banners"
-          - "com.surfshield.app.adblocker"
-          - "com.surfshield.app.trackers"
-          - "com.surfshield.app.secure"
-          - "com.surfshield.app.basic"
-          - "com.surfshield.app.privacy"
-          - "com.surfshield.app.advanced"
-        # Добавьте эти переменные:
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
-        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
-        CERTIFICATE_PRIVATE_KEY: Encrypted(CERTIFICATE_PRIVATE_KEY)
       xcode: latest
       cocoapods: default
     scripts:
@@ -185,14 +172,6 @@ workflows:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         BUNDLE_ID: "com.surfshield.app"
-        BUNDLE_IDS:
-          - "com.surfshield.app.banners"
-          - "com.surfshield.app.adblocker"
-          - "com.surfshield.app.trackers"
-          - "com.surfshield.app.secure"
-          - "com.surfshield.app.basic"
-          - "com.surfshield.app.privacy"
-          - "com.surfshield.app.advanced"
         APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
         APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
         APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
