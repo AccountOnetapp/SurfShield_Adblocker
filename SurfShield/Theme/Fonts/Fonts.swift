@@ -25,8 +25,13 @@ extension Font {
         return .custom("SFProText-Bold", size: size)
     }
     
-    // Удобные методы с весами
-    static func sfProText(size: CGFloat, weight: SFProTextWeight = .regular) -> Font {
+    // SF Pro Rounded шрифты
+    static func sfProRoundedBold(size: CGFloat) -> Font {
+        return .custom("SFProRounded-Bold", size: size)
+    }
+    
+    // Удобные методы с весами для SF Pro Text
+    public static func sfProText(size: CGFloat, weight: SFProTextWeight = .regular) -> Font {
         switch weight {
         case .regular:
             return .sfProTextRegular(size: size)
@@ -38,12 +43,25 @@ extension Font {
             return .sfProTextBold(size: size)
         }
     }
+    
+    // Удобные методы с весами для SF Pro Rounded
+    public static func sfProRounded(size: CGFloat, weight: SFProRoundedWeight = .bold) -> Font {
+        switch weight {
+        case .bold:
+            return .sfProRoundedBold(size: size)
+        }
+    }
 }
 
-// Enum для весов шрифта
-enum SFProTextWeight {
+// Enum для весов шрифта SF Pro Text
+public enum SFProTextWeight {
     case regular
     case medium
     case semibold
+    case bold
+}
+
+// Enum для весов шрифта SF Pro Rounded
+public enum SFProRoundedWeight {
     case bold
 }

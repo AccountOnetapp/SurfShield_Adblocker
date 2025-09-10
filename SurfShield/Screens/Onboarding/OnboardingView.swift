@@ -20,7 +20,6 @@ struct OnboardingView: View {
     }
     
     var content: some View {
-        
         VStack(spacing: 0) {
             // Контент экранов
             TabView(selection: $currentScreen) {
@@ -32,11 +31,11 @@ struct OnboardingView: View {
                     OnboardingScreen(
                         title: "Protection",
                         imageResource: .onboarding1,
-                        attributedText: makeAttributedText(
-                            text: "SufrShield protects personal data and stops intrusive ads and tracking",
-                            phrases: ["SufrShield", "ads and tracking"],
-                            color: .tm.calmAccent
-                        )
+                        attributedText: "SufrShield protects personal data and stops intrusive ads and tracking"
+                            .attributed(
+                                phrases: ["SufrShield", "ads and tracking"],
+                                color: .tm.calmAccent
+                            )
                     )
                     .tag(1)
                     .id(1)
@@ -44,11 +43,11 @@ struct OnboardingView: View {
                     OnboardingScreen(
                         title: "Speed",
                         imageResource: .onboarding2,
-                        attributedText: makeAttributedText(
-                            text: "Download faster, play, and go online without threats and annoying banners",
-                            phrases: ["Download", "annoying banners"],
-                            color: .tm.calmAccent
-                        )
+                        attributedText: "Download faster, play, and go online without threats and annoying banners"
+                            .attributed(
+                                phrases: ["Download", "annoying banners"],
+                                color: .tm.calmAccent
+                            )
                     )
                     .tag(2)
                     .id(2)
@@ -56,11 +55,11 @@ struct OnboardingView: View {
                     OnboardingScreen(
                         title: "Freedom",
                         imageResource: .onboarding3,
-                        attributedText: makeAttributedText(
-                            text: "No ads, no trackers — just freedom, comfort, and fast website loading",
-                            phrases: ["No ads, no trackers", "fast website"],
-                            color: .tm.calmAccent
-                        )
+                        attributedText: "No ads, no trackers — just freedom, comfort, and fast website loading"
+                            .attributed(
+                                phrases: ["No ads, no trackers", "fast website"],
+                                color: .tm.calmAccent
+                            )
                     )
                     .tag(3)
                     .id(3)
@@ -111,27 +110,6 @@ struct OnboardingView: View {
         )
     }
     
-    // Универсальный метод для создания AttributedString
-    private func makeAttributedText(
-        text: String,
-        phrases: [String],
-        color: Color
-    ) -> AttributedString {
-        var attributedString = AttributedString(text)
-        
-        // Настройки базового шрифта - SF Pro Text
-        attributedString.font = .sfProText(size: 24, weight: .semibold)
-        attributedString.foregroundColor = UIColor(Color.tm.title)
-        
-        // Выделяем указанные фразы
-        for phrase in phrases {
-            if let range = attributedString.range(of: phrase) {
-                attributedString[range].foregroundColor = UIColor(color)
-            }
-        }
-        
-        return attributedString
-    }
     
     // Функция для создания градиента через CALayer
     private func createGradientImage() -> UIImage {

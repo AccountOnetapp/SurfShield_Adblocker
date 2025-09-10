@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// Useful string extensions.
 extension String {

@@ -143,7 +143,7 @@ struct PricingView: View {
 }
 
 // MARK: - Main PaywallView
-struct PaywallView: View {
+struct PaywallViewOld: View {
     @State private var selectedPlan: String = "monthly"
     @Environment(\.dismiss) private var dismiss
     
@@ -290,5 +290,5 @@ struct PaywallView: View {
 }
 
 #Preview {
-    PaywallView()
+    PaywallViewOld()
 }

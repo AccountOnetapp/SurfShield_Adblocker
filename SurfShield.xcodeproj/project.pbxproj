@@ -190,6 +190,8 @@
 		8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */; };
 		8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */; };
 		8EBEC6632E6CD829005E5AF4 /* OnboardingViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBEC6622E6CD829005E5AF4 /* OnboardingViewOld.swift */; };
+		8EC396BA2E7175CC00D340E1 /* PayWallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC396B92E7175CC00D340E1 /* PayWallView.swift */; };
+		8EC396BD2E7177B800D340E1 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC396BC2E7177B800D340E1 /* String+Extensions.swift */; };
 		8EC58DAC2E67D387008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAB2E67D387008D48EF /* Punycode */; };
 		8EC58DAE2E67D38E008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAD2E67D38E008D48EF /* Punycode */; };
 		8EC58DB02E67D393008D48EF /* Punycode in Frameworks */ = {isa = PBXBuildFile; productRef = 8EC58DAF2E67D393008D48EF /* Punycode */; };
@@ -388,15 +390,15 @@
 		8EE1428F2E6B14A500918447 /* test_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE1428E2E6B14A400918447 /* test_rules.txt */; };
 		8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE142A12E6B737900918447 /* ResourceMonitor.swift */; };
 		8EE142A72E6B7D6300918447 /* domains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8EE142A62E6B7D6300918447 /* domains.txt */; };
-		8EE294712E6E120F0060471B /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE294702E6E120F0060471B /* PaywallView.swift */; };
+		8EE294712E6E120F0060471B /* PaywallViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE294702E6E120F0060471B /* PaywallViewOld.swift */; };
 		8EE69D072E6F0F0F00BA1BF1 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE69D062E6F0F0F00BA1BF1 /* SettingsViewModel.swift */; };
 		8EF3E7DF2E7087140090F1AD /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF3E7DE2E7087140090F1AD /* OnboardingView.swift */; };
-		8EF3E7F02E70CB990090F1AD /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF3E7EF2E70CB990090F1AD /* Fonts.swift */; };
 		8EF3E7E22E708BBA0090F1AD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E12E708BBA0090F1AD /* Images.xcassets */; };
 		8EF3E7E92E70CB980090F1AD /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E52E70CB980090F1AD /* SF-Pro-Text-Bold.otf */; };
 		8EF3E7EA2E70CB980090F1AD /* SF-Pro-Text-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E62E70CB980090F1AD /* SF-Pro-Text-Medium.otf */; };
 		8EF3E7EB2E70CB990090F1AD /* SF-Pro-Text-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E72E70CB990090F1AD /* SF-Pro-Text-Regular.otf */; };
 		8EF3E7EC2E70CB990090F1AD /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E82E70CB990090F1AD /* SF-Pro-Text-Semibold.otf */; };
+		8EF3E7F02E70CB990090F1AD /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF3E7EF2E70CB990090F1AD /* Fonts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -538,6 +540,8 @@
 		8EBEC6552E6C630F005E5AF4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserDefaultsKeys.swift; path = SurfShield/Shared/UserDefaultsKeys.swift; sourceTree = SOURCE_ROOT; };
 		8EBEC65F2E6C7D88005E5AF4 /* UserDefaultsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsObserver.swift; sourceTree = "<group>"; };
 		8EBEC6622E6CD829005E5AF4 /* OnboardingViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewOld.swift; sourceTree = "<group>"; };
+		8EC396B92E7175CC00D340E1 /* PayWallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayWallView.swift; sourceTree = "<group>"; };
+		8EC396BC2E7177B800D340E1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8EC58DC62E67E8A3008D48EF /* secure.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = secure.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EC58DC82E67E8A3008D48EF /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EC58DCA2E67E8A3008D48EF /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -583,7 +587,7 @@
 		8EE1428E2E6B14A400918447 /* test_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_rules.txt; sourceTree = "<group>"; };
 		8EE142A12E6B737900918447 /* ResourceMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMonitor.swift; sourceTree = "<group>"; };
 		8EE142A62E6B7D6300918447 /* domains.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domains.txt; sourceTree = "<group>"; };
-		8EE294702E6E120F0060471B /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		8EE294702E6E120F0060471B /* PaywallViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewOld.swift; sourceTree = "<group>"; };
 		8EE69D062E6F0F0F00BA1BF1 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		8EF3E7DE2E7087140090F1AD /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		8EF3E7E12E708BBA0090F1AD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -828,6 +832,14 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		8EC396BB2E7177A200D340E1 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8EC396BC2E7177B800D340E1 /* String+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		8EC4E9102E6F072500822E21 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -959,6 +971,7 @@
 				8ECF28282E59BDCB000A5748 /* Screens */,
 				8ECF280E2E59BB03000A5748 /* Assets.xcassets */,
 				8EF3E7E02E708B9D0090F1AD /* Resources */,
+				8EC396BB2E7177A200D340E1 /* Extensions */,
 				8ECF28212E59BC80000A5748 /* Theme */,
 				8ECF28102E59BB03000A5748 /* Preview Content */,
 				8E9F1AF12E5C94C30093C76B /* Constants.swift */,
@@ -1013,7 +1026,8 @@
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
 				8EE69D052E6F0F0000BA1BF1 /* Settings */,
 				8E8FFB412E68162B00F20BF0 /* InternetBrowser */,
-				8EE294702E6E120F0060471B /* PaywallView.swift */,
+				8EE294702E6E120F0060471B /* PaywallViewOld.swift */,
+				8EC396B92E7175CC00D340E1 /* PayWallView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1717,6 +1731,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */,
+				8EC396BA2E7175CC00D340E1 /* PayWallView.swift in Sources */,
 				8E7B5E532E61D70700D5E817 /* BlockerEntryEncoder.swift in Sources */,
 				8ECF280D2E59BAFE000A5748 /* BlockAdsView.swift in Sources */,
 				8EBB25E42E61C7E200E29966 /* ArrayExtension.swift in Sources */,
@@ -1755,6 +1770,7 @@
 				8EBB25912E61C79500E29966 /* WebExtensionHelpers.swift in Sources */,
 				8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */,
 				8E7B5E482E61D6EE00D5E817 /* CompilationResult.swift in Sources */,
+				8EC396BD2E7177B800D340E1 /* String+Extensions.swift in Sources */,
 				8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */,
 				8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */,
 				8ECF280B2E59BAFE000A5748 /* SurfShieldApp.swift in Sources */,
@@ -1773,7 +1789,7 @@
 				8EBEC6602E6C7D88005E5AF4 /* UserDefaultsObserver.swift in Sources */,
 				8ECF28202E59BC57000A5748 /* Screen.swift in Sources */,
 				8EBB25EC2E61C7E200E29966 /* PrefixMatcher.swift in Sources */,
-				8EE294712E6E120F0060471B /* PaywallView.swift in Sources */,
+				8EE294712E6E120F0060471B /* PaywallViewOld.swift in Sources */,
 				8EBB25B62E61C7C700E29966 /* SyntaxError.swift in Sources */,
 				8EBB25B22E61C7C700E29966 /* RuleConverter.swift in Sources */,
 				8ECF28272E59BCD6000A5748 /* Padding.swift in Sources */,

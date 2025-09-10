@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ThemeColors: String {
+public enum ThemeColors: String {
     case accent = "Accent"
     case accentSecondary = "AccentSecondary"
     case accentTertiary = "AccentTertiary"
@@ -30,21 +30,21 @@ enum ThemeColors: String {
     }
 }
 
-struct Colors {
-    var accent: Color { ThemeColors.accent.color }
-    var accentSecondary: Color { ThemeColors.accentSecondary.color }
-    var accentTertiary: Color { ThemeColors.accentTertiary.color }
-    var background: Color { ThemeColors.background.color }
-    var backgroundSecondary: Color { ThemeColors.backgroundSecondary.color }
-    var container: Color { ThemeColors.container.color }
-    var error: Color { ThemeColors.error.color }
-    var success: Color { ThemeColors.success.color }
-    var title: Color { ThemeColors.title.color }
-    var subTitle: Color { ThemeColors.subTitle.color }
-    var calm: Color { ThemeColors.calm.color }
-    var calmSecondary: Color { ThemeColors.calmSecondary.color }
-    var calmAccent: Color { ThemeColors.calmAccent.color }
-    var calmAccentSecondary: Color { ThemeColors.calmAccentSecondary.color }
+public struct Colors {
+    public var accent: Color { ThemeColors.accent.color }
+    public var accentSecondary: Color { ThemeColors.accentSecondary.color }
+    public var accentTertiary: Color { ThemeColors.accentTertiary.color }
+    public var background: Color { ThemeColors.background.color }
+    public var backgroundSecondary: Color { ThemeColors.backgroundSecondary.color }
+    public var container: Color { ThemeColors.container.color }
+    public var error: Color { ThemeColors.error.color }
+    public var success: Color { ThemeColors.success.color }
+    public var title: Color { ThemeColors.title.color }
+    public var subTitle: Color { ThemeColors.subTitle.color }
+    public var calm: Color { ThemeColors.calm.color }
+    public var calmSecondary: Color { ThemeColors.calmSecondary.color }
+    public var calmAccent: Color { ThemeColors.calmAccent.color }
+    public var calmAccentSecondary: Color { ThemeColors.calmAccentSecondary.color }
 }
 
 
@@ -57,7 +57,7 @@ extension ShapeStyle where Self == Color {
 
 // Расширение для Color
 extension Color {
-    static var tm: Colors { Colors() }
+    public static var tm: Colors { Colors() }
     
     init(color: ThemeColors) {
         self = color.color
