@@ -8,11 +8,7 @@ workflows:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
-        # Только App Store Connect переменные
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
-        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
-        # Убираем CERTIFICATE_PRIVATE_KEY пока что
+        # Без переменных окружения вообще
       xcode: latest
       cocoapods: default
     scripts:
