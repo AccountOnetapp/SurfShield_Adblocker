@@ -299,13 +299,10 @@ triggering:
   events:
     - push
       branch_patterns:
-        - pattern: 'main'
-          include: true
-          source: true
         - pattern: 'develop'
           include: true
           source: true
-        - pattern: 'release/*'
+        - pattern: 'main'
           include: true
           source: true
     - tag
