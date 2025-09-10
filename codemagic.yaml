@@ -11,7 +11,7 @@ workflows:
         # Используем переменные напрямую (если они secret)
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        # Явно указываем приватный ключ
+        # App Store Connect API приватный ключ (короткий)
         APP_STORE_CONNECT_PRIVATE_KEY: |
           -----BEGIN PRIVATE KEY-----
           MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg/eERGWjCvJD84GJE
@@ -19,7 +19,7 @@ workflows:
           JDpN0S2jEaknmmfc116JQ9vIK8O3FX82NhM29q13BqqrFVR1mUiw9C+LmqgVZtCl
           6Zzxaya4
           -----END PRIVATE KEY-----
-        # Явно указываем сертификат
+        # iOS Distribution сертификат приватный ключ (длинный)
         CERTIFICATE_PRIVATE_KEY: |
           -----BEGIN PRIVATE KEY-----
           MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCq7QwGRlqEqAqx
@@ -50,6 +50,31 @@ workflows:
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
       xcode: latest
+      integrations:
+      app_store_connect: Surf Adbcloker Team  # Имя вашей интеграции из CodeMagic
+    scripts:
+      - name: Install CocoaPods dependencies
+        script: pod install
+      - name: Build app for release
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME" \
+            --archive-flags "-destination 'generic/platform=iOS'" \
+            --export-options-plist export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: true
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
     scripts:
       - name: Set up keychain to be used for codesigning
         script: |
