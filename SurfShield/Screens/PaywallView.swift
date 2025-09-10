@@ -9,13 +9,39 @@ import SwiftUI
 
 struct PaywallView: View {
     
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        content
-            .frame(maxWidth: .infinity)
-            .background(
-                backgroundGradient
-            )
+        NavigationView {
+            content
+                .background(
+                    backgroundGradient
+                )
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(.subtitleSecondary)
+                        }
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            dismiss()
+                            
+                        }) {
+                            Text("Restore")
+                                .font(.system(size: 20, weight: .regular))
+                                .foregroundStyle(.subtitleSecondary)
+                        }
+                    }
+                }
+        }
     }
     
     var content: some View {
@@ -33,7 +59,11 @@ struct PaywallView: View {
             proposedText
             Spacer(minLength: .zero)
             continueButton
-                .padding(.bottom, 34)
+                .padding(.horizontal, .medium)
+                .padding(.bottom, 22)
+            
+            privacySection
+                .padding(.horizontal, .medium)
         }
     }
     
@@ -47,7 +77,7 @@ struct PaywallView: View {
             )
             VerticalLabelView(
                 imageResource: .ads,
-                text: "Remove advertising",
+                text: "Block tracking",
                 padding: .smallExt
             )
             VerticalLabelView(
@@ -109,6 +139,34 @@ struct PaywallView: View {
         }
     }
     
+    var privacySection: some View {
+        HStack(spacing: 20) {
+            Button(action: {
+                if let url = URL(string: Constants.privacyPolicyURL) {
+                    UIApplication.shared.open(url)
+                }
+            }) {
+                Text("Privacy Policy")
+                    .font(.sfProText(size: 13, weight: .medium))
+                    .foregroundStyle(.tm.subTitleSecondary)
+            }
+            
+            Text("•")
+                .font(.sfProText(size: 13, weight: .medium))
+                .foregroundStyle(.tm.subTitleSecondary)
+            
+            Button(action: {
+                if let url = URL(string: Constants.termsOfUseURL) {
+                    UIApplication.shared.open(url)
+                }
+            }) {
+                Text("Terms of Use")
+                    .font(.sfProText(size: 13, weight: .medium))
+                    .foregroundStyle(.tm.subTitleSecondary)
+            }
+        }
+    }
+    
     func makeCheckmarkRow(text: String) -> some View {
         HStack(spacing: .medium) {
             Text(text)
@@ -135,8 +193,8 @@ struct VerticalLabelView: View {
             Image(imageResource)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-//                .frame(maxWidth: 100, maxHeight: 100)
-                .frame(width: 80, height: 80)
+                .frame(minWidth: 50, maxWidth: 80, minHeight: 50, maxHeight: 80)
+//                .frame(width: 80, height: 80)
             
             Text(text)
                 .font(.sfProText(size: 12, weight: .medium))

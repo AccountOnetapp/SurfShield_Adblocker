@@ -218,7 +218,7 @@ struct OnboardingScreen: View {
         VStack(spacing: .zero) {
             Spacer()
             
-            VStack(spacing: 24) {
+            VStack(spacing: .zero) {
                 // Заголовок
                 Text(title)
                     .font(.sfProText(size: 36, weight: .bold))
@@ -230,11 +230,13 @@ struct OnboardingScreen: View {
                 // Изображение
                 Image(imageResource)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(height: 342)
+                    .padding(.top, .large)
                 Spacer(minLength: .zero)
                 // Текст с атрибутами
                 Text(attributedText)
+                    .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, .medium)
             }
