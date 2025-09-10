@@ -379,6 +379,22 @@ struct SettingsView: View {
                     icon: "hand.raised.fill",
                     accentColor: .tm.accentSecondary
                 ) {
+                    if let url = URL(string: Constants.privacyPolicyURL) {
+                        UIApplication.shared.open(url)
+                    }
+                    let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                    impactFeedback.impactOccurred()
+                }
+                
+                ActionRow(
+                    title: "Terms of Use",
+                    subtitle: "Terms and conditions",
+                    icon: "doc.text.fill",
+                    accentColor: .tm.accentTertiary
+                ) {
+                    if let url = URL(string: Constants.termsOfUseURL) {
+                        UIApplication.shared.open(url)
+                    }
                     let impactFeedback = UIImpactFeedbackGenerator(style: .light)
                     impactFeedback.impactOccurred()
                 }

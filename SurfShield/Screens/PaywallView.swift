@@ -1,291 +1,211 @@
 //
-//  PaywallView.swift
-//  SufrShield
+//  PayWallView.swift
+//  SurfShield
 //
-//  Created by Артур Кулик on 07.09.2025.
+//  Created by Артур Кулик on 10.09.2025.
 //
 
 import SwiftUI
 
-// MARK: - Models
-struct SubscriptionPlan {
-    let id: String
-    let title: String
-    let description: String
-    let price: String
-    let period: String
-    let isPopular: Bool
-    let features: [String]
-    let discount: String?
-}
-
-// MARK: - Mock Data
-extension SubscriptionPlan {
-    static let mockPlans: [SubscriptionPlan] = [
-        SubscriptionPlan(
-            id: "weekly",
-            title: "Weekly",
-            description: "Trial period",
-            price: "₽99",
-            period: "/week",
-            isPopular: false,
-            features: [
-                "Smart ad blocking",
-                "Tracker protection",
-                "Fast browser"
-            ],
-            discount: "Try first"
-        ),
-        SubscriptionPlan(
-            id: "monthly",
-            title: "Monthly",
-            description: "Basic plan",
-            price: "₽299",
-            period: "/month",
-            isPopular: false,
-            features: [
-                "Smart ad blocking",
-                "Tracker protection",
-                "Fast browser"
-            ],
-            discount: nil
-        ),
-        SubscriptionPlan(
-            id: "yearly",
-            title: "Yearly",
-            description: "Popular",
-            price: "₽1,999",
-            period: "/year",
-            isPopular: true,
-            features: [
-                "Advanced ad blocking",
-                "Tracker protection",
-                "Fast browser",
-                "Synchronization"
-            ],
-            discount: "Save 44%"
-        )
-    ]
-}
-
-// MARK: - Components
-struct SubscriptionCard: View {
-    let plan: SubscriptionPlan
-    @Binding var selectedPlan: String
-    
-    var isSelected: Bool {
-        plan.id == selectedPlan
-    }
-    
-    var body: some View {
-        HStack {
-            // Header
-//            VStack(alignment: .leading, spacing: Layout.Padding.small) {
-                Text(plan.title)
-                    .font(.headline)
-                    .foregroundColor(.tm.title)
-//            }
-            
-            Spacer()
-            
-            // Price
-            HStack(alignment: .center, spacing: .smallExt) {
-                    Text(plan.price)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.tm.title)
-                    
-                    Text(plan.period)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.tm.title.opacity(0.5))
-                }
-        }
-        .padding(Layout.Padding.medium)
-        .background(
-            RoundedRectangle(cornerRadius: Layout.Radius.medium)
-                .fill(.tm.title.opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: Layout.Radius.medium)
-                        .stroke(
-                            isSelected ? 
-                            LinearGradient(
-                                gradient: Gradient(colors: [.tm.accentSecondary, .tm.success]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ) : 
-                            LinearGradient(
-                                gradient: Gradient(colors: [.clear]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1
-                        )
-                )
-        )
-        .onTapGesture {
-            selectedPlan = plan.id
-        }
-    }
-}
-
-
-struct PricingView: View {
-    @Binding var selectedPlan: String
-    let plans: [SubscriptionPlan]
-    
-    var body: some View {
-        VStack(spacing: .medium) {
-            ForEach(plans, id: \.id) { plan in
-                SubscriptionCard(plan: plan, selectedPlan: $selectedPlan)
-            }
-        }
-    }
-}
-
-// MARK: - Main PaywallView
 struct PaywallView: View {
-    @State private var selectedPlan: String = "monthly"
-    @Environment(\.dismiss) private var dismiss
     
-    private let plans = SubscriptionPlan.mockPlans
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationView {
-            VStack(spacing: .extraLarge) {
-                // Header
-                VStack(spacing: Layout.Padding.regular) {
-                    Text("SurfShield Premium")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.tm.title)
-                        .multilineTextAlignment(.center)
-                    
-                    VStack(spacing: Layout.Padding.small) {
-                        Text("Maximum ad protection")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.tm.title)
-                            .multilineTextAlignment(.center)
-                        
-                        Text("Intelligent ad blocking, tracker protection and faster page loading")
-                            .font(.subheadline)
-                            .foregroundColor(.tm.title)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(3)
+            content
+                .background(
+                    backgroundGradient
+                )
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(.subtitleSecondary)
+                        }
                     }
                 }
-                .padding(.top, Layout.Padding.large)
-                
-                Spacer()
-                // Pricing
-                PricingView(selectedPlan: $selectedPlan, plans: plans)
-                
-                Spacer()
-                
-                // Subscribe Button
-                Button(action: subscribeAction) {
-                    Text("Subscribe")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Layout.Padding.medium)
-                        .background(.tm.accentSecondary.opacity(0.7))
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.Radius.regular))
-                }
-                .padding(.horizontal, Layout.Padding.medium)
-                
-                // Terms
-                VStack(spacing: Layout.Padding.small) {
-                    Text("Subscription renews automatically")
-                        .font(.callout)
-                        .foregroundColor(.tm.title.opacity(0.6))
-                        .multilineTextAlignment(.center)
-                    
-                    HStack(spacing: Layout.Padding.small) {
-                        Button("Terms") {
-                            // Handle terms
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            dismiss()
+                            
+                        }) {
+                            Text("Restore")
+                                .font(.system(size: 20, weight: .regular))
+                                .foregroundStyle(.subtitleSecondary)
                         }
-                        .font(.callout)
-                        .foregroundColor(.tm.accent)
-                        
-                        Text("•")
-                            .font(.callout)
-                            .foregroundColor(.tm.subTitle)
-                        
-                        Button("Privacy") {
-                            // Handle privacy
-                        }
-                        .font(.callout)
-                        .foregroundColor(.tm.accent)
                     }
                 }
-                .padding(.bottom, Layout.Padding.medium)
-            }
-            .padding(.horizontal, Layout.Padding.medium)
-            .background(
-                ZStack {
-                    // Первый радиальный градиент - верхний левый
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            .tm.accentSecondary.opacity(0.6),
-                            .tm.accentSecondary.opacity(0.3),
-                            .tm.accentSecondary.opacity(0.1)
-                        ]),
-                        center: .topLeading,
-                        startRadius: 0,
-                        endRadius: 600
-                    )
-                    
-                    // Второй радиальный градиент - нижний правый
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            .tm.success.opacity(0.5),
-                            .tm.success.opacity(0.25),
-                            .tm.success.opacity(0.08)
-                        ]),
-                        center: .bottomTrailing,
-                        startRadius: 0,
-                        endRadius: 700
-                    )
-                    
-                    // Третий радиальный градиент - центр
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            .tm.accentSecondary.opacity(0.4),
-                            .tm.success.opacity(0.3),
-                            .tm.accentSecondary.opacity(0.15)
-                        ]),
-                        center: .center,
-                        startRadius: 0,
-                        endRadius: 500
-                    )
-                    
-                    // Базовый цвет фона - более светлый
-                    Color.tm.background.opacity(0.1)
-                }
-                    .ignoresSafeArea(.all)
-                    .background(Color.tm.background)
+        }
+    }
+    
+    var content: some View {
+        VStack(spacing: .zero) {
+            title
+                .padding(.bottom, 38)
+            imagesContainer
+            .padding(.horizontal, 36)
+            .padding(.bottom, 28)
+            checkMarkContainer
+                .padding(.horizontal, .large)
+                .padding(.bottom, .large)
+            guaranteesTextContainer
+                .padding(.bottom, .large)
+            proposedText
+            Spacer(minLength: .zero)
+            continueButton
+                .padding(.horizontal, .medium)
+                .padding(.bottom, 22)
+            
+            privacySection
+                .padding(.horizontal, .medium)
+        }
+    }
+    
+    var imagesContainer: some View {
+        HStack(spacing: 30) {
+//                Spacer()
+            VerticalLabelView(
+                imageResource: .privacy,
+                text: "Remove advertising",
+                padding: .smallExt
             )
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .fontWeight(.bold)
-                            .foregroundStyle(.background.opacity(0.6))
-                    }
-                    .foregroundColor(.tm.accent)
+            VerticalLabelView(
+                imageResource: .ads,
+                text: "Block tracking",
+                padding: .smallExt
+            )
+            VerticalLabelView(
+                imageResource: .mining,
+                text: "Remove advertising",
+                padding: .smallExt
+            )
+        }
+    }
+    
+    var backgroundGradient: some View {
+        RadialGradient(
+            gradient: Gradient(colors: [Color.tm.backgroundSecondary, Color.tm.background]),
+            center: UnitPoint(x: 1.0, y: 1.0),
+            startRadius: 0,
+            endRadius: 700
+        )
+        .ignoresSafeArea()
+    }
+    
+    var title: some View {
+        Text("Premium Free\nfor 3 days".attributed(phrases: ["Premium Free"], color: .calmAccent, font: .sfProText(size: 38, weight: .bold)))
+            .kerning(2.2)
+            .multilineTextAlignment(.center)
+    }
+    
+    var checkMarkContainer: some View {
+        VStack(spacing: .medium) {
+            makeCheckmarkRow(text: "Enjoy a fast and safe Internet experience")
+            makeCheckmarkRow(text: "Get rid of intrusive floating videos, pop-up newsletters, and other distracting ads")
+            makeCheckmarkRow(text: "Don't let advertisers track you online")
+            makeCheckmarkRow(text: "Speed up image loading and reduce mobile data transfer expenses")
+        }
+    }
+    
+    var guaranteesTextContainer: some View {
+        VStack(spacing: .regular) {
+            Text("100% free for 3 days".uppercased())
+            Text("Zero fee with risk free".uppercased())
+                .opacity(0.8)
+            Text("No extra cost".uppercased())
+                .opacity(0.6)
+        }
+        .font(.sfProRoundedBold(size: 24))
+        .kerning(1)
+        .foregroundStyle(.calmAccent)
+    }
+    
+    var proposedText: some View {
+        Text("Try 3 days free, after $8.99/week\n Cancel anytime")
+            .font(.sfProText(size: 15, weight: .medium))
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.tm.subTitleSecondary)
+    }
+    
+    var continueButton: some View {
+        MainButton(title: "Continue") {
+            //TODO: make purchase logic
+        }
+    }
+    
+    var privacySection: some View {
+        HStack(spacing: 20) {
+            Button(action: {
+                if let url = URL(string: Constants.privacyPolicyURL) {
+                    UIApplication.shared.open(url)
                 }
+            }) {
+                Text("Privacy Policy")
+                    .font(.sfProText(size: 13, weight: .medium))
+                    .foregroundStyle(.tm.subTitleSecondary)
+            }
+            
+            Text("•")
+                .font(.sfProText(size: 13, weight: .medium))
+                .foregroundStyle(.tm.subTitleSecondary)
+            
+            Button(action: {
+                if let url = URL(string: Constants.termsOfUseURL) {
+                    UIApplication.shared.open(url)
+                }
+            }) {
+                Text("Terms of Use")
+                    .font(.sfProText(size: 13, weight: .medium))
+                    .foregroundStyle(.tm.subTitleSecondary)
             }
         }
     }
     
-    private func subscribeAction() {
-        // Handle subscription logic
-        print("Subscription to plan: \(selectedPlan)")
+    func makeCheckmarkRow(text: String) -> some View {
+        HStack(spacing: .medium) {
+            Text(text)
+                .font(.sfProText(size: 13, weight: .bold))
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+                .kerning(0.3)
+            Spacer(minLength: .zero)
+            Image(systemName: "checkmark")
+                .fontWeight(.bold)
+                .foregroundStyle(.calmAccent)
+        }
+    }
+    
+}
+
+struct VerticalLabelView: View {
+    let imageResource: ImageResource
+    let text: String
+    let padding: Layout.Padding
+    
+    var body: some View {
+        VStack(spacing: padding) {
+            Image(imageResource)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(minWidth: 50, maxWidth: 80, minHeight: 50, maxHeight: 80)
+//                .frame(width: 80, height: 80)
+            
+            Text(text)
+                .font(.sfProText(size: 12, weight: .medium))
+                .kerning(0.4)
+                .foregroundColor(.tm.title)
+                .multilineTextAlignment(.center)
+                .frame(height: 30)
+                .lineLimit(4)
+                
+        }
+        .padding(padding)
     }
 }
 
