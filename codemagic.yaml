@@ -16,11 +16,8 @@ workflows:
           MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgeERGWjCvJD84GJEA2rRKdlSOgOP1Ng7yTBwdeU8MNmgCgYIKoZIzj0DAQehRANCAAQfzvzqxS7wR5YgJDpN0S2jEaknmmfc116JQ9vIK8O3FX82NhM29q13BqqrFVR1mUiw9C+LmqgVZtCl6Zzxaya4
           -----END PRIVATE KEY-----
       xcode: latest
-      cocoapods: default
+      # Убираем cocoapods
     scripts:
-      - name: Install CocoaPods dependencies
-        script: |
-          pod install
       - name: Build app (without signing)
         script: |
           xcode-project build \
