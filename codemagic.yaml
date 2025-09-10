@@ -20,7 +20,6 @@ workflows:
           keychain initialize
       - name: Fetch signing files
         script: |
-          # Получаем сертификат и provisioning profile
           app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
       - name: Set up signing certificate
         script: |
@@ -43,7 +42,7 @@ workflows:
       - build/ios/xcarchive/*.xcarchive
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
         submit_to_testflight: true
         submit_to_app_store: false
       email:
@@ -60,6 +59,18 @@ workflows:
     environment:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
+        BUNDLE_IDS:
+          - "com.surfshield.app.banners"
+          - "com.surfshield.app.adblocker"
+          - "com.surfshield.app.trackers"
+          - "com.surfshield.app.secure"
+          - "com.surfshield.app.basic"
+          - "com.surfshield.app.privacy"
+          - "com.surfshield.app.advanced"
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
+        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
+        CERTIFICATE_PRIVATE_KEY: Encrypted(CERTIFICATE_PRIVATE_KEY)
       xcode: latest
       cocoapods: default
     scripts:
@@ -68,7 +79,6 @@ workflows:
           keychain initialize
       - name: Fetch signing files for all extensions
         script: |
-          # Получаем сертификаты и provisioning profiles для всех расширений
           for bundle_id in $BUNDLE_IDS; do
             app-store-connect fetch-signing-files $bundle_id --type IOS_APP_EXTENSION --create
           done
@@ -83,7 +93,6 @@ workflows:
           pod install
       - name: Build all Content Blocker extensions
         script: |
-          # Собираем все расширения
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
             --scheme "banners" \
@@ -172,6 +181,14 @@ workflows:
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         BUNDLE_ID: "com.surfshield.app"
+        BUNDLE_IDS:
+          - "com.surfshield.app.banners"
+          - "com.surfshield.app.adblocker"
+          - "com.surfshield.app.trackers"
+          - "com.surfshield.app.secure"
+          - "com.surfshield.app.basic"
+          - "com.surfshield.app.privacy"
+          - "com.surfshield.app.advanced"
         APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
         APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(APP_STORE_CONNECT_KEY_IDENTIFIER)
         APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(APP_STORE_CONNECT_PRIVATE_KEY)
@@ -214,7 +231,6 @@ workflows:
             --export-options-plist export_options.plist
       - name: Build all Content Blocker extensions
         script: |
-          # Собираем все расширения параллельно для ускорения
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
             --scheme "banners" \
@@ -257,13 +273,13 @@ workflows:
             --archive-flags "-destination 'generic/platform=iOS'" \
             --export-options-plist export_options_extension.plist &
             
-          wait # Ждем завершения всех фоновых процессов
+          wait
     artifacts:
       - build/ios/ipa/*.ipa
       - build/ios/xcarchive/*.xcarchive
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
         submit_to_testflight: true
         submit_to_app_store: false
       email:
@@ -272,22 +288,3 @@ workflows:
         notify:
           success: true
           failure: true
-
-# Триггеры для автоматического запуска
-triggering:
-  events:
-    - push:
-        branch_patterns:
-          - pattern: 'develop'
-            include: true
-            source: true
-          - pattern: 'main'
-            include: true
-            source: true
-          - pattern: 'release/*'
-            include: true
-            source: true
-    - tag:
-        tag_patterns:
-          - pattern: 'v*'
-            include: true
