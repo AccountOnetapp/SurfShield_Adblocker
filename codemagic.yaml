@@ -8,11 +8,35 @@ workflows:
         XCODE_PROJECT: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
-        # Только одна переменная для тестирования
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
+        # Используем переменные напрямую (если они secret)
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+        CERTIFICATE_PRIVATE_KEY: $CERTIFICATE_PRIVATE_KEY
       xcode: latest
     scripts:
-      - name: Build app (without signing)
+      - name: Set up keychain to be used for codesigning
+        script: |
+          keychain initialize
+      - name: Fetch signing files for main app
+        script: |
+          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+      - name: Fetch signing files for all extensions
+        script: |
+          app-store-connect fetch-signing-files "com.surfshield.app.banners" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.adblocker" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.trackers" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.secure" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.basic" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.privacy" --type IOS_APP_EXTENSION --create
+          app-store-connect fetch-signing-files "com.surfshield.app.advanced" --type IOS_APP_EXTENSION --create
+      - name: Set up signing certificate
+        script: |
+          keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Build app
         script: |
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
