@@ -10,16 +10,7 @@ workflows:
         BUNDLE_ID: "com.surfshield.app"
       xcode: latest
     scripts:
-      - name: Set up keychain to be used for codesigning
-        script: |
-          keychain initialize
-      - name: Set up signing certificate
-        script: |
-          keychain add-certificates
-      - name: Set up code signing settings on Xcode project
-        script: |
-          xcode-project use-profiles
-      - name: Build app
+      - name: Build app (without signing)
         script: |
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
