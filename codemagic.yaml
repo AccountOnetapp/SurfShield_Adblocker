@@ -8,6 +8,14 @@ workflows:
         - surfshield_group
     integrations:
       app_store_connect: Surf Adbcloker Team
+      scripts:
+      - name: Show IPA files before publishing
+        script: ls -la build/ios/ipa/
+      # Ваши остальные скрипты сборки, например сборка Xcode
+      - name: Build app
+        script: xcodebuild -workspace SurfShield.xcworkspace -scheme SurfShield -configuration Release archive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive
+      - name: Export IPA
+        script: xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath $CM_BUILD_DIR/build/ios/ipa/
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
@@ -17,7 +25,7 @@ workflows:
         submit_to_app_store: false
       email:
         recipients:
-          - cool19912015@gmail.com
+          - arthurkulik91@gmail.com
         notify:
           success: true
           failure: true
