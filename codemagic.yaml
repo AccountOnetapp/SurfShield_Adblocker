@@ -8,7 +8,8 @@ workflows:
         XCODE_WORKSPACE: "SurfShield.xcodeproj"
         XCODE_SCHEME: "SurfShield"
         BUNDLE_ID: "com.surfshield.app"
-        # Без переменных окружения вообще
+        # Только Issuer ID
+        APP_STORE_CONNECT_ISSUER_ID: Encrypted(APP_STORE_CONNECT_ISSUER_ID)
       xcode: latest
       cocoapods: default
     scripts:
