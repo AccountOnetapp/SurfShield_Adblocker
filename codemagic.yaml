@@ -46,21 +46,9 @@ workflows:
           -----END PRIVATE KEY-----
           ios_signing:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.surfshield.adblocker
-    scripts:
-      - name: Set up keychain to be used for codesigning
-        script: |
-            keychain initialize
-      - name: Add certificates to keychain
-        script: |
-            keychain add-certificates
-      - name: Set up Xcode project settings
-        script: |
-            xcode-project use-profiles
-      - name: Set up Xcode project settings
-        script: |
-            xcode-project use-profiles
+        provisioning_profiles:
+          - 'extenion_trackers'
+          - 'extension_adblocker'
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
