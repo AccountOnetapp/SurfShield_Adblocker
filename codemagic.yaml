@@ -7,3 +7,45 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.surfshield.adblocker
+    scripts:
+      - name: Set up keychain to be used for code signing
+        script: |
+          keychain initialize
+      - name: Set up Provisioning profiles from environment variables
+        script: |
+          # App Store provisioning profile
+          PROVISIONING_PROFILE_PATH="$CM_BUILD_DIR"/profile_adhoc.mobileprovision
+          echo ${PROVISIONING_PROFILE} | base64 --decode > $PROVISIONING_PROFILE_PATH
+          PROVISIONING_PROFILE_UUID="$CM_BUILD_DIR"/uuid.txt
+          echo ${PROVISIONING_PROFILE_UUID} > $PROVISIONING_PROFILE_UUID
+          # Code signing certificate
+          CERTIFICATE_PATH="$CM_BUILD_DIR"/certificate.p12
+          echo ${CERTIFICATE} | base64 --decode > $CERTIFICATE_PATH
+          # Add certificate to keychain
+          keychain add-certificates
+      - name: Install pods
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Build ipa for distribution
+        script: |
+          # Set up code signing settings
+          xcode-project use-profiles
+          # Build and archive
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/SurfShield.xcodeproj/project.xcworkspace" \
+            --scheme "SurfShield"
+    artifacts:
+      - build/Release-iphoneos/*.ipa
+      - build/Release-iphoneos/*.dSYM.zip
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: false
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - SurfShield Beta Testers
