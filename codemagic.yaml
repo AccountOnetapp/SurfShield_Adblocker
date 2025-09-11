@@ -89,6 +89,46 @@ workflows:
           
           echo "Final keychain status:"
           security find-identity -v -p codesigning build.keychain
+      - name: Download specific provisioning profiles
+        script: |
+          echo "=== Downloading Provisioning Profiles ==="
+          # Загружаем профили по их ID из App Store Connect
+          app-store-connect fetch-signing-files --profile-id NRA89QWS57  # Adblocker App
+          app-store-connect fetch-signing-files --profile-id WPRT6NPF5C  # Adblocker Extensions (trackers)
+          app-store-connect fetch-signing-files --profile-id YG27Z46F5M  # extension adblocker
+          app-store-connect fetch-signing-files --profile-id YPUBC2XFNP  # extension advanced
+          app-store-connect fetch-signing-files --profile-id NHAF4VJ43M  # extension banners
+          app-store-connect fetch-signing-files --profile-id 2VSQWC9MXS  # extension basic
+          app-store-connect fetch-signing-files --profile-id 2V5T68FMFW  # extension privacy
+          app-store-connect fetch-signing-files --profile-id UWYY6K8CQ6  # extension secure
+          
+          # Загружаем сертификаты
+          app-store-connect fetch-signing-files --certificate-id Z4F9LBTZ4Y  # Apple Distribution: Dan Datz
+          
+          echo "Downloaded files:"
+          ls -la *.mobileprovision *.p12 2>/dev/null || echo "No files downloaded"
+          
+          # Устанавливаем профили
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp *.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || true
+          
+          # Устанавливаем сертификаты
+          mkdir -p ~/Library/MobileDevice/Certificates
+          cp *.p12 ~/Library/MobileDevice/Certificates/ 2>/dev/null || true
+          
+          # Импортируем сертификаты в keychain
+          for cert in ~/Library/MobileDevice/Certificates/*.p12; do
+            if [ -f "$cert" ]; then
+              echo "Importing certificate: $cert"
+              security import "$cert" -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/security
+            fi
+          done
+          
+          echo "Final status:"
+          echo "Provisioning profiles:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          echo "Certificates in keychain:"
+          security find-identity -v -p codesigning build.keychain
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
