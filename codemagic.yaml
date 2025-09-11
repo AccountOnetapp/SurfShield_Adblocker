@@ -92,18 +92,15 @@ workflows:
       - name: Download specific provisioning profiles
         script: |
           echo "=== Downloading Provisioning Profiles ==="
-          # Загружаем профили по их ID из App Store Connect
-          app-store-connect fetch-signing-files --profile-id NRA89QWS57  # Adblocker App
-          app-store-connect fetch-signing-files --profile-id WPRT6NPF5C  # Adblocker Extensions (trackers)
-          app-store-connect fetch-signing-files --profile-id YG27Z46F5M  # extension adblocker
-          app-store-connect fetch-signing-files --profile-id YPUBC2XFNP  # extension advanced
-          app-store-connect fetch-signing-files --profile-id NHAF4VJ43M  # extension banners
-          app-store-connect fetch-signing-files --profile-id 2VSQWC9MXS  # extension basic
-          app-store-connect fetch-signing-files --profile-id 2V5T68FMFW  # extension privacy
-          app-store-connect fetch-signing-files --profile-id UWYY6K8CQ6  # extension secure
-          
-          # Загружаем сертификаты
-          app-store-connect fetch-signing-files --certificate-id Z4F9LBTZ4Y  # Apple Distribution: Dan Datz
+          # Загружаем профили по bundle ID
+          app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.advanced --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.basic --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.privacy --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE
           
           echo "Downloaded files:"
           ls -la *.mobileprovision *.p12 2>/dev/null || echo "No files downloaded"
@@ -115,6 +112,12 @@ workflows:
           # Устанавливаем сертификаты
           mkdir -p ~/Library/MobileDevice/Certificates
           cp *.p12 ~/Library/MobileDevice/Certificates/ 2>/dev/null || true
+          
+          # Создаем keychain если его нет
+          security create-keychain -p "" build.keychain 2>/dev/null || true
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security set-keychain-settings -t 3600 -l build.keychain
           
           # Импортируем сертификаты в keychain
           for cert in ~/Library/MobileDevice/Certificates/*.p12; do
