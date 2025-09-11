@@ -31,6 +31,64 @@ workflows:
           success: true
           failure: false
     scripts:
+      - name: Debug Codemagic environment
+        script: |
+          echo "=== Codemagic Environment Debug ==="
+          echo "Current directory: $(pwd)"
+          echo "Available environment variables:"
+          env | grep -E "(CODEMAGIC|APP_STORE|PROVISIONING|CERTIFICATE)" | sort
+          echo ""
+          echo "=== Keychain status ==="
+          security list-keychains
+          echo ""
+          echo "=== Available certificates ==="
+          security find-identity -v -p codesigning
+          echo ""
+          echo "=== Provisioning profiles directory ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No provisioning profiles directory found"
+          echo ""
+          echo "=== Codemagic signing files ==="
+          ls -la /Users/builder/Library/MobileDevice/ 2>/dev/null || echo "No MobileDevice directory found"
+      - name: Check App Store Connect integration
+        script: |
+          echo "=== App Store Connect Integration Test ==="
+          app-store-connect bundle-ids list
+          echo ""
+          echo "=== Available provisioning profiles ==="
+          app-store-connect profiles list
+          echo ""
+          echo "=== Available certificates ==="
+          app-store-connect certificates list
+      - name: Manual provisioning profile setup
+        script: |
+          echo "=== Manual Provisioning Profile Setup ==="
+          # Создаем директории
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p ~/Library/MobileDevice/Certificates
+          
+          # Пытаемся найти и скопировать профили
+          echo "Looking for provisioning profiles..."
+          find /Users/builder -name "*.mobileprovision" -type f 2>/dev/null | head -10
+          find /Users/builder -name "*.p12" -type f 2>/dev/null | head -10
+          
+          # Копируем найденные файлы
+          find /Users/builder -name "*.mobileprovision" -type f -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \; 2>/dev/null || true
+          find /Users/builder -name "*.p12" -type f -exec cp {} ~/Library/MobileDevice/Certificates/ \; 2>/dev/null || true
+          
+          echo "Copied files:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          ls -la ~/Library/MobileDevice/Certificates/
+          
+          # Пытаемся импортировать сертификаты
+          for cert in ~/Library/MobileDevice/Certificates/*.p12; do
+            if [ -f "$cert" ]; then
+              echo "Importing certificate: $cert"
+              security import "$cert" -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/security 2>/dev/null || true
+            fi
+          done
+          
+          echo "Final keychain status:"
+          security find-identity -v -p codesigning build.keychain
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
