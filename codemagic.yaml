@@ -44,11 +44,10 @@ workflows:
           rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
-          ios_signing:
+
       ios_signing:
-        provisioning_profiles:
-          - 'extenion_trackers'
-          - 'extension_adblocker'
+        distribution_type: app_store
+        bundle_identifier: com.surfshield.adblocker
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
@@ -82,43 +81,14 @@ workflows:
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
-      - name: Fetch signing files
+      - name: Load provisioning profiles
         script: |
-          app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.basic --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.privacy --type IOS_APP_STORE --create
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.advanced --type IOS_APP_STORE --create
-      - name: Set up signing certificate
-        script: |
-          # Создаем директорию для сертификатов
-          mkdir -p /Users/builder/Library/MobileDevice/Certificates
-          # Копируем все .p12 файлы в правильную директорию
-          cp *.p12 /Users/builder/Library/MobileDevice/Certificates/ 2>/dev/null || true
-          # Показываем найденные сертификаты
-          ls -la /Users/builder/Library/MobileDevice/Certificates/
-          # Импортируем сертификаты в keychain
-          for cert in /Users/builder/Library/MobileDevice/Certificates/*.p12; do
-            if [ -f "$cert" ]; then
-              echo "Импортируем сертификат: $cert"
-              security import "$cert" -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/security
-            fi
-          done
-          # Устанавливаем настройки keychain
-          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
-          # Показываем импортированные сертификаты
-          security find-identity -v -p codesigning build.keychain
-      - name: Set up provisioning profiles
-        script: |
-          # Загружаем профили для всех bundle ID (без --create, так как они уже созданы)
+          # Загружаем ваши существующие provisioning profiles
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.basic --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.privacy --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.advanced --type IOS_APP_STORE
