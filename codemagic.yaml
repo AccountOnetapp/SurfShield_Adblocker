@@ -14,7 +14,7 @@ workflows:
           - "extension_privacy"
           - "extension_advanced"
         certificates:
-          - "Development_surfshieldr"
+          - "Development_surfshield"
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
