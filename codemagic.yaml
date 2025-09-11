@@ -46,6 +46,7 @@ workflows:
           -----END PRIVATE KEY-----
       ios_signing:
         provisioning_profiles:
+          - adblocker
           - extension_adblocker
           - extension_trackers
           - extension_banners
