@@ -75,11 +75,17 @@ workflows:
           app-store-connect bundle-ids list
       - name: Set up signing certificate
         script: |
-          keychain add-certificates
-      - name: Fetch and set up signing files
-        script: |
-          # Загружаем сертификаты и профили для всех bundle ID
+          # Создаем директорию для сертификатов
+          mkdir -p /Users/builder/Library/MobileDevice/Certificates
+          # Загружаем сертификаты из App Store Connect
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
+          # Перемещаем сертификаты в правильную директорию
+          cp *.p12 /Users/builder/Library/MobileDevice/Certificates/ 2>/dev/null || true
+          # Добавляем сертификаты в keychain
+          keychain add-certificates
+      - name: Fetch and set up provisioning profiles
+        script: |
+          # Загружаем профили для всех расширений
           app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE
