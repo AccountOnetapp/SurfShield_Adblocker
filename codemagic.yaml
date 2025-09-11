@@ -6,7 +6,7 @@ workflows:
     environment:
       vars:
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_KEY_ID: $APP_STORE_CONNECT_KEY_ID
         APP_STORE_CONNECT_PRIVATE_KEY: |
           -----BEGIN PRIVATE KEY-----
           MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg/eERGWjCvJD84GJE
@@ -64,7 +64,7 @@ workflows:
           keychain initialize
       - name: Fetch signing files
         script: |
-          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE
       - name: Set up signing certificate
         script: |
           keychain add-certificates
