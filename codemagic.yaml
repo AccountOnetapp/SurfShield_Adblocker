@@ -22,12 +22,12 @@ workflows:
           success: true
           failure: true
     scripts:
-      - name: Show IPA files before publishing
-        script: ls -la build/ios/ipa/
-      # Ваши остальные скрипты сборки, например сборка Xcode
+      - name: Create directories
+        script: |
+          mkdir -p build/ios/ipa
       - name: Build app
         script: xcodebuild -workspace SurfShield.xcworkspace -scheme SurfShield -configuration Release archive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive
       - name: Export IPA
         script: xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath $CM_BUILD_DIR/build/ios/ipa/
-
-          
+      - name: Show IPA files before publishing
+        script: ls -la build/ios/ipa/
