@@ -48,9 +48,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.surfshield.adblocker
-      provisioning_profiles:
-        - 'extension_trackers'
-        - 'extension_adblocker'
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
