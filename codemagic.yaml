@@ -12,6 +12,19 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
+      ios_signing:
+    # Reference the provisioning profile by its assigned Reference name
+        provisioning_profiles:
+          - "extension_adblocker"
+          - "extension_trackers"
+          - "extension_banners"
+          - "extension_secure"
+          - "extension_basic"
+          - "extension_privacy"
+          - "extension_advanced"
+    # Reference the signing certificate by its assigned Reference name
+      certificates:
+          - "Development_surfshield" 
       app_store_connect:
         auth: integration
         submit_to_testflight: true
