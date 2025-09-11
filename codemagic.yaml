@@ -33,6 +33,12 @@ workflows:
           xcode-project build-ipa \
             --project "$CM_BUILD_DIR/SurfShield.xcodeproj" \
             --scheme "SurfShield"
+            --configuration Release \
+            --archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive \
+            --allowProvisioningUpdates \
+            --DEVELOPMENT_TEAM=9JXM4RZUCC \
+            --CODE_SIGN_IDENTITY="Apple Distribution" \
+            --CODE_SIGN_STYLE=Manual
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
