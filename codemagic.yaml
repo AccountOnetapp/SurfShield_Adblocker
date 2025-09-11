@@ -122,6 +122,28 @@ workflows:
           cp *.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || true
           # Показываем установленные профили
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          # Устанавливаем профили в keychain
+          for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+            if [ -f "$profile" ]; then
+              echo "Устанавливаем профиль: $profile"
+              # Устанавливаем профиль в keychain
+              security cms -D -i "$profile" | plutil -p -
+              # Устанавливаем профиль в keychain для codesign
+              security cms -D -i "$profile" | plutil -convert binary1 -o - | security cms -D -i - | plutil -p -
+            fi
+          done
+      - name: Configure Xcode for signing
+        script: |
+          # Настраиваем Xcode для работы с профилями
+          echo "Настраиваем Xcode для подписи..."
+          # Устанавливаем переменные окружения
+          export DEVELOPER_DIR=/Applications/Xcode-16.4.app/Contents/Developer
+          # Проверяем доступные профили
+          security find-identity -v -p codesigning build.keychain
+          # Показываем установленные профили
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          # Настраиваем Xcode для автоматической подписи
+          xcodebuild -project SurfShield.xcodeproj -showBuildSettings | grep -E "(CODE_SIGN|PROVISIONING|DEVELOPMENT_TEAM)"
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
