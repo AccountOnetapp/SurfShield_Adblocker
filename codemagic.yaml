@@ -1,10 +1,20 @@
 workflows:
-  test_satin_ios:
-    name: iOS Native
+  ios-surfshield:
+    name: iOS SurfShield
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
+      groups:
+        # Add the group environment variables in Codemagic UI (either in Application/Team variables) - https://docs.codemagic.io/variables/environment-variable-groups/
+        - surfshield_group # <-- (Includes APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY)
+          # APP_STORE_CONNECT_ISSUER_ID <-- Put your App Store Connect Issuer Id here 
+          # APP_STORE_CONNECT_KEY_IDENTIFIER <-- Put your App Store Connect Key Identifier here 
+          # APP_STORE_CONNECT_PRIVATE_KEY <-- Put your App Store Connect Private Key here
+          # See the following link for more details - https://docs.codemagic.io/code-signing-yaml/signing-ios/
+          # https://appstoreconnect.apple.com/access/api
       vars:
+        XCODE_WORKSPACE: "SurfShield.xcodeproj" # <-- Your Xcode project name
+        XCODE_SCHEME: "SurfShield" # <-- Your scheme name
         APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
         APP_STORE_CONNECT_KEY_ID: $APP_STORE_CONNECT_KEY_ID
         APP_STORE_CONNECT_PRIVATE_KEY: |
@@ -43,18 +53,69 @@ workflows:
           rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
-    integrations:
-      app_store_connect: Surf Adbcloker Team
+      xcode: latest # <-- set to specific version e.g. 14.3, 15.0 to avoid unexpected updates.
+      cocoapods: default
+    triggering:
+      events:
+        - push
+        - tag
+        - pull_request
+      branch_patterns:
+        - pattern: 'develop'
+          include: true
+          source: true
+        - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'feature/*'
+          include: true
+          source: true
+    scripts:
+      - name: Initialize keychain to be used for codesigning using Codemagic CLI 'keychain' command
+        script: |
+          keychain initialize
+      - name: set up provisioning profiles
+        script: |
+          PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILES_HOME"
+          PROFILE_PATH="$(mktemp "$PROFILES_HOME"/$(uuidgen).mobileprovision)"
+          echo ${CM_PROVISIONING_PROFILE} | base64 --decode > "$PROFILE_PATH"
+          echo "Saved provisioning profile $PROFILE_PATH"
+      - name: Add signing certificate to keychain
+        script: |
+          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
+      - name: Increment build number
+        script: |
+          # increment build number
+          #!/bin/sh
+          set -e
+          set -x
+          cd $FCI_BUILD_DIR
+          # agvtool new-version -all $(($BUILD_NUMBER +1))
+          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID") + 1))
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Build .ipa
+        script: |
+          xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
     artifacts:
       - build/ios/ipa/*.ipa
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
     publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        submit_to_app_store: false
       email:
         recipients:
           - arthurkulik91@gmail.com
         notify:
           success: true
-          failure: false
+          failure: true              
+      app_store_connect:   # https://docs.codemagic.io/publishing-yaml/distribution              
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY         # Contents of the API key, can also reference environment variable such as $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER       # Alphanumeric value that identifies the API key, can also reference environment variable such as $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID         # Alphanumeric value that identifies who created the API key, can also reference environment variable such as $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true                     # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
+        submit_to_app_store: false                     # Whether to submit to App Store for review
+        # beta_groups:                                  # Specify the names of beta tester groups that will get access to the build once it has passed beta review. 
+        #       - group name 1
+        #       - group name 2
