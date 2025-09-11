@@ -45,14 +45,14 @@ workflows:
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
 
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.surfshield.adblocker
+    ios_signing:
+      distribution_type: app_store
+      bundle_identifier: com.surfshield.adblocker
+      provisioning_profiles:
+        - extension_adblocker
+        - extension_trackers
     integrations:
       app_store_connect: Surf Adbcloker Team
-    provisioning_profiles:
-      - extension_adblocker
-      - extension_trackers
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
@@ -86,9 +86,9 @@ workflows:
           app-store-connect bundle-ids list
       - name: Load specific provisioning profiles
         script: |
-          # Загружаем конкретные provisioning profiles по имени
-          app-store-connect fetch-signing-files --bundle-id com.surfshield.adblocker.extension.adblocker --profile-name extension_adblocker
-          app-store-connect fetch-signing-files --bundle-id com.surfshield.adblocker.extensions.trackers --profile-name extension_trackers
+          # Загружаем конкретные provisioning profiles
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE --profile-name extension_adblocker
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE --profile-name extension_trackers
           # Устанавливаем профили
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp *.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || true
