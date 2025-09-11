@@ -116,14 +116,13 @@ workflows:
           agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID") + 1))
       - name: Set up code signing settings on Xcode project
         script: |
-          # Try to use profiles if available, otherwise use automatic signing
+          # Try to use profiles if available, otherwise skip manual setup
           if [ -n "$CM_PROVISIONING_PROFILE" ]; then
             echo "Using manual provisioning profiles"
             xcode-project use-profiles
           else
-            echo "Using automatic code signing"
-            # Set up automatic code signing
-            xcode-project use-profiles --type automatic
+            echo "Using automatic code signing - no manual setup needed"
+            echo "Xcode will handle code signing automatically"
           fi
       - name: Build .ipa
         script: |
@@ -146,7 +145,7 @@ workflows:
           
           # Method 2: Try Codemagic CLI with automatic signing
           echo "Building with automatic code signing using Codemagic CLI"
-          if xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME" --code-signing automatic; then
+          if xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"; then
             echo "Build successful with automatic signing"
             exit 0
           else
