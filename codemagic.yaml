@@ -88,6 +88,27 @@ workflows:
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           # Обновляем профили
           xcrun simctl list devices
+      - name: Set up Apple ID account in Xcode
+        script: |
+          # Создаем файл с настройками Apple ID
+          mkdir -p ~/Library/Developer/Xcode/UserData
+          echo '<?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>IDETemplateMacroExpansionScope</key>
+              <string>com.apple.dt.IDE.IDEKit</string>
+              <key>IDEWorkspaceSharedSettings</key>
+              <dict>
+                  <key>IDEWorkspaceSharedSettings_AutocreationLastDirectoryKey</key>
+                  <string>/Users/builder/clone</string>
+              </dict>
+          </dict>
+          </plist>' > ~/Library/Developer/Xcode/UserData/IDETemplateMacros.plist
+      - name: Update provisioning profiles
+        script: |
+          # Принудительно обновляем профили
+          xcodebuild -project SurfShield.xcodeproj -scheme SurfShield -configuration Release -showBuildSettings | grep -i provisioning
       - name: Build app
         script: xcodebuild -project SurfShield.xcodeproj -scheme SurfShield -configuration Release archive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive -allowProvisioningUpdates
       - name: Export IPA
