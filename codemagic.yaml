@@ -44,10 +44,10 @@ workflows:
           rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
-    ios_signing:
-      provisioning_profiles:
-        - extension_adblocker
-        - extension_trackers
+      ios_signing:
+        provisioning_profiles:
+          - extension_adblocker
+          - extension_trackers
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
