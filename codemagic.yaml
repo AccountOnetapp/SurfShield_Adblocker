@@ -81,12 +81,12 @@ workflows:
           # Загружаем сертификаты и профили для всех bundle ID
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.banners --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.adblocker --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.secure --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.basic --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.privacy --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.advanced --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.basic --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.privacy --type IOS_APP_STORE
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.advanced --type IOS_APP_STORE
           # Устанавливаем профили в правильное место
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp *.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || true
