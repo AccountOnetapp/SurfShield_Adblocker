@@ -4,8 +4,8 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
-      groups:
-        - surfshield_group
+      # groups:
+      #   - surfshield_group
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
@@ -27,13 +27,7 @@ workflows:
           keychain initialize
       - name: Fetch signing files
         script: |
-          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
-      - name: Set up signing certificate
-        script: |
-          keychain add-certificates
-      - name: Set up provisioning profile
-        script: |
-          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create --create-profile --create-certificate
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
