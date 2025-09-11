@@ -68,6 +68,7 @@ workflows:
       - name: Fetch signing files
         script: |
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE --create
       - name: Set up signing certificate
         script: |
           keychain add-certificates
