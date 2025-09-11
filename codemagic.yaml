@@ -74,7 +74,7 @@ workflows:
           mkdir -p build/ios/ipa
       - name: Build app
         script: |
-          xcodebuild -project SurfShield.xcodeproj -scheme SurfShield -configuration Release archive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive
+          xcodebuild -project SurfShield.xcodeproj -scheme SurfShield -configuration Release archive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive -allowProvisioningUpdates
       - name: Export IPA
         script: xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/SurfShield.xcarchive -exportOptionsPlist export_options.plist -exportPath $CM_BUILD_DIR/build/ios/ipa/
       - name: Show IPA files before publishing
