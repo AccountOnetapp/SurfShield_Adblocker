@@ -65,9 +65,29 @@ workflows:
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
-      - name: Fetch signing files
+      - name: Create bundle IDs for all targets
         script: |
+          # Создаем bundle ID для основного приложения
+          app-store-connect bundle-ids create com.surfshield.adblocker "SurfShield Adblocker" IOS || true
+          # Создаем bundle ID для всех расширений
+          app-store-connect bundle-ids create com.surfshield.adblocker.trackers "SurfShield Adblocker Trackers" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.banners "SurfShield Adblocker Banners" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.advanced "SurfShield Adblocker Advanced" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.privacy "SurfShield Adblocker Privacy" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.secure "SurfShield Adblocker Secure" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.basic "SurfShield Adblocker Basic" IOS || true
+          app-store-connect bundle-ids create com.surfshield.adblocker.adblocker "SurfShield Adblocker Adblocker" IOS || true
+      - name: Fetch signing files for all targets
+        script: |
+          # Создаем provisioning profiles для всех bundle ID
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.trackers --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.banners --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.advanced --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.privacy --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.secure --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.basic --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.adblocker --type IOS_APP_STORE --create
       - name: Set up signing certificate
         script: |
           keychain add-certificates
