@@ -3,8 +3,46 @@ workflows:
     name: iOS Native
     max_build_duration: 120
     instance_type: mac_mini_m2
-      # groups:
-      #   - surfshield_group
+    environment:
+      vars:
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg/eERGWjCvJD84GJE
+          A2rRKdlSOgOP1Ng7yTBwdeU8MNmgCgYIKoZIzj0DAQehRANCAAQfzvzqxS7wR5Yg
+          JDpN0S2jEaknmmfc116JQ9vIK8O3FX82NhM29q13BqqrFVR1mUiw9C+LmqgVZtCl
+          6Zzxaya4
+          -----END PRIVATE KEY-----
+        CERTIFICATE_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCq7QwGRlqEqAqx
+          WtU8GFp5SZqI5kZr3Fe7YsQMgTWzWFiiam/3PY6H0uMIzTh1OACgO9SBW7Fo6DjQ
+          +XuxeG5T6w/YTD4c5Mv8fZO4/OiwtCcgA7d4MYM0gCqmLW5g0a8JKVeb9C/3Am9G
+          CGy+o8YGF0nNTq1ebndEHcPcSKV62zk9WIF8ElSAFfDQ6kHQj1k8tnoseEDs0crE
+          zFc38Il02DGzPAtANP5P1Ei1hWoGIGK8CC1LqSn/q0ZGrh1rrym5YEeEEJmErvZa
+          P8fkWBn7pySR2/9qNlX96BmIT01f/9ZKlAdmB0eK0V8rLNluxwi62qlz+oJ92Mlo
+          4Uz/XjilAgMBAAECggEAFuJMQxXNvid6YQLafCR9jnIAhtYftQan105ylYMCE8we
+          98W8zlL3P2+IVnAVYDo6eTlxas1CLBu1KaNRQHIxgTo+IZUZlsg6GEiey7xOkgPY
+          niRpPqYQXSnQq/V2qu8/2j/m+xn/BvjUOYHcv0xRcZTSHHLtarBq9ttuUtKGFzPE
+          lKeQLdT89+kDL98PTrRNEPR3JvmpjrIRf558T2R33+PwmCc0/O9ZaU1S3WoWycGW
+          ytDcM0kzhtLC5TJES4uoe+5I7bSxt9TUfcN+ld1E1H65EZVN+bDISyvhrjNOj3DS
+          GYHrjvbGQ0PTkFFFLmX+a15nPg+NAEv9Vjobyi0o6QKBgQDt7Ldnj8CBylSSoilJ
+          Xvai3MeZSHF52SqpY+Fr+qmCpHIY1H+u+D/BF5tEH9F8lB2Al7jIq7/hp+KF9MxO
+          gXuWhbHg/aL9HawdZSuOzjiKBiHC8/NNTFqEw4vc5vbwEHsOeIKFWGHn9/xIHQWh
+          Vigk6nHdL9AN9jyTzl4OBU4TzQKBgQC36U35wIVpnrbES7Q8s4Rl1zoKbqQf16uH
+          xGyACOBCjKCyun1zySXjRaMPwJnB/eaJhYr+ENVpZh+LWCDbw+MXY8U/5z0hJXyx
+          XMWcpbYZV60AN6vy9Cpf+WqEAfScR8h7obkDsbdlzTJqV5KnTc+rsLMt+ound/qx
+          YKwbXbsQOQKBgQCkMQcErfyw1Rt2MfiCDMnx7KDGFGtTJl49lZMcPFi8spWWsxcG
+          fYUp0QuygK7F5UVS1+GKgpQhuwUlYqGXz92lK9BsrzzKpq5/frEHlSMJhV/JNScD
+          ghy5oGUl5jIly4nQm7OfKDYwqj9s2LJo+5cqmqxHc1aGPBbj/beEv355RQKBgBCp
+          GQBEGZHs59+2f/hzxs23BrIFPecIkah1+eJLa4170d7/F/hSQ5VoLJJzvzoctzLE
+          H0hO3BZ1QuxLqoZeI4dt6WOVnisPi1FB90DuniWDlM+NO42B4wjYvnaA+tjhg973
+          UpxsEBIv2Z5ampV/bg2+ryy+IsKkEtjYyh6ciiK5AoGAcInBVK39C1xC90JujzzN
+          9Z6vKOfDoqWuAkd8dgEYX8nqMv2R5YIwzw562dBx5csir4h8ZcmR4wMJrf1htZpg
+          rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
+          1MIDtDORSyGbBg2hhtqC3Z0=
+          -----END PRIVATE KEY-----
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
@@ -19,14 +57,17 @@ workflows:
           - arthurkulik91@gmail.com
         notify:
           success: true
-          failure: true
+          failure: false
     scripts:
       - name: Set up keychain to be used for codesigning
         script: |
           keychain initialize
       - name: Fetch signing files
         script: |
-          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create --create-profile --create-certificate
+          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
+      - name: Set up signing certificate
+        script: |
+          keychain add-certificates
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
