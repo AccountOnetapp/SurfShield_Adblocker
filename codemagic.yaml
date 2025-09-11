@@ -44,9 +44,13 @@ workflows:
           rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
-        provisioning_profiles:
-          - 'extension_trackers'
-          - 'extension_adblocker'
+          ios_signing:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.surfshield.adblocker
+      provisioning_profiles:
+        - 'extension_trackers'
+        - 'extension_adblocker'
     integrations:
       app_store_connect: Surf Adbcloker Team
     artifacts:
