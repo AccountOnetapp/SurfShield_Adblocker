@@ -69,7 +69,7 @@ workflows:
         script: |
           # Получаем provisioning profiles только для существующих bundle ID
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
+          app-store-connect bundle-ids create com.surfshield.adblocker.extensions.trackers "SurfShield Adblocker Trackers" IOS || true
       - name: Set up signing certificate
         script: |
           keychain add-certificates
