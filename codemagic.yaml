@@ -65,10 +65,10 @@ workflows:
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
-      - name: Create bundle IDs for all targets
+      - name: Fetch signing files for all explicit App IDs
         script: |
           # Создаем bundle ID для основного приложения
-          app-store-connect bundle-ids create com.surfshield.adblocker "SurfShield Adblocker" IOS || true
+          app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
           # Создаем bundle ID для всех расширений
           app-store-connect bundle-ids create com.surfshield.adblocker.trackers "SurfShield Adblocker Trackers" IOS || true
           app-store-connect bundle-ids create com.surfshield.adblocker.banners "SurfShield Adblocker Banners" IOS || true
