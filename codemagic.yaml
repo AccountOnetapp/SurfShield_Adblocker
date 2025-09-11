@@ -7,6 +7,8 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.surfshield.adblocker
+    integrations:
+      app_store_connect: codemagic
     scripts:
       - name: Set up keychain to be used for code signing
         script: |
