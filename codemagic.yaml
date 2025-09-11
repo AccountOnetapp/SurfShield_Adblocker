@@ -65,17 +65,11 @@ workflows:
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
-      - name: Fetch signing files for all targets
+      - name: Fetch signing files for existing targets
         script: |
-          # Получаем provisioning profiles для всех targets
+          # Получаем provisioning profiles только для существующих bundle ID
           app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
           app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.banners --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.advanced --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.privacy --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.secure --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.basic --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.adblocker --type IOS_APP_STORE
       - name: Set up signing certificate
         script: |
           keychain add-certificates
