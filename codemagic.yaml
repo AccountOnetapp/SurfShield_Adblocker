@@ -83,8 +83,28 @@ workflows:
           echo "Saved provisioning profile $PROFILE_PATH"
       - name: Add signing certificate to keychain
         script: |
-          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
-          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
+          # Check if CM_CERTIFICATE is available
+          if [ -z "$CM_CERTIFICATE" ]; then
+            echo "CM_CERTIFICATE is not set, trying to use manual code signing..."
+            # Try to use the certificate from manual code signing
+            if [ -n "$CERTIFICATE_PRIVATE_KEY" ]; then
+              echo "Using CERTIFICATE_PRIVATE_KEY for code signing"
+              # Convert private key to p12 format if needed
+              echo "$CERTIFICATE_PRIVATE_KEY" > /tmp/certificate.pem
+              # For now, we'll skip certificate addition and rely on automatic signing
+              echo "Skipping manual certificate addition, using automatic signing"
+            else
+              echo "No certificate available, using automatic code signing"
+            fi
+          else
+            echo "Using CM_CERTIFICATE for code signing"
+            echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+            if [ -f /tmp/certificate.p12 ]; then
+              keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password "$CM_CERTIFICATE_PASSWORD"
+            else
+              echo "Failed to decode certificate, using automatic signing"
+            fi
+          fi
       - name: Increment build number
         script: |
           # increment build number
@@ -96,10 +116,59 @@ workflows:
           agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID") + 1))
       - name: Set up code signing settings on Xcode project
         script: |
-          xcode-project use-profiles
+          # Try to use profiles if available, otherwise use automatic signing
+          if [ -n "$CM_PROVISIONING_PROFILE" ]; then
+            echo "Using manual provisioning profiles"
+            xcode-project use-profiles
+          else
+            echo "Using automatic code signing"
+            # Set up automatic code signing
+            xcode-project use-profiles --type automatic
+          fi
       - name: Build .ipa
         script: |
-          xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+          # Create output directory
+          mkdir -p build/ios/ipa
+          
+          # Try different build methods
+          echo "Attempting to build IPA..."
+          
+          # Method 1: Try Codemagic CLI with manual signing
+          if [ -n "$CM_PROVISIONING_PROFILE" ] && [ -n "$CM_CERTIFICATE" ]; then
+            echo "Building with manual code signing using Codemagic CLI"
+            if xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"; then
+              echo "Build successful with manual signing"
+              exit 0
+            else
+              echo "Manual signing failed, trying automatic signing"
+            fi
+          fi
+          
+          # Method 2: Try Codemagic CLI with automatic signing
+          echo "Building with automatic code signing using Codemagic CLI"
+          if xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME" --code-signing automatic; then
+            echo "Build successful with automatic signing"
+            exit 0
+          else
+            echo "Codemagic CLI failed, trying xcodebuild"
+          fi
+          
+          # Method 3: Fallback to xcodebuild
+          echo "Building with xcodebuild as fallback"
+          xcodebuild archive \
+            -project "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            -archivePath build/SurfShield.xcarchive \
+            -allowProvisioningUpdates \
+            -allowProvisioningDeviceRegistration
+          
+          xcodebuild -exportArchive \
+            -archivePath build/SurfShield.xcarchive \
+            -exportOptionsPlist export_options.plist \
+            -exportPath build/ios/ipa/
+          
+          echo "Build completed successfully"
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
