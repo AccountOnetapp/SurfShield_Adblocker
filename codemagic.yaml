@@ -22,6 +22,18 @@ workflows:
           success: true
           failure: true
     scripts:
+      - name: Set up keychain to be used for codesigning
+        script: |
+          keychain initialize
+      - name: Fetch signing files
+        script: |
+          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
+      - name: Set up signing certificate
+        script: |
+          keychain add-certificates
+      - name: Set up provisioning profile
+        script: |
+          app-store-connect fetch-signing-files com.surfshield.app --type IOS_APP_STORE --create
       - name: Create directories
         script: |
           mkdir -p build/ios/ipa
