@@ -50,6 +50,9 @@ workflows:
         bundle_identifier: com.surfshield.adblocker
     integrations:
       app_store_connect: Surf Adbcloker Team
+    provisioning_profiles:
+      - extension_adblocker
+      - extension_trackers
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
@@ -81,21 +84,14 @@ workflows:
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
-      - name: Load provisioning profiles
+      - name: Load specific provisioning profiles
         script: |
-          # Загружаем ваши существующие provisioning profiles
-          app-store-connect fetch-signing-files com.surfshield.adblocker --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extensions.trackers --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.banners --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.secure --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.adblocker --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.basic --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.privacy --type IOS_APP_STORE
-          app-store-connect fetch-signing-files com.surfshield.adblocker.extension.advanced --type IOS_APP_STORE
-          # Устанавливаем профили в правильное место
+          # Загружаем конкретные provisioning profiles по имени
+          app-store-connect fetch-signing-files --bundle-id com.surfshield.adblocker.extension.adblocker --profile-name extension_adblocker
+          app-store-connect fetch-signing-files --bundle-id com.surfshield.adblocker.extensions.trackers --profile-name extension_trackers
+          # Устанавливаем профили
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp *.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || true
-          # Показываем установленные профили
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
       - name: Create directories
         script: |
