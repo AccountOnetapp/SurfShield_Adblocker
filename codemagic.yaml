@@ -29,10 +29,47 @@ workflows:
         script: |
           # Set up code signing settings
           xcode-project use-profiles
-          # Build and archive
-          xcode-project build-ipa \
-            --project "$CM_BUILD_DIR/SurfShield.xcodeproj" \
-            --scheme "SurfShield"
+          
+          # Show build settings for debugging
+          echo "=== Build Settings ==="
+          xcodebuild -project "$CM_BUILD_DIR/SurfShield.xcodeproj" -scheme "SurfShield" -showBuildSettings | head -20
+          
+          # List available schemes
+          echo "=== Available Schemes ==="
+          xcodebuild -project "$CM_BUILD_DIR/SurfShield.xcodeproj" -list
+          
+          # Try to build with verbose output
+          echo "=== Building with verbose output ==="
+          xcodebuild -project "$CM_BUILD_DIR/SurfShield.xcodeproj" \
+            -scheme "SurfShield" \
+            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+            archive \
+            -verbose \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            DEVELOPMENT_TEAM=9JXM4RZUCC \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CODE_SIGN_STYLE=Manual
+          
+          # Export IPA if archive succeeded
+          if [ -d "$CM_BUILD_DIR/build/SurfShield.xcarchive" ]; then
+            echo "=== Exporting IPA ==="
+            xcodebuild -exportArchive \
+              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+              -exportPath "$CM_BUILD_DIR/build/" \
+              -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist"
+          else
+            echo "Archive failed, trying alternative build approach..."
+            # Alternative: try building without archive first
+            xcodebuild -project "$CM_BUILD_DIR/SurfShield.xcodeproj" \
+              -scheme "SurfShield" \
+              -configuration Release \
+              -destination "generic/platform=iOS" \
+              build \
+              COMPILER_INDEX_STORE_ENABLE=NO \
+              DEVELOPMENT_TEAM=9JXM4RZUCC \
+              CODE_SIGN_IDENTITY="Apple Distribution" \
+              CODE_SIGN_STYLE=Manual
+          fi
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
