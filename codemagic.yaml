@@ -62,9 +62,12 @@ workflows:
       - name: Set up keychain to be used for codesigning
         script: |
           keychain initialize
+      - name: Check existing bundle IDs
+        script: |
+          app-store-connect bundle-ids list
       - name: Fetch signing files
         script: |
-          app-store-connect fetch-signing-files com.surfshield.blockerads.app.20241211.abc123.def456 --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files com.surfshield.adblocker.app --type IOS_APP_STORE
       - name: Set up signing certificate
         script: |
           keychain add-certificates
