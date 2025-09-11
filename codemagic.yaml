@@ -70,6 +70,10 @@ workflows:
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
           security set-keychain-settings -t 3600 -l build.keychain
+          # Настраиваем Xcode для работы с App Store Connect
+          xcrun xcodebuild -version
+          # Устанавливаем переменные окружения для Xcode
+          export DEVELOPER_DIR=/Applications/Xcode-16.4.app/Contents/Developer
       - name: Check existing bundle IDs
         script: |
           app-store-connect bundle-ids list
@@ -91,8 +95,17 @@ workflows:
           cp *.p12 /Users/builder/Library/MobileDevice/Certificates/ 2>/dev/null || true
           # Показываем найденные сертификаты
           ls -la /Users/builder/Library/MobileDevice/Certificates/
-          # Добавляем сертификаты в keychain
-          keychain add-certificates
+          # Импортируем сертификаты в keychain
+          for cert in /Users/builder/Library/MobileDevice/Certificates/*.p12; do
+            if [ -f "$cert" ]; then
+              echo "Импортируем сертификат: $cert"
+              security import "$cert" -k build.keychain -P "" -T /usr/bin/codesign -T /usr/bin/security
+            fi
+          done
+          # Устанавливаем настройки keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+          # Показываем импортированные сертификаты
+          security find-identity -v -p codesigning build.keychain
       - name: Set up provisioning profiles
         script: |
           # Загружаем профили для всех bundle ID (без --create, так как они уже созданы)
