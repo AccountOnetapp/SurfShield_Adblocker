@@ -44,10 +44,8 @@ workflows:
           rHUAi2EP1JLD7MNjAvAxVruwsULwBkXNz2g/CwIa7Tb2JlpiKDcxtJwqfctA0L9+
           1MIDtDORSyGbBg2hhtqC3Z0=
           -----END PRIVATE KEY-----
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.surfshield.adblocker
-        provisioning_profiles:
+    ios_signing:
+      provisioning_profiles:
         - extension_adblocker
         - extension_trackers
     integrations:
