@@ -16,13 +16,13 @@ enum Constants {
     static let termsOfUseURL = "https://docs.google.com/document/d/1SfefoNqYwkAAIynePGWyMz53rc7ERZOKbQ0dUwMT154/edit?tab=t.0"
     
     enum BlockExtenesionBundleIds: String, CaseIterable {
-        case adblocker = "com.surfshield.app.adblocker"
-        case privacy = "com.surfshield.app.privacy"
-        case banners = "com.surfshield.app.banners"
-        case trackers = "com.surfshield.app.trackers"
-        case advanced = "com.surfshield.app.advanced"
-        case secure = "com.surfshield.app.secure"
-        case basic = "com.surfshield.app.basic"
+        case adblocker = "com.surfshield.adblocker.extension.adblocker"
+        case privacy = "com.surfshield.adblocker.extension.privacy"
+        case banners = "com.surfshield.adblocker.extension.banners"
+        case trackers = "com.surfshield.adblocker.extensions.trackers"
+        case advanced = "com.surfshield.adblocker.extension.advanced"
+        case secure = "com.surfshield.adblocker.extension.secure"
+        case basic = "com.surfshield.adblocker.extension.basic"
         
         static var all: [String] {
             BlockExtenesionBundleIds.allCases.map { $0.rawValue }
