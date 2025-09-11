@@ -12,8 +12,6 @@ workflows:
           # APP_STORE_CONNECT_KEY_IDENTIFIER <-- Put your App Store Connect Key Identifier here 
           # APP_STORE_CONNECT_PRIVATE_KEY <-- Put your App Store Connect Private Key here
           # See the following link for more details - https://docs.codemagic.io/code-signing-yaml/signing-ios/
-          # https://appstoreconnect.apple.com/access/api
-        - other
       vars:
         XCODE_WORKSPACE: "SurfShield.xcodeproj" # <-- Your Xcode project name
         XCODE_SCHEME: "SurfShield" # <-- Your scheme name
