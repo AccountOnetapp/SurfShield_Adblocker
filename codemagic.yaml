@@ -19,9 +19,9 @@ workflows:
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
-        - name: Set up keychain to be used for code signing
-          script: |
-            keychain initialize
+      - name: Set up keychain to be used for code signing
+        script: |
+          keychain initialize
             
             # Debug: Check certificates after keychain init
             echo "=== DEBUG: Certificates after keychain init ==="
@@ -66,7 +66,7 @@ workflows:
               fi
             done
         - name: Configure code signing settings
-          script: |
+        script: |
             # Install xcode-project tool if not available
             if ! command -v xcode-project &> /dev/null; then
               echo "Installing xcode-project tool..."
@@ -108,20 +108,28 @@ workflows:
             # Final certificate check after all setup
             echo "=== DEBUG: Final certificate check after setup ==="
             security find-identity -v -p codesigning
-        - name: Build ipa for distribution
-          script: |
+      - name: Build ipa for distribution
+        script: |
             echo "=== DEBUG: Certificates before build ==="
             security find-identity -v -p codesigning
             
             echo "=== DEBUG: Starting build ==="
-            xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
-             -configuration Release \
-             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-             DEVELOPMENT_TEAM=9JXM4RZUCC \
+          xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
+          -configuration Release \
+          -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+          DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Automatic \
              -allowProvisioningUpdates
         - name: Create export options plist
           script: |
+            # Find the correct provisioning profile for main app
+            MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
+            
+            echo "=== DEBUG: Found main app profile: $MAIN_PROFILE ==="
+            
+            # Extract profile name from path
+            PROFILE_NAME=$(basename "$MAIN_PROFILE" .mobileprovision)
+            
             cat > "$CM_BUILD_DIR/export_options.plist" << EOF
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -141,9 +149,17 @@ workflows:
                 <string>manual</string>
                 <key>stripSwiftSymbols</key>
                 <true/>
+                <key>provisioningProfiles</key>
+                <dict>
+                    <key>com.surfshield.adblocker</key>
+                    <string>$PROFILE_NAME</string>
+                </dict>
             </dict>
             </plist>
             EOF
+            
+            echo "=== DEBUG: Export options plist created ==="
+            cat "$CM_BUILD_DIR/export_options.plist"
         - name: Export ipa from archive
           script: |
             # Debug: Check profiles before export
@@ -180,6 +196,22 @@ workflows:
              -exportPath "$CM_BUILD_DIR/build" \
              -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
                -allowProvisioningUpdates
+            
+            # Debug: Check IPA contents after export
+            echo "=== DEBUG: Checking IPA contents ==="
+            if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
+                echo "IPA file exists, checking contents:"
+                unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "No embedded.mobileprovision found in IPA"
+                
+                # Check if embedded.mobileprovision exists in the app bundle
+                echo "=== DEBUG: Checking app bundle for embedded.mobileprovision ==="
+                TEMP_DIR=$(mktemp -d)
+                unzip -q "$CM_BUILD_DIR/build/SurfShield.ipa" -d "$TEMP_DIR"
+                find "$TEMP_DIR" -name "embedded.mobileprovision" -exec echo "Found: {}" \; || echo "No embedded.mobileprovision found in app bundle"
+                rm -rf "$TEMP_DIR"
+            else
+                echo "ERROR: IPA file not found!"
+            fi
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
