@@ -114,14 +114,14 @@ workflows:
             security find-identity -v -p codesigning
             
             echo "=== DEBUG: Starting build ==="
-          xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
-          -configuration Release \
-          -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-          DEVELOPMENT_TEAM=9JXM4RZUCC \
+            xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+            DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Automatic \
              -allowProvisioningUpdates
-        - name: Create export options plist
-          script: |
+      - name: Create export options plist
+        script: |
             # Find all profiles for main app and check which one has the right certificate
             echo "=== DEBUG: Searching for profiles for com.surfshield.adblocker ==="
             
