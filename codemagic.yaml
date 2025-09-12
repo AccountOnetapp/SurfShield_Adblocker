@@ -5,86 +5,37 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       ios_signing:
-        provisioning_profiles:
-          - "Distribution_Banners"
-          - "Distribution_Adblocker"
-          - "Distribution_Adbcloker"
-          - "Distribution_Trackers"
-          - "Distribution_Secure"
-          - "Distribution_Basic"
-          - "Distribution_Privacy"
-          - "Distribution_Advanced"
-        certificates:
-          - "Distribution_surfshield"
+        distribution_type: app_store
+        bundle_identifier: com.surfshield.adblocker
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
         - name: Set up keychain to be used for code signing
           script: |
             keychain initialize
-        - name: Install provisioning profiles
+            
+            # Debug: Check certificates after keychain setup
+            echo "=== DEBUG: Certificates after keychain init ==="
+            security find-identity -v -p codesigning
+        - name: Debug Codemagic setup
           script: |
-            # Create provisioning profiles directory
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            
-            # Check what files are available in CM_BUILD_DIR
-            echo "=== DEBUG: Checking CM_BUILD_DIR contents ==="
-            find "$CM_BUILD_DIR" -type f -name "*.mobileprovision" -o -name "*.provisionprofile" | head -20
-            
-            # Find and install all .mobileprovision files from Codemagic
-            echo "=== DEBUG: Installing provisioning profiles ==="
-            PROFILE_COUNT=0
-            find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
-            
-            # Also check for .provisionprofile files
-            find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
-            
-            # List installed profiles for debugging
-            echo "=== DEBUG: Installed provisioning profiles ==="
-            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-            
-            # Check if profiles contain expected bundle identifiers
-            echo "=== DEBUG: Checking profile contents ==="
-            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
-              if [[ -f "$profile" ]]; then
-                echo "Profile: $(basename "$profile")"
-                echo "Full contents:"
-                security cms -D -i "$profile" 2>/dev/null | grep -A 10 -B 2 "application-identifier"
-                echo "---"
-              fi
-            done
-        - name: Configure code signing settings
-          script: |
-            # Install xcode-project tool if not available
-            if ! command -v xcode-project &> /dev/null; then
-              echo "Installing xcode-project tool..."
-              pip install xcode-project
-            fi
-            
-            # List available certificates for debugging
-            echo "=== DEBUG: Available certificates ==="
+            # Debug: Check what Codemagic has set up
+            echo "=== DEBUG: Codemagic certificates ==="
             security find-identity -v -p codesigning
             
-            # List available provisioning profiles for debugging
-            echo "=== DEBUG: Available provisioning profiles ==="
-            PROFILE_FILES=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" | wc -l)
-            echo "Total profile files found: $PROFILE_FILES"
+            echo "=== DEBUG: Codemagic profiles ==="
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles directory found"
             
-            if [ "$PROFILE_FILES" -gt 0 ]; then
-              echo "Profile details:"
-              find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" -exec security cms -D -i {} \; | grep -E "(application-identifier|com\.surfshield)" || echo "No matching bundle IDs found"
-            else
-              echo "ERROR: No provisioning profiles found!"
-              echo "Checking alternative locations:"
-              find "$CM_BUILD_DIR" -name "*.mobileprovision" -o -name "*.provisionprofile" 2>/dev/null || echo "No profiles in CM_BUILD_DIR either"
-            fi
+            echo "=== DEBUG: CM_BUILD_DIR contents ==="
+            find "$CM_BUILD_DIR" -name "*.mobileprovision" -o -name "*.p12" -o -name "*.cer" 2>/dev/null || echo "No signing files found"
+        - name: Configure code signing settings
+          script: |
+            # Final debug check before build
+            echo "=== DEBUG: Final certificate check ==="
+            security find-identity -v -p codesigning
             
-            # Use xcode-project to automatically configure provisioning profiles
-            echo "=== DEBUG: Configuring code signing with xcode-project ==="
-            xcode-project use-profiles \
-              --project SurfShield.xcodeproj \
-              --archive-method app-store \
-              --code-signing-setup-verbose-logging
+            echo "=== DEBUG: Final profile check ==="
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles found"
         - name: Build ipa for distribution
           script: |
             xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
@@ -111,7 +62,7 @@ workflows:
                 <key>compileBitcode</key>
                 <false/>
                 <key>signingStyle</key>
-                <string>automatic</string>
+                <string>manual</string>
                 <key>stripSwiftSymbols</key>
                 <true/>
             </dict>
@@ -140,9 +91,6 @@ workflows:
             
             echo "=== DEBUG: Export options plist ==="
             cat "$CM_BUILD_DIR/export_options.plist"
-            
-            echo "=== DEBUG: Available certificates ==="
-            security find-identity -v -p codesigning
             
             echo "=== DEBUG: Starting export ==="
             xcodebuild -exportArchive \
