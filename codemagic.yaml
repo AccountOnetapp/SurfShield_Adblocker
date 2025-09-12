@@ -28,7 +28,7 @@ workflows:
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
           CODE_SIGN_IDENTITY="Apple Development" \
-          CODE_SIGN_STYLE=Automatic
+          CODE_SIGN_STYLE=Manual
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
