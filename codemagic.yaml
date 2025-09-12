@@ -40,10 +40,36 @@ workflows:
              -configuration Release \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              DEVELOPMENT_TEAM=9JXM4RZUCC \
-             CODE_SIGN_STYLE=Automatic \
+             CODE_SIGN_STYLE=Automatic
+        - name: Create export options plist
+          script: |
+            cat > "$CM_BUILD_DIR/export_options.plist" << EOF
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>method</key>
+                <string>app-store</string>
+                <key>teamID</key>
+                <string>9JXM4RZUCC</string>
+                <key>uploadBitcode</key>
+                <false/>
+                <key>uploadSymbols</key>
+                <true/>
+                <key>compileBitcode</key>
+                <false/>
+            </dict>
+            </plist>
+            EOF
+        - name: Export ipa from archive
+          script: |
+            xcodebuild -exportArchive \
+             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+             -exportPath "$CM_BUILD_DIR/build" \
+             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist"
     artifacts:
-      - build/Release-iphoneos/*.ipa
-      - build/Release-iphoneos/*.dSYM.zip
+      - build/*.ipa
+      - build/SurfShield.xcarchive
     publishing:
       email:
         recipients:
