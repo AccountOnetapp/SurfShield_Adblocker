@@ -199,6 +199,10 @@ workflows:
             
             # Debug: Check IPA contents after export
             echo "=== DEBUG: Checking IPA contents ==="
+            echo "=== DEBUG: Looking for IPA files in build directory ==="
+            find "$CM_BUILD_DIR/build" -name "*.ipa" -exec echo "Found IPA: {}" \;
+            ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not found"
+            
             if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
                 echo "IPA file exists, checking contents:"
                 unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "No embedded.mobileprovision found in IPA"
@@ -211,19 +215,22 @@ workflows:
                 rm -rf "$TEMP_DIR"
             else
                 echo "ERROR: IPA file not found!"
+                echo "=== DEBUG: Available files in build directory ==="
+                ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not accessible"
             fi
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
     publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - App Store Connect Users
+          - SurfShield Beta Testers
       email:
         recipients:
           - your-email@example.com
         notify:
           success: true
           failure: false
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        beta_groups:
-          - SurfShield Beta Testers
