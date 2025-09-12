@@ -34,8 +34,8 @@ workflows:
             # Debug: Check certificates after adding to keychain
             echo "=== DEBUG: Certificates after adding to keychain ==="
             security find-identity -v -p codesigning
-        - name: Install provisioning profiles
-          script: |
+      - name: Install provisioning profiles
+        script: |
             # Create provisioning profiles directory
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             
@@ -65,7 +65,7 @@ workflows:
                 echo "---"
               fi
             done
-        - name: Configure code signing settings
+      - name: Configure code signing settings
         script: |
             # Install xcode-project tool if not available
             if ! command -v xcode-project &> /dev/null; then
@@ -114,14 +114,14 @@ workflows:
             security find-identity -v -p codesigning
             
             echo "=== DEBUG: Starting build ==="
-          xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
-          -configuration Release \
-          -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-          DEVELOPMENT_TEAM=9JXM4RZUCC \
+            xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+            DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Automatic \
              -allowProvisioningUpdates
-        - name: Create export options plist
-          script: |
+      - name: Create export options plist
+        script: |
             # Find the correct provisioning profile for main app
             MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
             
@@ -160,8 +160,8 @@ workflows:
             
             echo "=== DEBUG: Export options plist created ==="
             cat "$CM_BUILD_DIR/export_options.plist"
-        - name: Export ipa from archive
-          script: |
+      - name: Export ipa from archive
+        script: |
             # Debug: Check profiles before export
             echo "=== DEBUG: Final profile check before export ==="
             echo "Available profiles in system:"
