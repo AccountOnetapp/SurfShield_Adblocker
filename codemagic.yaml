@@ -22,6 +22,36 @@ workflows:
         - name: Set up keychain to be used for code signing
           script: |
             keychain initialize
+        - name: Install provisioning profiles
+          script: |
+            # Create provisioning profiles directory
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            
+            # Check what files are available in CM_BUILD_DIR
+            echo "=== DEBUG: Checking CM_BUILD_DIR contents ==="
+            find "$CM_BUILD_DIR" -type f -name "*.mobileprovision" -o -name "*.provisionprofile" | head -20
+            
+            # Find and install all .mobileprovision files from Codemagic
+            echo "=== DEBUG: Installing provisioning profiles ==="
+            PROFILE_COUNT=0
+            find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
+            
+            # Also check for .provisionprofile files
+            find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
+            
+            # List installed profiles for debugging
+            echo "=== DEBUG: Installed provisioning profiles ==="
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+            
+            # Check if profiles contain expected bundle identifiers
+            echo "=== DEBUG: Checking profile contents ==="
+            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
+              if [[ -f "$profile" ]]; then
+                echo "Profile: $(basename "$profile")"
+                security cms -D -i "$profile" 2>/dev/null | grep -E "(application-identifier|com\.surfshield)" || echo "  No matching bundle IDs found"
+                echo "---"
+              fi
+            done
         - name: Configure code signing settings
           script: |
             # Install xcode-project tool if not available
@@ -31,14 +61,25 @@ workflows:
             fi
             
             # List available certificates for debugging
-            echo "Available certificates:"
+            echo "=== DEBUG: Available certificates ==="
             security find-identity -v -p codesigning
             
             # List available provisioning profiles for debugging
-            echo "Available provisioning profiles:"
-            find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec security cms -D -i {} \; | grep -A 5 -B 5 "com.apple.security.application-groups" || echo "No App Groups found in profiles"
+            echo "=== DEBUG: Available provisioning profiles ==="
+            PROFILE_FILES=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" | wc -l)
+            echo "Total profile files found: $PROFILE_FILES"
+            
+            if [ "$PROFILE_FILES" -gt 0 ]; then
+              echo "Profile details:"
+              find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" -exec security cms -D -i {} \; | grep -E "(application-identifier|com\.surfshield)" || echo "No matching bundle IDs found"
+            else
+              echo "ERROR: No provisioning profiles found!"
+              echo "Checking alternative locations:"
+              find "$CM_BUILD_DIR" -name "*.mobileprovision" -o -name "*.provisionprofile" 2>/dev/null || echo "No profiles in CM_BUILD_DIR either"
+            fi
             
             # Use xcode-project to automatically configure provisioning profiles
+            echo "=== DEBUG: Configuring code signing with xcode-project ==="
             xcode-project use-profiles \
               --project SurfShield.xcodeproj \
               --archive-method app-store \
@@ -59,7 +100,7 @@ workflows:
             <plist version="1.0">
             <dict>
                 <key>method</key>
-                <string>app-store</string>
+                <string>app-store-connect</string>
                 <key>teamID</key>
                 <string>9JXM4RZUCC</string>
                 <key>uploadBitcode</key>
@@ -77,11 +118,25 @@ workflows:
             EOF
         - name: Export ipa from archive
           script: |
+            # Debug: Check profiles before export
+            echo "=== DEBUG: Final profile check before export ==="
+            echo "Available profiles in system:"
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ | wc -l
+            echo "Profile files:"
+            ls ~/Library/MobileDevice/Provisioning\ Profiles/
+            
+            echo "=== DEBUG: Checking archive contents ==="
+            ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive/Products/Applications/"
+            
+            echo "=== DEBUG: Export options plist ==="
+            cat "$CM_BUILD_DIR/export_options.plist"
+            
+            echo "=== DEBUG: Starting export ==="
             xcodebuild -exportArchive \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              -exportPath "$CM_BUILD_DIR/build" \
              -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
-              -allowProvisioningUpdates
+               -allowProvisioningUpdates
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
