@@ -15,7 +15,6 @@ workflows:
           - "Distribution_Basic"
           - "Distribution_Privacy"
           - "Distribution_Advanced"
-          - "Distribution_SurfShield"
         certificates:
           - "Distribution_surfshield"
     integrations:
