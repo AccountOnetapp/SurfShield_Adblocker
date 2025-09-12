@@ -15,7 +15,7 @@ workflows:
           - "Distribution_Privacy"
           - "Distribution_Advanced"
         certificates:
-          - "Distribution_surfshield"
+          - "Development_surfshield"
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
@@ -39,63 +39,9 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
-      - name: Create export options plist
-        script: |
-           # List all available profiles to see what we have
-           echo "=== DEBUG: All available profiles ==="
-           for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-             if [ -f "$profile" ]; then
-               BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-               PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
-               PROFILE_UUID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract UUID raw -)
-               echo "  - $PROFILE_NAME (UUID: $PROFILE_UUID) -> $BUNDLE_ID"
-             fi
-           done
-           
-           # Use the SurfShield main app profile explicitly
-           # Look for profile with "SurfShield" in the name for main app
-           MAIN_PROFILE=""
-           for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-             if [ -f "$profile" ]; then
-               PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
-               BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-               
-               # Look for SurfShield main app profile (not extensions)
-               if [[ "$PROFILE_NAME" == *"SurfShield"* ]] && [[ "$BUNDLE_ID" == *"com.surfshield.adblocker" ]] && [[ "$BUNDLE_ID" != *"extension"* ]]; then
-                 echo "✅ Found SurfShield main app profile: $PROFILE_NAME"
-                 MAIN_PROFILE="$profile"
-                 break
-               fi
-             fi
-           done
-           
-           if [ -z "$MAIN_PROFILE" ]; then
-             echo "❌ ERROR: No SurfShield main app profile found"
-             echo "Trying to find any profile for com.surfshield.adblocker..."
-             
-             # Fallback: find any profile for main app bundle ID
-             for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-               if [ -f "$profile" ]; then
-                 BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-                 if [ "$BUNDLE_ID" = "9JXM4RZUCC.com.surfshield.adblocker" ]; then
-                   PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
-                   echo "✅ Found profile for main app: $PROFILE_NAME"
-                   MAIN_PROFILE="$profile"
-                   break
-                 fi
-               fi
-             done
-           fi
-           
-           if [ -z "$MAIN_PROFILE" ]; then
-             echo "❌ ERROR: No profile found for main app"
-             exit 1
-           fi
-           
-           # Extract profile UUID
-           PROFILE_UUID=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract UUID raw -)
-           PROFILE_NAME=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract Name raw -)
-           echo "✅ Using profile: $PROFILE_NAME (UUID: $PROFILE_UUID)"
+       - name: Create export options plist
+         script: |
+           echo "=== DEBUG: Using automatic signing for export ==="
            
            cat > "$CM_BUILD_DIR/export_options.plist" << EOF
            <?xml version="1.0" encoding="UTF-8"?>
@@ -113,12 +59,7 @@ workflows:
              <key>compileBitcode</key>
              <false/>
              <key>signingStyle</key>
-             <string>manual</string>
-             <key>provisioningProfiles</key>
-             <dict>
-               <key>com.surfshield.adblocker</key>
-               <string>$PROFILE_UUID</string>
-             </dict>
+             <string>automatic</string>
            </dict>
            </plist>
            EOF
