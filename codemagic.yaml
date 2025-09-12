@@ -49,7 +49,7 @@ workflows:
            <plist version="1.0">
            <dict>
              <key>method</key>
-             <string>app-store</string>
+             <string>app-store-connect</string>
              <key>teamID</key>
              <string>GLJ7NML7J4</string>
              <key>uploadBitcode</key>
