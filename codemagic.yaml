@@ -22,6 +22,18 @@ workflows:
         - name: Set up keychain to be used for code signing
           script: |
             keychain initialize
+            
+            # Debug: Check certificates after keychain init
+            echo "=== DEBUG: Certificates after keychain init ==="
+            security find-identity -v -p codesigning
+            
+            # Add certificates to keychain
+            echo "=== DEBUG: Adding certificates to keychain ==="
+            keychain add-certificates
+            
+            # Debug: Check certificates after adding to keychain
+            echo "=== DEBUG: Certificates after adding to keychain ==="
+            security find-identity -v -p codesigning
         - name: Install provisioning profiles
           script: |
             # Create provisioning profiles directory
@@ -65,6 +77,13 @@ workflows:
             echo "=== DEBUG: Available certificates ==="
             security find-identity -v -p codesigning
             
+            echo "=== DEBUG: Detailed certificate analysis ==="
+            security find-identity -v -p codesigning | grep -E "(valid|invalid)" || echo "No certificates found"
+            
+            echo "=== DEBUG: Keychain info ==="
+            security list-keychains
+            security default-keychain
+            
             # List available provisioning profiles for debugging
             echo "=== DEBUG: Available provisioning profiles ==="
             PROFILE_FILES=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" | wc -l)
@@ -85,8 +104,16 @@ workflows:
               --project SurfShield.xcodeproj \
               --archive-method app-store \
               --code-signing-setup-verbose-logging
+            
+            # Final certificate check after all setup
+            echo "=== DEBUG: Final certificate check after setup ==="
+            security find-identity -v -p codesigning
         - name: Build ipa for distribution
           script: |
+            echo "=== DEBUG: Certificates before build ==="
+            security find-identity -v -p codesigning
+            
+            echo "=== DEBUG: Starting build ==="
             xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
              -configuration Release \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
@@ -140,6 +167,12 @@ workflows:
             
             echo "=== DEBUG: Export options plist ==="
             cat "$CM_BUILD_DIR/export_options.plist"
+            
+            echo "=== DEBUG: Available certificates before export ==="
+            security find-identity -v -p codesigning
+            
+            echo "=== DEBUG: Available provisioning profiles before export ==="
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles directory found"
             
             echo "=== DEBUG: Starting export ==="
             xcodebuild -exportArchive \
