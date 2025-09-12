@@ -36,7 +36,7 @@ workflows:
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            DEVELOPMENT_TEAM=9JXM4RZUCC \
+            DEVELOPMENT_TEAM=GLJ7NML7J4 \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
       - name: Create export options plist
@@ -77,7 +77,7 @@ workflows:
              for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
                if [ -f "$profile" ]; then
                  BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-                 if [ "$BUNDLE_ID" = "9JXM4RZUCC.com.surfshield.adblocker" ]; then
+                 if [ "$BUNDLE_ID" = "GLJ7NML7J4.com.surfshield.adblocker" ]; then
                    PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
                    echo "✅ Found profile for main app: $PROFILE_NAME"
                    MAIN_PROFILE="$profile"
@@ -103,9 +103,9 @@ workflows:
            <plist version="1.0">
            <dict>
              <key>method</key>
-             <string>app-store</string>
+             <string>app-store-connect</string>
              <key>teamID</key>
-             <string>9JXM4RZUCC</string>
+             <string>GLJ7NML7J4</string>
              <key>uploadBitcode</key>
              <false/>
              <key>uploadSymbols</key>
