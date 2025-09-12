@@ -39,23 +39,30 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
-      - name: Create export options plist
-        script: |
-           # Find the main app provisioning profile (not extensions)
-           echo "=== DEBUG: Searching for main app profile ==="
-           MAIN_PROFILE=""
-           
+       - name: Create export options plist
+         script: |
+           # List all available profiles to see what we have
+           echo "=== DEBUG: All available profiles ==="
            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
              if [ -f "$profile" ]; then
                BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
                PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
+               PROFILE_UUID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract UUID raw -)
+               echo "  - $PROFILE_NAME (UUID: $PROFILE_UUID) -> $BUNDLE_ID"
+             fi
+           done
+           
+           # Use the SurfShield main app profile explicitly
+           # Look for profile with "SurfShield" in the name for main app
+           MAIN_PROFILE=""
+           for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+             if [ -f "$profile" ]; then
+               PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
+               BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
                
-               echo "Checking profile: $PROFILE_NAME"
-               echo "  Bundle ID: $BUNDLE_ID"
-               
-               # Look for exact match for main app (not extensions)
-               if [ "$BUNDLE_ID" = "9JXM4RZUCC.com.surfshield.adblocker" ]; then
-                 echo "✅ Found main app profile: $PROFILE_NAME"
+               # Look for SurfShield main app profile (not extensions)
+               if [[ "$PROFILE_NAME" == *"SurfShield"* ]] && [[ "$BUNDLE_ID" == *"com.surfshield.adblocker" ]] && [[ "$BUNDLE_ID" != *"extension"* ]]; then
+                 echo "✅ Found SurfShield main app profile: $PROFILE_NAME"
                  MAIN_PROFILE="$profile"
                  break
                fi
@@ -63,31 +70,32 @@ workflows:
            done
            
            if [ -z "$MAIN_PROFILE" ]; then
-             echo "❌ ERROR: No profile found for main app com.surfshield.adblocker"
-             echo "Available profiles:"
+             echo "❌ ERROR: No SurfShield main app profile found"
+             echo "Trying to find any profile for com.surfshield.adblocker..."
+             
+             # Fallback: find any profile for main app bundle ID
              for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
                if [ -f "$profile" ]; then
                  BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-                 PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
-                 echo "  - $PROFILE_NAME: $BUNDLE_ID"
+                 if [ "$BUNDLE_ID" = "9JXM4RZUCC.com.surfshield.adblocker" ]; then
+                   PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
+                   echo "✅ Found profile for main app: $PROFILE_NAME"
+                   MAIN_PROFILE="$profile"
+                   break
+                 fi
                fi
              done
+           fi
+           
+           if [ -z "$MAIN_PROFILE" ]; then
+             echo "❌ ERROR: No profile found for main app"
              exit 1
            fi
            
-           # Extract profile UUID and verify it contains the right certificate
+           # Extract profile UUID
            PROFILE_UUID=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract UUID raw -)
            PROFILE_NAME=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract Name raw -)
-           
            echo "✅ Using profile: $PROFILE_NAME (UUID: $PROFILE_UUID)"
-           
-           # Check if profile contains the distribution certificate
-           echo "=== DEBUG: Checking profile certificates ==="
-           security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract DeveloperCertificates raw - | head -3
-           
-           # Verify the profile is for distribution (not development)
-           PROFILE_TYPE=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract ProvisionedDevices raw - 2>/dev/null || echo "Distribution profile")
-           echo "Profile type: $PROFILE_TYPE"
            
            cat > "$CM_BUILD_DIR/export_options.plist" << EOF
            <?xml version="1.0" encoding="UTF-8"?>
@@ -95,7 +103,7 @@ workflows:
            <plist version="1.0">
            <dict>
              <key>method</key>
-             <string>app-store-connect</string>
+             <string>app-store</string>
              <key>teamID</key>
              <string>9JXM4RZUCC</string>
              <key>uploadBitcode</key>
