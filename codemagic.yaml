@@ -15,16 +15,6 @@ workflows:
           keychain initialize
       - name: Set up Provisioning profiles from environment variables
         script: |
-          # App Store provisioning profile for main app
-          PROVISIONING_PROFILE_PATH="$CM_BUILD_DIR"/profile_adhoc.mobileprovision
-          echo ${PROVISIONING_PROFILE} | base64 --decode > $PROVISIONING_PROFILE_PATH
-          PROVISIONING_PROFILE_UUID="$CM_BUILD_DIR"/uuid.txt
-          echo ${PROVISIONING_PROFILE_UUID} > $PROVISIONING_PROFILE_UUID
-          
-          # Install provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp "$PROVISIONING_PROFILE_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
-          
           # Code signing certificate
           CERTIFICATE_PATH="$CM_BUILD_DIR"/certificate.p12
           echo ${CERTIFICATE} | base64 --decode > $CERTIFICATE_PATH
@@ -38,8 +28,7 @@ workflows:
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
           CODE_SIGN_IDENTITY="Apple Distribution" \
-          CODE_SIGN_STYLE=Manual \
-          PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_UUID"
+          CODE_SIGN_STYLE=Automatic
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
