@@ -41,7 +41,7 @@ workflows:
             # Use xcode-project to automatically configure provisioning profiles
             xcode-project use-profiles \
               --project SurfShield.xcodeproj \
-              --archive-method app-store \
+              --archive-method app-store-connect \
               --code-signing-setup-verbose-logging
         - name: Build ipa for distribution
           script: |
