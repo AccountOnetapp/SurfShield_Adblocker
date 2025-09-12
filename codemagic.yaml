@@ -203,6 +203,19 @@ workflows:
             find "$CM_BUILD_DIR/build" -name "*.ipa" -exec echo "Found IPA: {}" \;
             ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not found"
             
+            # Check if IPA was created in a subdirectory
+            echo "=== DEBUG: Checking subdirectories for IPA ==="
+            find "$CM_BUILD_DIR/build" -type d -name "*.ipa" -exec echo "Found IPA directory: {}" \;
+            find "$CM_BUILD_DIR/build" -type f -name "*.ipa" -exec echo "Found IPA file: {}" \;
+            
+            # Copy IPA to root build directory if found elsewhere
+            IPA_FILE=$(find "$CM_BUILD_DIR/build" -name "*.ipa" -type f | head -1)
+            if [ -n "$IPA_FILE" ] && [ "$IPA_FILE" != "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
+                echo "=== DEBUG: Moving IPA to expected location ==="
+                cp "$IPA_FILE" "$CM_BUILD_DIR/build/SurfShield.ipa"
+                echo "IPA copied from $IPA_FILE to $CM_BUILD_DIR/build/SurfShield.ipa"
+            fi
+            
             if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
                 echo "IPA file exists, checking contents:"
                 unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "No embedded.mobileprovision found in IPA"
@@ -217,6 +230,32 @@ workflows:
                 echo "ERROR: IPA file not found!"
                 echo "=== DEBUG: Available files in build directory ==="
                 ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not accessible"
+                echo "=== DEBUG: Recursive search for IPA files ==="
+                find "$CM_BUILD_DIR" -name "*.ipa" -exec echo "Found anywhere: {}" \;
+            fi
+        
+      - name: Verify artifacts before publishing
+        script: |
+            echo "=== DEBUG: Final artifacts check ==="
+            echo "Build directory contents:"
+            ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not found"
+            
+            echo "=== DEBUG: Looking for all IPA files ==="
+            find "$CM_BUILD_DIR" -name "*.ipa" -exec echo "Final IPA found: {}" \;
+            
+            echo "=== DEBUG: Checking artifact paths ==="
+            if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
+                echo "✅ Main IPA file exists: $CM_BUILD_DIR/build/SurfShield.ipa"
+                ls -la "$CM_BUILD_DIR/build/SurfShield.ipa"
+            else
+                echo "❌ Main IPA file NOT found: $CM_BUILD_DIR/build/SurfShield.ipa"
+            fi
+            
+            if [ -d "$CM_BUILD_DIR/build/SurfShield.xcarchive" ]; then
+                echo "✅ Archive exists: $CM_BUILD_DIR/build/SurfShield.xcarchive"
+                ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive"
+            else
+                echo "❌ Archive NOT found: $CM_BUILD_DIR/build/SurfShield.xcarchive"
             fi
     artifacts:
       - build/*.ipa
@@ -225,9 +264,6 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
-        beta_groups:
-          - App Store Connect Users
-          - SurfShield Beta Testers
       email:
         recipients:
           - your-email@example.com
