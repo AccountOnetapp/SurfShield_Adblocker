@@ -20,6 +20,22 @@ workflows:
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
+        - name: Set up keychain to be used for code signing
+          script: |
+            keychain initialize
+        - name: Configure code signing settings
+          script: |
+            # Install xcode-project tool if not available
+            if ! command -v xcode-project &> /dev/null; then
+              echo "Installing xcode-project tool..."
+              pip install xcode-project
+            fi
+            
+            # Use xcode-project to automatically configure provisioning profiles
+            xcode-project use-profiles \
+              --project SurfShield.xcodeproj \
+              --archive-method app-store \
+              --code-signing-setup-verbose-logging
         - name: Build ipa for distribution
           script: |
             xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
@@ -28,13 +44,6 @@ workflows:
              DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Manual \
              CODE_SIGN_IDENTITY="Apple Distribution" \
-             PROVISIONING_PROFILE_SPECIFIER:Banners="Distribution_Banners" \
-             PROVISIONING_PROFILE_SPECIFIER:Adblocker="Distribution_Adblocker" \
-             PROVISIONING_PROFILE_SPECIFIER:Trackers="Distribution_Trackers" \
-             PROVISIONING_PROFILE_SPECIFIER:Secure="Distribution_Secure" \
-             PROVISIONING_PROFILE_SPECIFIER:Basic="Distribution_Basic" \
-             PROVISIONING_PROFILE_SPECIFIER:Privacy="Distribution_Privacy" \
-             PROVISIONING_PROFILE_SPECIFIER:Advanced="Distribution_Advanced" \
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
