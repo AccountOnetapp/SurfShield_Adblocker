@@ -7,7 +7,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         provisioning_profiles:
-          - "Provision_Bunner"
           - "Distribution_Adblocker"
           - "Distribution_Adbcloker"
           - "Distribution_Trackers"
