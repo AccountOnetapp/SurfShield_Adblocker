@@ -8,6 +8,14 @@ workflows:
         distribution_type: app_store
         provisioning_profiles:
           - "Distribution_Banners"
+          - "Distribution_Adbcloker"
+          - "Distribution_Adblocker"
+          - "Distribution_Trackers"
+          - "Distribution_Secure"
+          - "Distribution_Basic"
+          - "Distribution_Privacy"
+          - "Distribution_Advanced"
+          - "Distribution_SurfShield"
         certificates:
           - "Distribution_surfshield"
     integrations:
