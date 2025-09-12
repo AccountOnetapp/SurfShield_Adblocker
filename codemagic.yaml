@@ -39,28 +39,48 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
-      - name: Create export options plist
-        script: |
-          cat > "$CM_BUILD_DIR/export_options.plist" << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>9JXM4RZUCC</string>
-            <key>uploadBitcode</key>
-            <false/>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-            <key>signingStyle</key>
-            <string>manual</string>
-          </dict>
-          </plist>
-          EOF
+       - name: Create export options plist
+         script: |
+           # Find the main app provisioning profile
+           MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "9JXM4RZUCC\.com\.surfshield\.adblocker" && echo "$1"' _ {} \; | head -1)
+           
+           if [ -z "$MAIN_PROFILE" ]; then
+             echo "❌ ERROR: No profile found for com.surfshield.adblocker"
+             exit 1
+           fi
+           
+           # Extract profile UUID
+           PROFILE_UUID=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract UUID raw -)
+           echo "✅ Using profile UUID: $PROFILE_UUID"
+           
+           cat > "$CM_BUILD_DIR/export_options.plist" << EOF
+           <?xml version="1.0" encoding="UTF-8"?>
+           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+           <plist version="1.0">
+           <dict>
+             <key>method</key>
+             <string>app-store</string>
+             <key>teamID</key>
+             <string>9JXM4RZUCC</string>
+             <key>uploadBitcode</key>
+             <false/>
+             <key>uploadSymbols</key>
+             <true/>
+             <key>compileBitcode</key>
+             <false/>
+             <key>signingStyle</key>
+             <string>manual</string>
+             <key>provisioningProfiles</key>
+             <dict>
+               <key>com.surfshield.adblocker</key>
+               <string>$PROFILE_UUID</string>
+             </dict>
+           </dict>
+           </plist>
+           EOF
+           
+           echo "=== DEBUG: Export options plist created ==="
+           cat "$CM_BUILD_DIR/export_options.plist"
       - name: Export ipa from archive
         script: |
           xcodebuild -exportArchive \
@@ -68,6 +88,43 @@ workflows:
             -exportPath "$CM_BUILD_DIR/build" \
             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
             -allowProvisioningUpdates
+          
+          # Check if IPA was created and verify its contents
+          echo "=== DEBUG: Checking IPA contents ==="
+          if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
+            echo "✅ IPA file created successfully"
+            echo "IPA file size: $(ls -lh "$CM_BUILD_DIR/build/SurfShield.ipa" | awk '{print $5}')"
+            
+            # Check if embedded.mobileprovision exists in IPA
+            echo "=== DEBUG: Checking for embedded.mobileprovision ==="
+            unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "❌ No embedded.mobileprovision found in IPA"
+            
+            # Extract and check the app bundle
+            TEMP_DIR=$(mktemp -d)
+            unzip -q "$CM_BUILD_DIR/build/SurfShield.ipa" -d "$TEMP_DIR"
+            
+            if [ -d "$TEMP_DIR/Payload/SurfShield.app" ]; then
+              echo "✅ App bundle found in IPA"
+              if [ -f "$TEMP_DIR/Payload/SurfShield.app/embedded.mobileprovision" ]; then
+                echo "✅ embedded.mobileprovision found in app bundle"
+                echo "Profile size: $(ls -lh "$TEMP_DIR/Payload/SurfShield.app/embedded.mobileprovision" | awk '{print $5}')"
+              else
+                echo "❌ embedded.mobileprovision NOT found in app bundle"
+                echo "App bundle contents:"
+                ls -la "$TEMP_DIR/Payload/SurfShield.app/" | grep -E "(embedded|mobileprovision)" || echo "No provisioning files found"
+              fi
+            else
+              echo "❌ App bundle not found in IPA"
+              echo "IPA contents:"
+              ls -la "$TEMP_DIR/"
+            fi
+            
+            rm -rf "$TEMP_DIR"
+          else
+            echo "❌ IPA file not created"
+            echo "Build directory contents:"
+            ls -la "$CM_BUILD_DIR/build/"
+          fi
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
