@@ -13,283 +13,54 @@ workflows:
       - name: Set up keychain to be used for code signing
         script: |
           keychain initialize
-            
-            # Debug: Check certificates after keychain init
-            echo "=== DEBUG: Certificates after keychain init ==="
-            security find-identity -v -p codesigning
-            
-            # Add certificates to keychain
-            echo "=== DEBUG: Adding certificates to keychain ==="
-            keychain add-certificates
-            
-            # Debug: Check certificates after adding to keychain
-            echo "=== DEBUG: Certificates after adding to keychain ==="
-            security find-identity -v -p codesigning
+          keychain add-certificates
       - name: Install provisioning profiles
         script: |
-            # Create provisioning profiles directory
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            
-            # Check what files are available in CM_BUILD_DIR
-            echo "=== DEBUG: Checking CM_BUILD_DIR contents ==="
-            find "$CM_BUILD_DIR" -type f -name "*.mobileprovision" -o -name "*.provisionprofile" | head -20
-            
-            # Find and install all .mobileprovision files from Codemagic
-            echo "=== DEBUG: Installing provisioning profiles ==="
-            PROFILE_COUNT=0
-            find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
-            
-            # Also check for .provisionprofile files
-            find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec sh -c 'echo "Copying: $1"; cp "$1" ~/Library/MobileDevice/Provisioning\ Profiles/; PROFILE_COUNT=$((PROFILE_COUNT + 1))' _ {} \;
-            
-            # List installed profiles for debugging
-            echo "=== DEBUG: Installed provisioning profiles ==="
-            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-            
-            # Check if profiles contain expected bundle identifiers
-            echo "=== DEBUG: Checking profile contents ==="
-            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
-              if [[ -f "$profile" ]]; then
-                echo "Profile: $(basename "$profile")"
-                echo "Full contents:"
-                security cms -D -i "$profile" 2>/dev/null | grep -A 10 -B 2 "application-identifier"
-                echo "---"
-              fi
-            done
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
+          find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
       - name: Configure code signing settings
         script: |
-            # Install xcode-project tool if not available
-            if ! command -v xcode-project &> /dev/null; then
-              echo "Installing xcode-project tool..."
-              pip install xcode-project
-            fi
-            
-            # List available certificates for debugging
-            echo "=== DEBUG: Available certificates ==="
-            security find-identity -v -p codesigning
-            
-            echo "=== DEBUG: Detailed certificate analysis ==="
-            security find-identity -v -p codesigning | grep -E "(valid|invalid)" || echo "No certificates found"
-            
-            echo "=== DEBUG: Keychain info ==="
-            security list-keychains
-            security default-keychain
-            
-            # List available provisioning profiles for debugging
-            echo "=== DEBUG: Available provisioning profiles ==="
-            PROFILE_FILES=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" | wc -l)
-            echo "Total profile files found: $PROFILE_FILES"
-            
-            if [ "$PROFILE_FILES" -gt 0 ]; then
-              echo "Profile details:"
-              find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -o -name "*.provisionprofile" -exec security cms -D -i {} \; | grep -E "(application-identifier|com\.surfshield)" || echo "No matching bundle IDs found"
-            else
-              echo "ERROR: No provisioning profiles found!"
-              echo "Checking alternative locations:"
-              find "$CM_BUILD_DIR" -name "*.mobileprovision" -o -name "*.provisionprofile" 2>/dev/null || echo "No profiles in CM_BUILD_DIR either"
-            fi
-            
-            # Use xcode-project to automatically configure provisioning profiles
-            echo "=== DEBUG: Configuring code signing with xcode-project ==="
-            xcode-project use-profiles \
-              --project SurfShield.xcodeproj \
-              --archive-method app-store \
-              --code-signing-setup-verbose-logging
-            
-            # Final certificate check after all setup
-            echo "=== DEBUG: Final certificate check after setup ==="
-            security find-identity -v -p codesigning
+          xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
       - name: Build ipa for distribution
         script: |
-            echo "=== DEBUG: Certificates before build ==="
-            security find-identity -v -p codesigning
-            
-            echo "=== DEBUG: Starting build ==="
-            xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
+          xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             DEVELOPMENT_TEAM=9JXM4RZUCC \
-             CODE_SIGN_STYLE=Automatic \
-             -allowProvisioningUpdates
+            CODE_SIGN_STYLE=Automatic \
+            -allowProvisioningUpdates
       - name: Create export options plist
         script: |
-            # Find the correct provisioning profile for main app
-            MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
-            
-            echo "=== DEBUG: Found main app profile: $MAIN_PROFILE ==="
-            
-            # Extract UUID from profile
-            PROFILE_UUID=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract UUID raw -)
-            PROFILE_NAME=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract Name raw -)
-            
-            echo "=== DEBUG: Profile UUID: $PROFILE_UUID ==="
-            echo "=== DEBUG: Profile Name: $PROFILE_NAME ==="
-            
-            # Verify UUID extraction
-            if [ -z "$PROFILE_UUID" ] || [ "$PROFILE_UUID" = "null" ]; then
-                echo "❌ ERROR: Could not extract UUID from profile"
-                echo "=== DEBUG: Raw profile content ==="
-                security cms -D -i "$MAIN_PROFILE" 2>/dev/null | head -20
-                exit 1
-            fi
-            
-            echo "✅ Profile UUID extracted successfully: $PROFILE_UUID"
-            
-            cat > "$CM_BUILD_DIR/export_options.plist" << EOF
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-            <plist version="1.0">
-            <dict>
-                <key>method</key>
-                <string>app-store-connect</string>
-                <key>teamID</key>
-                <string>9JXM4RZUCC</string>
-                <key>uploadBitcode</key>
-                <false/>
-                <key>uploadSymbols</key>
-                <true/>
-                <key>compileBitcode</key>
-                <false/>
-                <key>signingStyle</key>
-                <string>manual</string>
-                <key>stripSwiftSymbols</key>
-                <true/>
-                <key>provisioningProfiles</key>
-                <dict>
-                    <key>com.surfshield.adblocker</key>
-                    <string>$PROFILE_UUID</string>
-                </dict>
-            </dict>
-            </plist>
-            EOF
-            
-            echo "=== DEBUG: Export options plist created ==="
-            cat "$CM_BUILD_DIR/export_options.plist"
+          cat > "$CM_BUILD_DIR/export_options.plist" << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>9JXM4RZUCC</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>compileBitcode</key>
+            <false/>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
       - name: Export ipa from archive
         script: |
-            # Debug: Check profiles before export
-            echo "=== DEBUG: Final profile check before export ==="
-            echo "Available profiles in system:"
-            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ | wc -l
-            echo "Profile files:"
-            ls ~/Library/MobileDevice/Provisioning\ Profiles/
-            
-            echo "=== DEBUG: Checking profile bundle identifiers ==="
-            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
-              if [[ -f "$profile" ]]; then
-                echo "Profile: $(basename "$profile")"
-                BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | grep -A 1 "application-identifier" | grep -o "com\.[^\"]*")
-                echo "  Bundle ID: $BUNDLE_ID"
-              fi
-            done
-            
-            echo "=== DEBUG: Checking archive contents ==="
-            ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive/Products/Applications/"
-            
-            echo "=== DEBUG: Export options plist ==="
-            cat "$CM_BUILD_DIR/export_options.plist"
-            
-            echo "=== DEBUG: Available certificates before export ==="
-            security find-identity -v -p codesigning
-            
-            echo "=== DEBUG: Available provisioning profiles before export ==="
-            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles directory found"
-            
-            echo "=== DEBUG: Starting export ==="
-            echo "=== DEBUG: Archive path: $CM_BUILD_DIR/build/SurfShield.xcarchive ==="
-            echo "=== DEBUG: Export path: $CM_BUILD_DIR/build ==="
-            echo "=== DEBUG: Export options: $CM_BUILD_DIR/export_options.plist ==="
-            
-            # Check if archive exists before export
-            if [ ! -d "$CM_BUILD_DIR/build/SurfShield.xcarchive" ]; then
-                echo "❌ ERROR: Archive not found at $CM_BUILD_DIR/build/SurfShield.xcarchive"
-                exit 1
-            fi
-            
-            # Check if export options plist exists
-            if [ ! -f "$CM_BUILD_DIR/export_options.plist" ]; then
-                echo "❌ ERROR: Export options plist not found at $CM_BUILD_DIR/export_options.plist"
-                exit 1
-            fi
-            
-            echo "=== DEBUG: Running xcodebuild exportArchive ==="
-            xcodebuild -exportArchive \
-             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-             -exportPath "$CM_BUILD_DIR/build" \
-             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
-               -allowProvisioningUpdates
-            
-            echo "=== DEBUG: Export command completed with exit code: $? ==="
-            
-            # Debug: Check archive contents
-            echo "=== DEBUG: Checking archive contents ==="
-            if [ -d "$CM_BUILD_DIR/build/SurfShield.xcarchive" ]; then
-                echo "Archive structure:"
-                find "$CM_BUILD_DIR/build/SurfShield.xcarchive" -name "*.app" -exec echo "Found app: {}" \;
-                find "$CM_BUILD_DIR/build/SurfShield.xcarchive" -name "*.appex" -exec echo "Found extension: {}" \;
-                ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive/Products/Applications/" 2>/dev/null || echo "No Products/Applications directory"
-            fi
-            
-            # Debug: Check IPA contents after export
-            echo "=== DEBUG: Checking IPA contents ==="
-            echo "=== DEBUG: Looking for IPA files in build directory ==="
-            find "$CM_BUILD_DIR/build" -name "*.ipa" -exec echo "Found IPA: {}" \;
-            ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not found"
-            
-            # Check if IPA was created in a subdirectory
-            echo "=== DEBUG: Checking subdirectories for IPA ==="
-            find "$CM_BUILD_DIR/build" -type d -name "*.ipa" -exec echo "Found IPA directory: {}" \;
-            find "$CM_BUILD_DIR/build" -type f -name "*.ipa" -exec echo "Found IPA file: {}" \;
-            
-            # Copy IPA to root build directory if found elsewhere
-            IPA_FILE=$(find "$CM_BUILD_DIR/build" -name "*.ipa" -type f | head -1)
-            if [ -n "$IPA_FILE" ] && [ "$IPA_FILE" != "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
-                echo "=== DEBUG: Moving IPA to expected location ==="
-                cp "$IPA_FILE" "$CM_BUILD_DIR/build/SurfShield.ipa"
-                echo "IPA copied from $IPA_FILE to $CM_BUILD_DIR/build/SurfShield.ipa"
-            fi
-            
-            if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
-                echo "IPA file exists, checking contents:"
-                unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "No embedded.mobileprovision found in IPA"
-                
-                # Check if embedded.mobileprovision exists in the app bundle
-                echo "=== DEBUG: Checking app bundle for embedded.mobileprovision ==="
-                TEMP_DIR=$(mktemp -d)
-                unzip -q "$CM_BUILD_DIR/build/SurfShield.ipa" -d "$TEMP_DIR"
-                find "$TEMP_DIR" -name "embedded.mobileprovision" -exec echo "Found: {}" \; || echo "No embedded.mobileprovision found in app bundle"
-                rm -rf "$TEMP_DIR"
-            else
-                echo "ERROR: IPA file not found!"
-                echo "=== DEBUG: Available files in build directory ==="
-                ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not accessible"
-                echo "=== DEBUG: Recursive search for IPA files ==="
-                find "$CM_BUILD_DIR" -name "*.ipa" -exec echo "Found anywhere: {}" \;
-            fi
-        
-      - name: Verify artifacts before publishing
-        script: |
-            echo "=== DEBUG: Final artifacts check ==="
-            echo "Build directory contents:"
-            ls -la "$CM_BUILD_DIR/build/" || echo "Build directory not found"
-            
-            echo "=== DEBUG: Looking for all IPA files ==="
-            find "$CM_BUILD_DIR" -name "*.ipa" -exec echo "Final IPA found: {}" \;
-            
-            echo "=== DEBUG: Checking artifact paths ==="
-            if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
-                echo "✅ Main IPA file exists: $CM_BUILD_DIR/build/SurfShield.ipa"
-                ls -la "$CM_BUILD_DIR/build/SurfShield.ipa"
-            else
-                echo "❌ Main IPA file NOT found: $CM_BUILD_DIR/build/SurfShield.ipa"
-            fi
-            
-            if [ -d "$CM_BUILD_DIR/build/SurfShield.xcarchive" ]; then
-                echo "✅ Archive exists: $CM_BUILD_DIR/build/SurfShield.xcarchive"
-                ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive"
-            else
-                echo "❌ Archive NOT found: $CM_BUILD_DIR/build/SurfShield.xcarchive"
-            fi
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/build" \
+            -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
+            -allowProvisioningUpdates
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
