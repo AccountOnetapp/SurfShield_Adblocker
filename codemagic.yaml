@@ -28,7 +28,7 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
           find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
-      - name: Configure code signing settings
+      - name: Configure code signing
         script: |
           xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
       - name: Build ipa for distribution
@@ -57,9 +57,7 @@ workflows:
             <key>compileBitcode</key>
             <false/>
             <key>signingStyle</key>
-            <string>manual</string>
-            <key>stripSwiftSymbols</key>
-            <true/>
+            <string>automatic</string>
           </dict>
           </plist>
           EOF
