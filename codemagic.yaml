@@ -120,15 +120,29 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Automatic \
              -allowProvisioningUpdates
-      - name: Create export options plist
-        script: |
+        - name: Create export options plist
+          script: |
             # Find the correct provisioning profile for main app
             MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
             
             echo "=== DEBUG: Found main app profile: $MAIN_PROFILE ==="
             
-            # Extract profile name from path
-            PROFILE_NAME=$(basename "$MAIN_PROFILE" .mobileprovision)
+            # Extract UUID from profile
+            PROFILE_UUID=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract UUID raw -)
+            PROFILE_NAME=$(security cms -D -i "$MAIN_PROFILE" 2>/dev/null | plutil -extract Name raw -)
+            
+            echo "=== DEBUG: Profile UUID: $PROFILE_UUID ==="
+            echo "=== DEBUG: Profile Name: $PROFILE_NAME ==="
+            
+            # Verify UUID extraction
+            if [ -z "$PROFILE_UUID" ] || [ "$PROFILE_UUID" = "null" ]; then
+                echo "❌ ERROR: Could not extract UUID from profile"
+                echo "=== DEBUG: Raw profile content ==="
+                security cms -D -i "$MAIN_PROFILE" 2>/dev/null | head -20
+                exit 1
+            fi
+            
+            echo "✅ Profile UUID extracted successfully: $PROFILE_UUID"
             
             cat > "$CM_BUILD_DIR/export_options.plist" << EOF
             <?xml version="1.0" encoding="UTF-8"?>
@@ -152,7 +166,7 @@ workflows:
                 <key>provisioningProfiles</key>
                 <dict>
                     <key>com.surfshield.adblocker</key>
-                    <string>$PROFILE_NAME</string>
+                    <string>$PROFILE_UUID</string>
                 </dict>
             </dict>
             </plist>
