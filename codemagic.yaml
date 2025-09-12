@@ -15,7 +15,7 @@ workflows:
           - "Distribution_Privacy"
           - "Distribution_Advanced"
         certificates:
-          - "Distribution_surfshield"
+          - "SurfShield_p12"
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
@@ -122,36 +122,8 @@ workflows:
              -allowProvisioningUpdates
       - name: Create export options plist
         script: |
-            # Find all profiles for main app and check which one has the right certificate
-            echo "=== DEBUG: Searching for profiles for com.surfshield.adblocker ==="
-            
-            MAIN_PROFILE=""
-            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-                if [ -f "$profile" ]; then
-                    BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
-                    PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
-                    
-                    echo "Checking profile: $PROFILE_NAME"
-                    echo "Bundle ID: $BUNDLE_ID"
-                    
-                    if [ "$BUNDLE_ID" = "9JXM4RZUCC.com.surfshield.adblocker" ]; then
-                        echo "✅ Found matching profile: $PROFILE_NAME"
-                        MAIN_PROFILE="$profile"
-                        break
-                    fi
-                fi
-            done
-            
-            if [ -z "$MAIN_PROFILE" ]; then
-                echo "❌ ERROR: No profile found for com.surfshield.adblocker"
-                echo "Available profiles:"
-                for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-                    if [ -f "$profile" ]; then
-                        echo "  - $(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -): $(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)"
-                    fi
-                done
-                exit 1
-            fi
+            # Find the correct provisioning profile for main app
+            MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
             
             echo "=== DEBUG: Found main app profile: $MAIN_PROFILE ==="
             
@@ -231,23 +203,6 @@ workflows:
             
             echo "=== DEBUG: Available provisioning profiles before export ==="
             ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ 2>/dev/null || echo "No profiles directory found"
-            
-            echo "=== DEBUG: Checking certificates in keychain ==="
-            security find-identity -v -p codesigning
-            
-            echo "=== DEBUG: Checking profile contents ==="
-            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
-                if [ -f "$profile" ]; then
-                    echo "=== Profile: $(basename "$profile") ==="
-                    echo "Name: $(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)"
-                    echo "UUID: $(security cms -D -i "$profile" 2>/dev/null | plutil -extract UUID raw -)"
-                    echo "TeamID: $(security cms -D -i "$profile" 2>/dev/null | plutil -extract TeamIdentifier.0 raw -)"
-                    echo "BundleID: $(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)"
-                    echo "Certificates:"
-                    security cms -D -i "$profile" 2>/dev/null | plutil -extract DeveloperCertificates raw - | head -3
-                    echo "---"
-                fi
-            done
             
             echo "=== DEBUG: Starting export ==="
             echo "=== DEBUG: Archive path: $CM_BUILD_DIR/build/SurfShield.xcarchive ==="
