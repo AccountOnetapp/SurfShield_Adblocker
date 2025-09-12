@@ -31,6 +31,10 @@ workflows:
               pip install xcode-project
             fi
             
+            # List available provisioning profiles for debugging
+            echo "Available provisioning profiles:"
+            find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec security cms -D -i {} \; | grep -A 5 -B 5 "com.apple.security.application-groups" || echo "No App Groups found in profiles"
+            
             # Use xcode-project to automatically configure provisioning profiles
             xcode-project use-profiles \
               --project SurfShield.xcodeproj \
@@ -43,7 +47,7 @@ workflows:
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Manual \
-             CODE_SIGN_IDENTITY="Apple Distribution" \
+             CODE_SIGN_IDENTITY="iOS Distribution" \
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
