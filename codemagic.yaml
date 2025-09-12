@@ -59,7 +59,6 @@ workflows:
             <false/>
             <key>signingStyle</key>
             <string>manual</string>
-            <key>provisioningProfiles</key>
             <key>stripSwiftSymbols</key>
             <true/>
           </dict>
