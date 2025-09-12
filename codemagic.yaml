@@ -17,7 +17,7 @@ workflows:
         certificates:
           - "SurfShield"
     integrations:
-      app_store_connect: "9JXM4RZUCC"
+      app_store_connect: "GLJ7NML7J4"
     scripts:
       - name: Set up keychain to be used for code signing
         script: |
