@@ -111,7 +111,7 @@ workflows:
                 <key>compileBitcode</key>
                 <false/>
                 <key>signingStyle</key>
-                <string>manual</string>
+                <string>automatic</string>
                 <key>stripSwiftSymbols</key>
                 <true/>
             </dict>
@@ -140,6 +140,9 @@ workflows:
             
             echo "=== DEBUG: Export options plist ==="
             cat "$CM_BUILD_DIR/export_options.plist"
+            
+            echo "=== DEBUG: Available certificates ==="
+            security find-identity -v -p codesigning
             
             echo "=== DEBUG: Starting export ==="
             xcodebuild -exportArchive \
