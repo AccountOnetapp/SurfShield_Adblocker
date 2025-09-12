@@ -58,6 +58,13 @@ workflows:
             <false/>
             <key>signingStyle</key>
             <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.surfshield.adblocker</key>
+              <string>53138515-026c-45af-a538-d96e1745471c</string>
+            </dict>
+            <key>stripSwiftSymbols</key>
+            <true/>
           </dict>
           </plist>
           EOF
