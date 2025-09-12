@@ -23,6 +23,16 @@ workflows:
       - name: Set up keychain to be used for code signing
         script: |
           keychain initialize
+      - name: Set up Provisioning profiles
+        script: |
+          # Install provisioning profiles
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          
+          # Find and install all .mobileprovision files
+          find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
+          
+          # List installed profiles for debugging
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
       - name: Build ipa for distribution
         script: |
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
@@ -31,7 +41,7 @@ workflows:
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
           CODE_SIGN_IDENTITY="Apple Distribution" \
-          CODE_SIGN_STYLE=Automatic
+          CODE_SIGN_STYLE=Manual
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
