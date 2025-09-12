@@ -39,8 +39,8 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
-       - name: Create export options plist
-         script: |
+      - name: Create export options plist
+        script: |
            # Find the main app provisioning profile (not extensions)
            echo "=== DEBUG: Searching for main app profile ==="
            MAIN_PROFILE=""
