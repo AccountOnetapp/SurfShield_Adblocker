@@ -10,7 +10,6 @@ workflows:
         # provisioning_profiles:
         #   - "Distribution_Banners"
         #   - "Distribution_Adblocker"
-        #   - "Distribution_Adbcloker"
         #   - "Distribution_Trackers"
         #   - "Distribution_Secure"
         #   - "Distribution_Basic"
@@ -39,7 +38,7 @@ workflows:
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             DEVELOPMENT_TEAM=9JXM4RZUCC \
-             CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
       - name: Create export options plist
         script: |
@@ -58,27 +57,13 @@ workflows:
             <true/>
             <key>compileBitcode</key>
             <false/>
-           <key>signingStyle</key>
-           <string>manual</string>
-           <key>provisioningProfiles</key>
-           <dict>
-            <key>com.surfshield.adblocker</key>
-            <string>53138515-026c-45af-a538-d96e1745471c</string>
-             <key>com.surfshield.adblocker.banners</key>
-             <string>31991c2d-1100-4dd5-a878-245f327cac59</string>
-             <key>com.surfshield.adblocker.adblocker</key>
-             <string>9625a292-f5a6-4d0e-9df1-3e6ac7b0c671</string>
-             <key>com.surfshield.adblocker.trackers</key>
-             <string>f445c46b-ddc1-422b-bae7-d94ac6c61a85</string>
-             <key>com.surfshield.adblocker.secure</key>
-             <string>2ca22ad0-0075-44c4-b343-54fe7d441955</string>
-             <key>com.surfshield.adblocker.basic</key>
-             <string>9c38adf3-64fa-4c62-a19f-3d728beae9f9</string>
-             <key>com.surfshield.adblocker.privacy</key>
-             <string>e4ea00ec-8bc7-4f40-97d0-c5416fb0bacd</string>
-             <key>com.surfshield.adblocker.advanced</key>
-             <string>7ba446d2-2fb0-4980-a7df-f4e66caf20a5</string>
-           </dict>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.surfshield.adblocker</key>
+              <string>53138515-026c-45af-a538-d96e1745471c</string>
+            </dict>
             <key>stripSwiftSymbols</key>
             <true/>
           </dict>
