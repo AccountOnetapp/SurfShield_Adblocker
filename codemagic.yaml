@@ -6,7 +6,6 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.surfshield.adblocker
         provisioning_profiles:
           - "SurfShield App Store Profile"
           - "Adblocker Extension Profile"
