@@ -27,7 +27,7 @@ workflows:
           -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
-          CODE_SIGN_IDENTITY="Apple Distribution" \
+          CODE_SIGN_IDENTITY="Apple Development" \
           CODE_SIGN_STYLE=Automatic
     artifacts:
       - build/Release-iphoneos/*.ipa
