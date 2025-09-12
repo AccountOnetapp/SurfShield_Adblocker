@@ -4,7 +4,6 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.surfshield.app.adblocker</string>
 		<string>group.surfshield.adblocker.group</string>
 	</array>
 </dict>
