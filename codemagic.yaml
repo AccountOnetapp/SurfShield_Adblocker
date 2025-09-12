@@ -21,6 +21,10 @@ workflows:
           PROVISIONING_PROFILE_UUID="$CM_BUILD_DIR"/uuid.txt
           echo ${PROVISIONING_PROFILE_UUID} > $PROVISIONING_PROFILE_UUID
           
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp "$PROVISIONING_PROFILE_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
+          
           # Code signing certificate
           CERTIFICATE_PATH="$CM_BUILD_DIR"/certificate.p12
           echo ${CERTIFICATE} | base64 --decode > $CERTIFICATE_PATH
@@ -34,7 +38,8 @@ workflows:
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
           CODE_SIGN_IDENTITY="Apple Distribution" \
-          CODE_SIGN_STYLE=Automatic
+          CODE_SIGN_STYLE=Manual \
+          PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_UUID"
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
