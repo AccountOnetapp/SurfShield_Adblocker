@@ -39,8 +39,8 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
-       - name: Create export options plist
-         script: |
+      - name: Create export options plist
+        script: |
            # List all available profiles to see what we have
            echo "=== DEBUG: All available profiles ==="
            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
