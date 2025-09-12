@@ -51,7 +51,7 @@ workflows:
              <key>method</key>
              <string>app-store-connect</string>
              <key>teamID</key>
-             <string>GLJ7NML7J4</string>
+             <string>9JXM4RZUCC</string>
              <key>uploadBitcode</key>
              <false/>
              <key>uploadSymbols</key>
