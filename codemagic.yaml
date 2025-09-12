@@ -5,17 +5,8 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       ios_signing:
-        provisioning_profiles:
-          - "Distribution_Banners"
-          - "Distribution_Adblocker"
-          - "Distribution_Adbcloker"
-          - "Distribution_Trackers"
-          - "Distribution_Secure"
-          - "Distribution_Basic"
-          - "Distribution_Privacy"
-          - "Distribution_Advanced"
-        certificates:
-          - "SurfShield"
+        distribution_type: app_store
+        bundle_identifier: com.surfshield.adblocker
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
