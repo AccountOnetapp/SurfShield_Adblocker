@@ -120,8 +120,8 @@ workflows:
             DEVELOPMENT_TEAM=9JXM4RZUCC \
              CODE_SIGN_STYLE=Automatic \
              -allowProvisioningUpdates
-        - name: Create export options plist
-          script: |
+      - name: Create export options plist
+        script: |
             # Find the correct provisioning profile for main app
             MAIN_PROFILE=$(find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'security cms -D -i "$1" 2>/dev/null | grep -q "com\.surfshield\.adblocker</string>" && echo "$1"' _ {} \; | head -1)
             
