@@ -6,7 +6,15 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.surfshield.adblocker
+        bundle_identifier: 
+          - com.surfshield.adblocker
+          - com.surfshield.adblocker.extension.banners
+          - com.surfshield.adblocker.extension.adblocker
+          - com.surfshield.adblocker.extensions.trackers
+          - com.surfshield.adblocker.extension.secure
+          - com.surfshield.adblocker.extension.basic
+          - com.surfshield.adblocker.extension.privacy
+          - com.surfshield.adblocker.extension.advanced
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
@@ -15,11 +23,19 @@ workflows:
           keychain initialize
       - name: Set up Provisioning profiles from environment variables
         script: |
-          # App Store provisioning profile
+          # App Store provisioning profiles for all bundle identifiers
           PROVISIONING_PROFILE_PATH="$CM_BUILD_DIR"/profile_adhoc.mobileprovision
           echo ${PROVISIONING_PROFILE} | base64 --decode > $PROVISIONING_PROFILE_PATH
           PROVISIONING_PROFILE_UUID="$CM_BUILD_DIR"/uuid.txt
           echo ${PROVISIONING_PROFILE_UUID} > $PROVISIONING_PROFILE_UUID
+          
+          # Provisioning profiles for extensions (if different from main app)
+          # You may need to add additional environment variables for extension profiles
+          # PROVISIONING_PROFILE_EXTENSIONS_PATH="$CM_BUILD_DIR"/profile_extensions.mobileprovision
+          # echo ${PROVISIONING_PROFILE_EXTENSIONS} | base64 --decode > $PROVISIONING_PROFILE_EXTENSIONS_PATH
+          # PROVISIONING_PROFILE_EXTENSIONS_UUID="$CM_BUILD_DIR"/uuid_extensions.txt
+          # echo ${PROVISIONING_PROFILE_EXTENSIONS_UUID} > $PROVISIONING_PROFILE_EXTENSIONS_UUID
+          
           # Code signing certificate
           CERTIFICATE_PATH="$CM_BUILD_DIR"/certificate.p12
           echo ${CERTIFICATE} | base64 --decode > $CERTIFICATE_PATH
@@ -33,7 +49,8 @@ workflows:
           -allowProvisioningUpdates \
           DEVELOPMENT_TEAM=9JXM4RZUCC \
           CODE_SIGN_IDENTITY="Apple Distribution" \
-          CODE_SIGN_STYLE=Manual
+          CODE_SIGN_STYLE=Manual \
+          PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_UUID"
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
