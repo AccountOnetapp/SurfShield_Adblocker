@@ -38,7 +38,7 @@ workflows:
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             DEVELOPMENT_TEAM=9JXM4RZUCC \
-            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_STYLE=Manual \
             -allowProvisioningUpdates
       - name: Create export options plist
         script: |
