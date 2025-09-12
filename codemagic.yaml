@@ -6,17 +6,7 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        provisioning_profiles:
-          - "Distribution_Banners"
-          - "Distribution_Adblocker"
-          - "Distribution_Adbcloker"
-          - "Distribution_Trackers"
-          - "Distribution_Secure"
-          - "Distribution_Basic"
-          - "Distribution_Privacy"
-          - "Distribution_Advanced"
-        certificates:
-          - "Distribution_surfshield"
+        bundle_identifier: com.surfshield.adblocker
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
@@ -30,6 +20,10 @@ workflows:
               echo "Installing xcode-project tool..."
               pip install xcode-project
             fi
+            
+            # List available certificates for debugging
+            echo "Available certificates:"
+            security find-identity -v -p codesigning
             
             # List available provisioning profiles for debugging
             echo "Available provisioning profiles:"
@@ -46,8 +40,7 @@ workflows:
              -configuration Release \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              DEVELOPMENT_TEAM=9JXM4RZUCC \
-             CODE_SIGN_STYLE=Manual \
-             CODE_SIGN_IDENTITY="iOS Distribution" \
+             CODE_SIGN_STYLE=Automatic \
     artifacts:
       - build/Release-iphoneos/*.ipa
       - build/Release-iphoneos/*.dSYM.zip
