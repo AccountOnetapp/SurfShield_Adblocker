@@ -9,7 +9,7 @@ workflows:
         provisioning_profiles:
           - "Distribution_Banners"
         certificates:
-          - "Distribution_Adblocker"
+          - "Distribution_surfshield"
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
