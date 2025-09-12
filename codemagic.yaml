@@ -17,7 +17,7 @@ workflows:
         certificates:
           - "SurfShield"
     integrations:
-      app_store_connect: "GLJ7NML7J4"
+      app_store_connect: Surf Adbcloker Team
     scripts:
       - name: Set up keychain to be used for code signing
         script: |
@@ -36,7 +36,7 @@ workflows:
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            DEVELOPMENT_TEAM=9JXM4RZUCC \
+             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
       - name: Create export options plist
@@ -60,9 +60,9 @@ workflows:
                PROFILE_NAME=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw -)
                BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Entitlements.application-identifier raw -)
                
-               # Look for SurfShield main app profile (not extensions)
-               if [[ "$PROFILE_NAME" == *"SurfShield"* ]] && [[ "$BUNDLE_ID" == *"com.surfshield.adblocker" ]] && [[ "$BUNDLE_ID" != *"extension"* ]]; then
-                 echo "✅ Found SurfShield main app profile: $PROFILE_NAME"
+               # Look for main app profile (not extensions) - either SurfShield or Distribution
+               if [[ "$BUNDLE_ID" == "9JXM4RZUCC.com.surfshield.adblocker" ]] && [[ "$BUNDLE_ID" != *"extension"* ]]; then
+                 echo "✅ Found main app profile: $PROFILE_NAME"
                  MAIN_PROFILE="$profile"
                  break
                fi
