@@ -48,7 +48,8 @@ workflows:
             for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
               if [[ -f "$profile" ]]; then
                 echo "Profile: $(basename "$profile")"
-                security cms -D -i "$profile" 2>/dev/null | grep -E "(application-identifier|com\.surfshield)" || echo "  No matching bundle IDs found"
+                echo "Full contents:"
+                security cms -D -i "$profile" 2>/dev/null | grep -A 10 -B 2 "application-identifier"
                 echo "---"
               fi
             done
@@ -110,7 +111,7 @@ workflows:
                 <key>compileBitcode</key>
                 <false/>
                 <key>signingStyle</key>
-                <string>automatic</string>
+                <string>manual</string>
                 <key>stripSwiftSymbols</key>
                 <true/>
             </dict>
@@ -124,6 +125,15 @@ workflows:
             ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ | wc -l
             echo "Profile files:"
             ls ~/Library/MobileDevice/Provisioning\ Profiles/
+            
+            echo "=== DEBUG: Checking profile bundle identifiers ==="
+            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*; do
+              if [[ -f "$profile" ]]; then
+                echo "Profile: $(basename "$profile")"
+                BUNDLE_ID=$(security cms -D -i "$profile" 2>/dev/null | grep -A 1 "application-identifier" | grep -o "com\.[^\"]*")
+                echo "  Bundle ID: $BUNDLE_ID"
+              fi
+            done
             
             echo "=== DEBUG: Checking archive contents ==="
             ls -la "$CM_BUILD_DIR/build/SurfShield.xcarchive/Products/Applications/"
