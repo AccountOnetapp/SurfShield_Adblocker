@@ -49,7 +49,8 @@ workflows:
              -configuration Release \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              DEVELOPMENT_TEAM=9JXM4RZUCC \
-             CODE_SIGN_STYLE=Automatic
+             CODE_SIGN_STYLE=Automatic \
+             -allowProvisioningUpdates
         - name: Create export options plist
           script: |
             cat > "$CM_BUILD_DIR/export_options.plist" << EOF
@@ -58,7 +59,7 @@ workflows:
             <plist version="1.0">
             <dict>
                 <key>method</key>
-                <string>app-store-connect</string>
+                <string>app-store</string>
                 <key>teamID</key>
                 <string>9JXM4RZUCC</string>
                 <key>uploadBitcode</key>
@@ -79,7 +80,8 @@ workflows:
             xcodebuild -exportArchive \
              -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
              -exportPath "$CM_BUILD_DIR/build" \
-             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist"
+             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
+              -allowProvisioningUpdates
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
