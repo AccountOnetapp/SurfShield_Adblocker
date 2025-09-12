@@ -5,6 +5,8 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.surfshield.adblocker
         provisioning_profiles:
           - "Distribution_Banners"
           - "Distribution_Adblocker"
@@ -67,6 +69,10 @@ workflows:
                 <true/>
                 <key>compileBitcode</key>
                 <false/>
+                <key>signingStyle</key>
+                <string>automatic</string>
+                <key>stripSwiftSymbols</key>
+                <true/>
             </dict>
             </plist>
             EOF
