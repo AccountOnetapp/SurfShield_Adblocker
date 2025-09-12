@@ -15,7 +15,7 @@ workflows:
           - "Distribution_Privacy"
           - "Distribution_Advanced"
         certificates:
-          - "Development_surfshield"
+          - "SurfShield"
     integrations:
       app_store_connect: Surf Adbcloker Team
     scripts:
@@ -41,31 +41,26 @@ workflows:
             -allowProvisioningUpdates
       - name: Create export options plist
         script: |
-           echo "=== DEBUG: Using automatic signing for export ==="
-           
-           cat > "$CM_BUILD_DIR/export_options.plist" << EOF
-           <?xml version="1.0" encoding="UTF-8"?>
-           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-           <plist version="1.0">
-           <dict>
-             <key>method</key>
-             <string>app-store-connect</string>
-             <key>teamID</key>
-             <string>9JXM4RZUCC</string>
-             <key>uploadBitcode</key>
-             <false/>
-             <key>uploadSymbols</key>
-             <true/>
-             <key>compileBitcode</key>
-             <false/>
-             <key>signingStyle</key>
-             <string>manual</string>
-           </dict>
-           </plist>
-           EOF
-           
-           echo "=== DEBUG: Export options plist created ==="
-           cat "$CM_BUILD_DIR/export_options.plist"
+          cat > "$CM_BUILD_DIR/export_options.plist" << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>9JXM4RZUCC</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>compileBitcode</key>
+            <false/>
+            <key>signingStyle</key>
+            <string>manual</string>
+          </dict>
+          </plist>
+          EOF
       - name: Export ipa from archive
         script: |
           xcodebuild -exportArchive \
@@ -73,43 +68,6 @@ workflows:
             -exportPath "$CM_BUILD_DIR/build" \
             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
             -allowProvisioningUpdates
-          
-          # Check if IPA was created and verify its contents
-          echo "=== DEBUG: Checking IPA contents ==="
-          if [ -f "$CM_BUILD_DIR/build/SurfShield.ipa" ]; then
-            echo "✅ IPA file created successfully"
-            echo "IPA file size: $(ls -lh "$CM_BUILD_DIR/build/SurfShield.ipa" | awk '{print $5}')"
-            
-            # Check if embedded.mobileprovision exists in IPA
-            echo "=== DEBUG: Checking for embedded.mobileprovision ==="
-            unzip -l "$CM_BUILD_DIR/build/SurfShield.ipa" | grep -E "(embedded|mobileprovision)" || echo "❌ No embedded.mobileprovision found in IPA"
-            
-            # Extract and check the app bundle
-            TEMP_DIR=$(mktemp -d)
-            unzip -q "$CM_BUILD_DIR/build/SurfShield.ipa" -d "$TEMP_DIR"
-            
-            if [ -d "$TEMP_DIR/Payload/SurfShield.app" ]; then
-              echo "✅ App bundle found in IPA"
-              if [ -f "$TEMP_DIR/Payload/SurfShield.app/embedded.mobileprovision" ]; then
-                echo "✅ embedded.mobileprovision found in app bundle"
-                echo "Profile size: $(ls -lh "$TEMP_DIR/Payload/SurfShield.app/embedded.mobileprovision" | awk '{print $5}')"
-              else
-                echo "❌ embedded.mobileprovision NOT found in app bundle"
-                echo "App bundle contents:"
-                ls -la "$TEMP_DIR/Payload/SurfShield.app/" | grep -E "(embedded|mobileprovision)" || echo "No provisioning files found"
-              fi
-            else
-              echo "❌ App bundle not found in IPA"
-              echo "IPA contents:"
-              ls -la "$TEMP_DIR/"
-            fi
-            
-            rm -rf "$TEMP_DIR"
-          else
-            echo "❌ IPA file not created"
-            echo "Build directory contents:"
-            ls -la "$CM_BUILD_DIR/build/"
-          fi
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive
