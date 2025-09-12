@@ -7,7 +7,7 @@ workflows:
       ios_signing:
         distribution_type: app_store
         provisioning_profiles:
-          - "Distribution_Banners."
+          - "Distribution_Banners"
         certificates:
           - "Distribution_Adblocker"
     integrations:
