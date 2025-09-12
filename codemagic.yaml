@@ -8,6 +8,7 @@ workflows:
         provisioning_profiles:
           - "Distribution_Banners"
           - "Distribution_Adblocker"
+          - "Distribution_Adbcloker"
           - "Distribution_Trackers"
           - "Distribution_Secure"
           - "Distribution_Basic"
