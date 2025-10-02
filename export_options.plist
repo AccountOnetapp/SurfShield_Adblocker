@@ -16,5 +16,10 @@
     <true/>
     <key>thinning</key>
     <string>&lt;none&gt;</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.surfshield.adblocker</key>
+        <string>match AppStore com.surfshield.adblocker</string>
+    </dict>
 </dict>
 </plist>

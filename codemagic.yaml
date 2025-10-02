@@ -8,7 +8,6 @@ workflows:
         provisioning_profiles:
           - "Distribution_Banners"
           - "Distribution_Adblocker"
-          - "Distribution_Adbcloker"
           - "Distribution_Trackers"
           - "Distribution_Secure"
           - "Distribution_Basic"
@@ -36,7 +35,7 @@ workflows:
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            DEVELOPMENT_TEAM=9JXM4RZUCC \
+            DEVELOPMENT_TEAM=6TVC5Q5R78 \
             CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
       - name: Create export options plist
@@ -47,9 +46,9 @@ workflows:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store-connect</string>
+            <string>app-store</string>
             <key>teamID</key>
-            <string>9JXM4RZUCC</string>
+            <string>6TVC5Q5R78</string>
             <key>uploadBitcode</key>
             <false/>
             <key>uploadSymbols</key>
@@ -60,6 +59,25 @@ workflows:
             <string>manual</string>
             <key>stripSwiftSymbols</key>
             <true/>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.surfshield.adblocker</key>
+              <string>match AppStore com.surfshield.adblocker</string>
+              <key>com.surfshield.app.banners</key>
+              <string>match AppStore com.surfshield.app.banners</string>
+              <key>com.surfshield.app.adblocker</key>
+              <string>match AppStore com.surfshield.app.adblocker</string>
+              <key>com.surfshield.app.trackers</key>
+              <string>match AppStore com.surfshield.app.trackers</string>
+              <key>com.surfshield.app.secure</key>
+              <string>match AppStore com.surfshield.app.secure</string>
+              <key>com.surfshield.app.basic</key>
+              <string>match AppStore com.surfshield.app.basic</string>
+              <key>com.surfshield.app.privacy</key>
+              <string>match AppStore com.surfshield.app.privacy</string>
+              <key>com.surfshield.app.advanced</key>
+              <string>match AppStore com.surfshield.app.advanced</string>
+            </dict>
           </dict>
           </plist>
           EOF
