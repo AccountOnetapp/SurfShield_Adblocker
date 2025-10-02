@@ -8,6 +8,7 @@ workflows:
         provisioning_profiles:
           - "Distribution_Banners"
           - "Distribution_Adblocker"
+          - "Distribution_Adbcloker"
           - "Distribution_Trackers"
           - "Distribution_Secure"
           - "Distribution_Basic"
@@ -36,10 +37,9 @@ workflows:
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            DEVELOPMENT_TEAM=6TVC5Q5R78 \
+            DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
-            -allowProvisioningUpdates \
-            -verbose
+            -allowProvisioningUpdates
       - name: Create export options plist
         script: |
           cat > "$CM_BUILD_DIR/export_options.plist" << EOF
@@ -50,7 +50,7 @@ workflows:
             <key>method</key>
             <string>app-store-connect</string>
             <key>teamID</key>
-            <string>6TVC5Q5R78</string>
+            <string>9JXM4RZUCC</string>
             <key>uploadBitcode</key>
             <false/>
             <key>uploadSymbols</key>
@@ -58,26 +58,9 @@ workflows:
             <key>compileBitcode</key>
             <false/>
             <key>signingStyle</key>
-            <string>automatic</string>
+            <string>manual</string>
             <key>stripSwiftSymbols</key>
             <true/>
-            <key>provisioningProfiles</key>
-            <dict>
-                <key>com.surfshield.app.banners</key>
-                <string>Distribution_Banners</string>
-                <key>com.surfshield.app.adblocker</key>
-                <string>Distribution_Adblocker</string>
-                <key>com.surfshield.app.trackers</key>
-                <string>Distribution_Trackers</string>
-                <key>com.surfshield.app.secure</key>
-                <string>Distribution_Secure</string>
-                <key>com.surfshield.app.basic</key>
-                <string>Distribution_Basic</string>
-                <key>com.surfshield.app.privacy</key>
-                <string>Distribution_Privacy</string>
-                <key>com.surfshield.app.advanced</key>
-                <string>Distribution_Advanced</string>
-            </dict>
           </dict>
           </plist>
           EOF
@@ -88,8 +71,7 @@ workflows:
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             -exportPath "$CM_BUILD_DIR/build" \
             -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
-            -allowProvisioningUpdates \
-            -verbose
+            -allowProvisioningUpdates
     artifacts:
       - build/*.ipa
       - build/SurfShield.xcarchive

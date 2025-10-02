@@ -1859,9 +1859,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = banners/banners.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = banners/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Banners;
@@ -1876,6 +1878,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.banners;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension banners ios_app_store 1757596415";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1889,9 +1892,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = banners/banners.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = banners/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Banners;
@@ -1906,6 +1911,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.banners;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension banners ios_app_store 1757596415";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
