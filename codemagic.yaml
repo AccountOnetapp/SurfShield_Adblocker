@@ -5,6 +5,15 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       ios_signing:
+        provisioning_profiles:
+          - "Distribution_Banners"
+          - "Distribution_Adblocker"
+          - "Distribution_Adbcloker"
+          - "Distribution_Trackers"
+          - "Distribution_Secure"
+          - "Distribution_Basic"
+          - "Distribution_Privacy"
+          - "Distribution_Advanced"
         certificates:
           - "Distribution_Sertificate"
     integrations:
@@ -16,29 +25,14 @@ workflows:
           keychain add-certificates
       - name: Install provisioning profiles
         script: |
-          echo "Using automatic code signing - no manual provisioning profiles needed"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
+          find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
       - name: Configure code signing
         script: |
           xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
-      - name: Increment build version
-        script: |
-          # Создаем уникальную версию сборки на основе timestamp
-          BUILD_NUMBER=$(date +%Y%m%d%H%M%S)
-          echo "New build version: $BUILD_NUMBER"
-          
-          # Используем agvtool для установки версии сборки
-          agvtool new-version -all $BUILD_NUMBER
-          
-          # Проверяем, что версия установлена
-          echo "Current version after update:"
-          agvtool what-version
-          
-          # Экспортируем новую версию для использования в сборке
-          echo "CURRENT_PROJECT_VERSION=$BUILD_NUMBER" >> $CM_ENV
       - name: Build ipa for distribution
         script: |
-          echo "Starting archive build..."
-          echo "Using build version: $CURRENT_PROJECT_VERSION"
           xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
             -configuration Release \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
@@ -63,7 +57,7 @@ workflows:
             <key>compileBitcode</key>
             <false/>
             <key>signingStyle</key>
-            <string>automatic</string>
+            <string>manual</string>
             <key>stripSwiftSymbols</key>
             <true/>
           </dict>
@@ -71,7 +65,6 @@ workflows:
           EOF
       - name: Export ipa from archive
         script: |
-          echo "Starting IPA export..."
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             -exportPath "$CM_BUILD_DIR/build" \
