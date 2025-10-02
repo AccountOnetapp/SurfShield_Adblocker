@@ -1,122 +1,50 @@
 workflows:
-  ios-surfshield:
-    name: iOS SurfShield
-    max_build_duration: 120
-    instance_type: mac_mini_m2
-    environment:
-      ios_signing:
-        provisioning_profiles:
-          - "Distribution_Banners"
-          - "Distribution_Adblocker"
-          - "Distribution_Adbcloker"
-          - "Distribution_Trackers"
-          - "Distribution_Secure"
-          - "Distribution_Basic"
-          - "Distribution_Privacy"
-          - "Distribution_Advanced"
-        certificates:
-          - "Distribution_Sertificate"
-    integrations:
-      app_store_connect: Surf Adbcloker Team
-    scripts:
-      - name: Set up keychain to be used for code signing
-        script: |
-          keychain initialize
-          keychain add-certificates
-      - name: Install provisioning profiles
-        script: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
-          find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
-      - name: Configure code signing
-        script: |
-          xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
-      - name: Increment build version
-        script: |
-          # Создаем уникальную версию сборки на основе timestamp
-          BUILD_NUMBER=$(date +%Y%m%d%H%M%S)
-          echo "New build version: $BUILD_NUMBER"
-          
-          # Используем agvtool для установки версии сборки
-          agvtool new-version -all $BUILD_NUMBER
-          
-          # Проверяем, что версия установлена
-          echo "Current version after update:"
-          agvtool what-version
-          
-          # Экспортируем новую версию для использования в сборке
-          echo "CURRENT_PROJECT_VERSION=$BUILD_NUMBER" >> $CM_ENV
-      - name: Build ipa for distribution
-        script: |
-          echo "Starting archive build..."
-          echo "Using build version: $CURRENT_PROJECT_VERSION"
-          xcodebuild archive -scheme SurfShield -project SurfShield.xcodeproj \
-            -configuration Release \
-            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            DEVELOPMENT_TEAM=9JXM4RZUCC \
-            CODE_SIGN_STYLE=Automatic \
-            -allowProvisioningUpdates
-      - name: Create export options plist
-        script: |
-          cat > "$CM_BUILD_DIR/export_options.plist" << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store-connect</string>
-            <key>teamID</key>
-            <string>9JXM4RZUCC</string>
-            <key>uploadBitcode</key>
-            <false/>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>stripSwiftSymbols</key>
-            <true/>
-            <key>provisioningProfiles</key>
-            <dict>
-                <key>com.surfshield.adblocker</key>
-                <string>Adblocker App ios_app_store 1757589530</string>
-                <key>com.surfshield.adblocker.extension.banners</key>
-                <string>extension banners ios_app_store 1757596415</string>
-                <key>com.surfshield.adblocker.extension.adblocker</key>
-                <string>extension adblocker ios_app_store 1757596414</string>
-                <key>com.surfshield.adblocker.extensions.trackers</key>
-                <string>Adblocker Extensions ios_app_store 1757593596</string>
-                <key>com.surfshield.adblocker.extension.secure</key>
-                <string>extension secure ios_app_store 1757596416</string>
-                <key>com.surfshield.adblocker.extension.basic</key>
-                <string>extension basic ios_app_store 1757596416</string>
-                <key>com.surfshield.adblocker.extension.privacy</key>
-                <string>extension privacy ios_app_store 1757596416</string>
-                <key>com.surfshield.adblocker.extension.advanced</key>
-                <string>extension advanced ios_app_store 1757596415</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
-      - name: Export ipa from archive
-        script: |
-          echo "Starting IPA export..."
-          xcodebuild -exportArchive \
-            -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
-            -exportPath "$CM_BUILD_DIR/build" \
-            -exportOptionsPlist "$CM_BUILD_DIR/export_options.plist" \
-            -allowProvisioningUpdates
-    artifacts:
-      - build/*.ipa
-      - build/SurfShield.xcarchive
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-      email:
-        recipients:
-          - arthurkulik99@gmail.com
-        notify:
-          success: true
-          failure: false
+    ios-workflow:
+      name: iOS Workflow
+      environment:
+        groups:
+          - app_store_credentials
+        vars:
+          XCODE_WORKSPACE: "SurfShield.xcworkspace"
+          XCODE_SCHEME: "SurfShield"
+          BUNDLE_ID: "com.surfshield.adblocker"
+          APP_STORE_APP_ID: 6752248631
+        xcode: latest
+        cocoapods: 1.14.2
+      scripts:
+        - name: Test echo
+          script: |
+            echo $APP_STORE_CONNECT_ISSUER_ID
+            echo $APP_STORE_CONNECT_KEY_IDENTIFIER
+            echo $APP_STORE_CONNECT_PRIVATE_KEY
+            echo $CERTIFICATE_PRIVATE_KEY
+        - name: Set up keychain to be used for codesigning using Codemagic CLI 'keychain' command
+          script: |
+            keychain initialize
+        - name: Fetch signing files
+          script: |
+            app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+        - name: Use system default keychain
+          script: |
+            keychain add-certificates
+        - name: Set up code signing settings on Xcode project
+          script: |
+            xcode-project use-profiles
+        - name: Cocoapods
+          script: |
+            #!/bin/sh
+            pod install
+        - name: Build ipa for distribution
+          script: |
+            xcode-project build-ipa \
+              --workspace "$XCODE_WORKSPACE" \
+              --scheme "$XCODE_SCHEME" \
+      artifacts:
+        - build/ios/ipa/*.ipa
+        - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+      publishing:
+        app_store_connect:   # https://docs.codemagic.io/publishing-yaml/distribution
+            api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+            key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+            issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+            submit_to_testflight: false

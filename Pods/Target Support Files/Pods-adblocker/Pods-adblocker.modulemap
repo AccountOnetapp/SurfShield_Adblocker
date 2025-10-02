@@ -1,0 +1,6 @@
+framework module Pods_adblocker {
+  umbrella header "Pods-adblocker-umbrella.h"
+
+  export *
+  module * { export * }
+}

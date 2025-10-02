@@ -1,0 +1,6 @@
+framework module Pods_privacy {
+  umbrella header "Pods-privacy-umbrella.h"
+
+  export *
+  module * { export * }
+}
