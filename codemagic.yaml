@@ -28,6 +28,10 @@ workflows:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           find "$CM_BUILD_DIR" -name "*.mobileprovision" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
           find "$CM_BUILD_DIR" -name "*.provisionprofile" -exec cp {} ~/Library/MobileDevice/Provisioning\ Profiles/ \;
+          
+          # Проверяем установленные профили
+          echo "Installed provisioning profiles:"
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
       - name: Configure code signing
         script: |
           xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
@@ -55,7 +59,6 @@ workflows:
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             DEVELOPMENT_TEAM=9JXM4RZUCC \
             CODE_SIGN_STYLE=Automatic \
-            CURRENT_PROJECT_VERSION=$CURRENT_PROJECT_VERSION \
             -allowProvisioningUpdates
       - name: Create export options plist
         script: |
@@ -75,9 +78,28 @@ workflows:
             <key>compileBitcode</key>
             <false/>
             <key>signingStyle</key>
-            <string>manual</string>
+            <string>automatic</string>
             <key>stripSwiftSymbols</key>
             <true/>
+            <key>provisioningProfiles</key>
+            <dict>
+                <key>com.surfshield.adblocker</key>
+                <string>Distribution_Adblocker</string>
+                <key>com.surfshield.adblocker.extension.banners</key>
+                <string>Distribution_Banners</string>
+                <key>com.surfshield.adblocker.extension.adblocker</key>
+                <string>Distribution_Adblocker</string>
+                <key>com.surfshield.adblocker.extension.trackers</key>
+                <string>Distribution_Trackers</string>
+                <key>com.surfshield.adblocker.extension.secure</key>
+                <string>Distribution_Secure</string>
+                <key>com.surfshield.adblocker.extension.basic</key>
+                <string>Distribution_Basic</string>
+                <key>com.surfshield.adblocker.extension.privacy</key>
+                <string>Distribution_Privacy</string>
+                <key>com.surfshield.adblocker.extension.advanced</key>
+                <string>Distribution_Advanced</string>
+            </dict>
           </dict>
           </plist>
           EOF
