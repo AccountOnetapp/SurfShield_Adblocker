@@ -16,10 +16,24 @@
     <true/>
     <key>thinning</key>
     <string>&lt;none&gt;</string>
+    <key>signingStyle</key>
+    <string>automatic</string>
     <key>provisioningProfiles</key>
     <dict>
-        <key>com.surfshield.adblocker</key>
-        <string>match AppStore com.surfshield.adblocker</string>
+        <key>com.surfshield.app.banners</key>
+        <string>Distribution_Banners</string>
+        <key>com.surfshield.app.adblocker</key>
+        <string>Distribution_Adblocker</string>
+        <key>com.surfshield.app.trackers</key>
+        <string>Distribution_Trackers</string>
+        <key>com.surfshield.app.secure</key>
+        <string>Distribution_Secure</string>
+        <key>com.surfshield.app.basic</key>
+        <string>Distribution_Basic</string>
+        <key>com.surfshield.app.privacy</key>
+        <string>Distribution_Privacy</string>
+        <key>com.surfshield.app.advanced</key>
+        <string>Distribution_Advanced</string>
     </dict>
 </dict>
 </plist>
