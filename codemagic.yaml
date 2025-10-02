@@ -30,6 +30,15 @@ workflows:
       - name: Configure code signing
         script: |
           xcode-project use-profiles --project SurfShield.xcodeproj --archive-method app-store
+          # Устанавливаем автоматическую подпись для всех таргетов
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target SurfShield --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target adblocker --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target basic --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target advanced --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target banners --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target privacy --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target secure --profile-name "Automatic"
+          xcode-project configure-provisioning-profiles --project SurfShield.xcodeproj --target trackers --profile-name "Automatic"
       - name: Build ipa for distribution
         script: |
           echo "Starting archive build..."
@@ -38,6 +47,7 @@ workflows:
             -archivePath "$CM_BUILD_DIR/build/SurfShield.xcarchive" \
             DEVELOPMENT_TEAM=6TVC5Q5R78 \
             CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
             -allowProvisioningUpdates \
             -verbose
       - name: Create export options plist
@@ -61,23 +71,6 @@ workflows:
             <string>automatic</string>
             <key>stripSwiftSymbols</key>
             <true/>
-            <key>provisioningProfiles</key>
-            <dict>
-                <key>com.surfshield.app.banners</key>
-                <string>Distribution_Banners</string>
-                <key>com.surfshield.app.adblocker</key>
-                <string>Distribution_Adblocker</string>
-                <key>com.surfshield.app.trackers</key>
-                <string>Distribution_Trackers</string>
-                <key>com.surfshield.app.secure</key>
-                <string>Distribution_Secure</string>
-                <key>com.surfshield.app.basic</key>
-                <string>Distribution_Basic</string>
-                <key>com.surfshield.app.privacy</key>
-                <string>Distribution_Privacy</string>
-                <key>com.surfshield.app.advanced</key>
-                <string>Distribution_Advanced</string>
-            </dict>
           </dict>
           </plist>
           EOF
