@@ -2138,7 +2138,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-banners";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension banners ios_app_store 1757596415";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-banners";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2274,7 +2274,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-trackers";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Adblocker Extensions ios_app_store 1757593596";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-trackers";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2342,7 +2342,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-secure";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension secure ios_app_store 1757596416";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-secure";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2410,7 +2410,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-basic";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension basic ios_app_store 1757596416";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-basic";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2459,9 +2459,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = privacy/privacy.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = privacy/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Privacy;
@@ -2473,9 +2475,10 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-privacy";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-privac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-privac";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2543,7 +2546,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-advanced";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension advanced ios_app_store 1757596415";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-advanced";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
