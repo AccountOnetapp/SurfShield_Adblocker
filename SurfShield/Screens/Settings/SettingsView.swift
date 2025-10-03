@@ -20,6 +20,9 @@ struct SettingsView: View {
                 .navigationTitle("Settings")
                 .navigationBarTitleDisplayMode(.large)
         }
+        .onAppear {
+            print("asf")
+        }
     }
     
     var content: some View {
