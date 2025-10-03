@@ -2169,7 +2169,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.banners;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-banners;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension banners ios_app_store 1757596415";
@@ -2237,7 +2237,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.adblocker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-adblocker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension adblocker ios_app_store 1757596414";
@@ -2305,7 +2305,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extensions.trackers;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-trackers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Adblocker Extensions ios_app_store 1757593596";
@@ -2373,7 +2373,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.secure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-secure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension secure ios_app_store 1757596416";
@@ -2441,7 +2441,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.basic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-basic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension basic ios_app_store 1757596416";
@@ -2509,7 +2509,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.privacy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-privac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension privacy ios_app_store 1757596416";
@@ -2577,7 +2577,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker.extension.advanced;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-advanced;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension advanced ios_app_store 1757596415";
