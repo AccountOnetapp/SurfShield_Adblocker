@@ -1050,7 +1050,6 @@
 				8EC4E9102E6F072500822E21 /* Models */,
 				8E9F1AF62E5CBBBE0093C76B /* Shared */,
 				8ECF28282E59BDCB000A5748 /* Screens */,
-				8ECF280E2E59BB03000A5748 /* Assets.xcassets */,
 				8EF3E7E02E708B9D0090F1AD /* Resources */,
 				8EC396BB2E7177A200D340E1 /* Extensions */,
 				8ECF28212E59BC80000A5748 /* Theme */,
@@ -1134,6 +1133,7 @@
 		8EF3E7E02E708B9D0090F1AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8ECF280E2E59BB03000A5748 /* Assets.xcassets */,
 				8ECF28232E59BC80000A5748 /* Colors.xcassets */,
 				8EF3E7E12E708BBA0090F1AD /* Images.xcassets */,
 			);
