@@ -40,16 +40,14 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     @Published private (set) var refresh: Bool = false
     @Published private (set) var progress: Double = 0
     
-    weak var navigationDelegate: WebViewNavigationDelegate?
-    
-    // MARK: - Resource Analysis
     @Published private (set) var resourceAnalysis: ResourceAnalysisData?
     
+    weak var navigationDelegate: WebViewNavigationDelegate?
+    @Published var appSettings = AppSettings.default
     
-    private let rulesConverter = RulesConverter()
-    // MARK: - Resource Monitor
-    private var resourceMonitor: ResourceMonitor?
     let userDefaultsObserver = UserDefaultsObserver.shared
+    private let rulesConverter = RulesConverter()
+    private var resourceMonitor: ResourceMonitor?
     
     init() {
         setupResourceMonitor()

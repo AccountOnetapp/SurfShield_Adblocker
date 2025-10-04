@@ -39,7 +39,8 @@ struct MainView: View {
                 }
                 .onAppear {
                     if appState.isFirstLoad {
-                        coordinator.fullScreenCover(to: .paywall)
+                        //MARK: Uncomment later after subscriptions implement
+//                        coordinator.fullScreenCover(to: .paywall)
                     }
                 }
         }

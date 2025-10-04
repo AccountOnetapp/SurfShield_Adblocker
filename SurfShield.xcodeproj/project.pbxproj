@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18247EB90BFA2568DF0AC15C /* Pods_privacy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EED300F2F421563DA8E0385 /* Pods_privacy.framework */; };
-		445E258F4FAE4978EFBF9CA3 /* Pods_secure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD9BCF0E941C9FFCCEAE18C3 /* Pods_secure.framework */; };
-		56C175E64D1F13C67C35DF1C /* Pods_advanced.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26360711A92951763D488B2A /* Pods_advanced.framework */; };
-		6CA1DB4151329B02E574FF4B /* Pods_SurfShield.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67D097E33FBBB2C8A09205FB /* Pods_SurfShield.framework */; };
 		8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0384CE2E5E4939001D5E9D /* SettingsView.swift */; };
 		8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */; };
 		8E3275D82E71A69A007ABA09 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E3275D72E71A69A007ABA09 /* LaunchScreen.storyboard */; };
@@ -407,10 +403,6 @@
 		8EF3E7EB2E70CB990090F1AD /* SF-Pro-Text-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E72E70CB990090F1AD /* SF-Pro-Text-Regular.otf */; };
 		8EF3E7EC2E70CB990090F1AD /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8EF3E7E82E70CB990090F1AD /* SF-Pro-Text-Semibold.otf */; };
 		8EF3E7F02E70CB990090F1AD /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF3E7EF2E70CB990090F1AD /* Fonts.swift */; };
-		903DBA9109C1556015A4BC8D /* Pods_adblocker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5EB60B66CCA9DB6D115CAAE /* Pods_adblocker.framework */; };
-		C00B1F133EECF7644EC081EB /* Pods_trackers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E16BF76D0BDE2853ACC478 /* Pods_trackers.framework */; };
-		E7150478F14FF26775E8E6AA /* Pods_basic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52A26CB33131693ABEC0FDC2 /* Pods_basic.framework */; };
-		F4E580E74D3E207EFA2C250C /* Pods_banners.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FA178FC63333A76C99D8A3 /* Pods_banners.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -645,7 +637,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC58DAC2E67D387008D48EF /* Punycode in Frameworks */,
-				F4E580E74D3E207EFA2C250C /* Pods_banners.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,7 +645,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E7B5E2B2E61D4F400D5E817 /* Punycode in Frameworks */,
-				903DBA9109C1556015A4BC8D /* Pods_adblocker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,7 +653,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC58DAE2E67D38E008D48EF /* Punycode in Frameworks */,
-				C00B1F133EECF7644EC081EB /* Pods_trackers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,7 +661,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC58E3F2E67E99A008D48EF /* Punycode in Frameworks */,
-				445E258F4FAE4978EFBF9CA3 /* Pods_secure.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,7 +669,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC58E412E67E99D008D48EF /* Punycode in Frameworks */,
-				E7150478F14FF26775E8E6AA /* Pods_basic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,7 +677,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E7B5E2F2E61D50400D5E817 /* Punycode in Frameworks */,
-				18247EB90BFA2568DF0AC15C /* Pods_privacy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,7 +685,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC58DB02E67D393008D48EF /* Punycode in Frameworks */,
-				56C175E64D1F13C67C35DF1C /* Pods_advanced.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,7 +693,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E7B5E292E61D4B800D5E817 /* Punycode in Frameworks */,
-				6CA1DB4151329B02E574FF4B /* Pods_SurfShield.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2119,11 +2103,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = banners/banners.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = banners/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Banners;
@@ -2135,10 +2117,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-banners";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-banners";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2169,7 +2150,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-banners;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-banners";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension banners ios_app_store 1757596415";
@@ -2187,11 +2168,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = adblocker/adblocker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = adblocker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AdBlock;
@@ -2203,10 +2182,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-adblocker";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension adblocker ios_app_store 1757596414";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2237,7 +2215,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-adblocker;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-adblocker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension adblocker ios_app_store 1757596414";
@@ -2255,11 +2233,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = trackers/trackers.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = trackers/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Trackers;
@@ -2271,10 +2247,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-trackers";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-trackers";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2305,7 +2280,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-trackers;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-trackers";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Adblocker Extensions ios_app_store 1757593596";
@@ -2323,11 +2298,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = secure/secure.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = secure/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Security;
@@ -2339,10 +2312,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-secure";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-secure";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2373,7 +2345,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-secure;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-secure";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension secure ios_app_store 1757596416";
@@ -2391,11 +2363,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = basic/basic.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = basic/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Basic;
@@ -2407,10 +2377,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-basic";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-basic";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2441,7 +2410,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-basic;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-basic";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension basic ios_app_store 1757596416";
@@ -2459,11 +2428,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = privacy/privacy.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = privacy/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Privacy;
@@ -2475,10 +2442,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-privac";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-privac";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2509,7 +2475,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-privac;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-privac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension privacy ios_app_store 1757596416";
@@ -2527,11 +2493,9 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = advanced/advanced.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = advanced/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Advanced;
@@ -2543,10 +2507,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-advanced";
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket.ex5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "adblocker-advanced";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2577,7 +2540,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker-advanced;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.surfshield.adblocker-advanced";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "extension advanced ios_app_store 1757596415";
@@ -2716,18 +2679,17 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SurfShield/SurfShield.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"SurfShield/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9JXM4RZUCC;
+				DEVELOPMENT_TEAM = 6TVC5Q5R78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SurfShield/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -2736,10 +2698,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surfshield.adblocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Adblocker App ios_app_store 1757589530";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2767,6 +2728,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;

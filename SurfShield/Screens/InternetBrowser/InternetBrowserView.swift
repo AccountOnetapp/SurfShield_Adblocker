@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct InternetBrowserView: View {
     @StateObject var interactor = WebViewInteractor()
     

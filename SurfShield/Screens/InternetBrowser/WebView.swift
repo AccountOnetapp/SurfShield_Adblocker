@@ -14,15 +14,19 @@ struct WebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         // Создаем конфигурацию с предустановленным скриптом
         let config = WKWebViewConfiguration()
-        
+        print("DEBUG: enable dark mode \(interactor.appSettings.enableBrowserDarkMode)")
+        if interactor.appSettings.enableBrowserDarkMode {
+            let darkThemeScript = interactor.getDarkThemeScript()
+            let userDarkThemeScript = WKUserScript(
+                source: darkThemeScript,
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: true
+            )
+            config.userContentController.addUserScript(userDarkThemeScript)
+        } else {
+            
+        } // Место для определения темы в настройках
         // Добавляем скрипт красного текста в конфигурацию ДО создания WebView
-        let redTextScript = interactor.getDarkThemeScript()
-        let userScript = WKUserScript(
-            source: redTextScript,
-            injectionTime: .atDocumentStart,
-            forMainFrameOnly: true
-        )
-        config.userContentController.addUserScript(userScript)
         
         let webView = WKWebView(frame: .zero, configuration: config)
         
