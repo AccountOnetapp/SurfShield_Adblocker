@@ -14,87 +14,89 @@ struct EnableBlockerInstructionView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Заголовок (фиксированный)
-            Text("Тестовый Sheet")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.tm.title)
-                .padding(.top, 20)
-                .padding(.bottom, 16)
+            // Header and subtitle
+            VStack(spacing: 8) {
+                Text("Enable Extensions")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.tm.title)
+                
+                Text("To activate the blocker, you need to enable extensions in Safari settings")
+                    .font(.subheadline)
+                    .foregroundColor(.tm.subTitle)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+            }
+            .padding(.top, 20)
+            .padding(.bottom, 16)
             
-            ScrollView {
-                    // Группированный список
-                    VStack(spacing: 0) {
-                        ForEach(Array(settingsItems.enumerated()), id: \.element.id) { index, item in
-                            SettingsRowView(item: item, isLast: index == settingsItems.count - 1)
+            Form(content: {
+                ForEach(Array(settingsItems.enumerated()), id: \.element.id) { index, item in
+                    HStack {
+                        Label(title: { Text(item.title) }, icon: {
+                            Image("Onboarding0AppIcon")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                        })
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 4) {
+                            Text("Disable.")
+                                .font(.system(size: 16, weight: .regular))
+                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.gray)
+                                .opacity(0.8)
                         }
                     }
-                    .background(Color.white)
-                    .padding(.horizontal, 16)
-//                .scrollToOffset(contentOffset: $scrollOffset)
-            }
-            .frame(maxWidth: .infinity)
-            // Кнопка закрытия (фиксированная)
-            Button("Закрыть") {
-                scrollOffset = .init(x: 0, y: 50)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.tm.accentSecondary)
-            .padding(.horizontal, 40)
-            .padding(.vertical, 16)
-        }
-        .background(.tm.container)
-        .onAppear {
-            startAutoScroll()
-        }
-    }
+                }
+            })
+            .scrollDisabled(true)
+            // Close button (fixed)
+            Text("Go to Safari settings")
+                .onTapGesture(perform: {
+                    
+                })
+                .padding(.horizontal)
+        }}
+}
+
+
+// MARK: - Settings Data
+private var settingsItems: [SettingsItem] {
+    [
+        SettingsItem(
+            id: "adblock",
+            title: "SurfShield - AdBlock"
+        ),
+        SettingsItem(
+            id: "privacy",
+            title: "SurfShield - Advanced"
+        ),
+        SettingsItem(
+            id: "trackers",
+            title: "SurfShield - Banners"
+        ),
+        SettingsItem(
+            id: "popups",
+            title: "SurfShield - Basic"
+        ),
+        SettingsItem(
+            id: "malware",
+            title: "SurfShield - Privacy"
+        ),
+        SettingsItem(
+            id: "advanced",
+            title: "SurfShield - Security"
+        ),
+        SettingsItem(
+            id: "premium",
+            title: "SurfShield - Trackers"
+        )
+    ]
     
-    private func startAutoScroll() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            withAnimation(.linear(duration: 0.1)) {
-                scrollOffset.y += 3
-            }
-        }
-    }
-    
-    private func stopAutoScroll() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    // MARK: - Settings Data
-    private var settingsItems: [SettingsItem] {
-        [
-            SettingsItem(
-                id: "adblock",
-                title: "SurfShield - AdBlock"
-            ),
-            SettingsItem(
-                id: "privacy",
-                title: "SurfShield - Advanced"
-            ),
-            SettingsItem(
-                id: "trackers",
-                title: "SurfShield - Banners"
-            ),
-            SettingsItem(
-                id: "popups",
-                title: "SurfShield - Basic"
-            ),
-            SettingsItem(
-                id: "malware",
-                title: "SurfShield - Privacy"
-            ),
-            SettingsItem(
-                id: "advanced",
-                title: "SurfShield - Security"
-            ),
-            SettingsItem(
-                id: "premium",
-                title: "SurfShield - Trackers"
-            )
-        ]
-    }
 }
 
 // MARK: - Settings Item Model
@@ -119,7 +121,7 @@ struct SettingsRowView: View {
                 // Контент
                 Text(item.title)
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.black)
+                //                    .foregroundColor(.black)
                 
                 Spacer()
                 
@@ -131,17 +133,6 @@ struct SettingsRowView: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.gray)
                     .opacity(0.8)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(Color.clear)
-            
-            // Разделитель (только если не последний элемент)
-            if !isLast {
-                Divider()
-//                    .fill(Color.gray.opacity(0.2))
-                    .frame(height: 0.5)
-                    .padding(.leading, 52) // Отступ под иконку
             }
         }
     }
