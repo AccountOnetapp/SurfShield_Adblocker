@@ -43,7 +43,6 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     @Published private (set) var resourceAnalysis: ResourceAnalysisData?
     
     weak var navigationDelegate: WebViewNavigationDelegate?
-    @Published var appSettings = AppSettings.default
     
     let userDefaultsObserver = UserDefaultsObserver.shared
     private let rulesConverter = RulesConverter()
@@ -51,16 +50,13 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     init() {
         setupResourceMonitor()
+        // Инициализируем URL стартовой страницей
+        setStartPage()
     }
     
     private func setupResourceMonitor() {
         resourceMonitor = ResourceMonitor()
         resourceMonitor?.delegate = self
-    }
-    
-    func updateAddress(_ url: URL?) {
-        guard let url = url else { return }
-        self.url = url
     }
     
     func goToUrl(string: String) {
@@ -72,6 +68,23 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
         }
         
         navigationDelegate?.loadURL(url)
+    }
+    
+    func setStartPage() {
+        if userDefaultsObserver.appSettings.enableBrowserHistory, let lastVisitedUrl = userDefaultsObserver.userDefaultsService.load(URL.self, forKey: .lastVisitedURL) {
+            self.url = lastVisitedUrl
+        } else {
+            self.url = URL(string: "https://google.com")!
+        }
+    }
+    
+    
+    func updateAddress(_ url: URL?) {
+        guard let url = url else { return }
+        self.url = url
+        
+        // Сохраняем последний URL в UserDefaults
+        userDefaultsObserver.userDefaultsService.save(url, forKey: .lastVisitedURL)
     }
     
     private func processURLString(_ input: String) -> String {

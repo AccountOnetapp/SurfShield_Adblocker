@@ -104,8 +104,8 @@ struct SettingsView: View {
                         
                         StatisticsInfoRow(
                             iconColor: .tm.success,
-                            title: "Efficiency - ",
-                            text: "Efficiency - percentage of blocked resources from total amount"
+                            title: "Block Rate - ",
+                            text: "percentage of blocked resources from total amount"
                         )
                     }
                 }
@@ -154,7 +154,7 @@ struct SettingsView: View {
             StatisticsRow(
                 icon: "chart.pie.fill",
                 iconColor: .tm.success,
-                title: "Efficiency",
+                title: "Block Rate",
                 subtitle: "Block percentage",
                 value: "\(Int(viewModel.resourceStatistics.blockedPercentage))%"
             )
