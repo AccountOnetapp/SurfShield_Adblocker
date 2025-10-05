@@ -15,8 +15,9 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isEnabled: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
-    let rulesConverter = RulesConverter()
-    let userDefaultsInteractor = UserDefaultsService.shared
+    let contentBlockerService = ContentBlockerService()
+    let safariExtensionChecker = SafariExtensionsChecker()
+    let userDefaultsService = UserDefaultsService.shared
     
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
@@ -24,8 +25,19 @@ class BlockAdsViewModel: ObservableObject {
     
     init() {
         // Инициализируем блокировщик с сохраненным состоянием
-        let isEnabled = userDefaultsInteractor.load(Bool.self, forKey: .adBlockerEnabled)
-        self.isEnabled = isEnabled ?? false
+        checkBlockingActivity()
+    }
+    
+    func checkBlockingActivity() {
+        Task {
+            let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
+            guard isExtensionsEnabled else {
+                userDefaultsService.save(false, forKey: .adBlockerEnabled)
+                return
+            }
+            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled)
+            self.isEnabled = isEnabled ?? false
+        }
     }
     
     func toggleBlocking() {
@@ -49,8 +61,8 @@ class BlockAdsViewModel: ObservableObject {
             
             if !Task.isCancelled {
                 // Применяем новое состояние через RulesConverter
-                await rulesConverter.applyBlockingState(newState)
-                userDefaultsInteractor.save(newState, forKey: .adBlockerEnabled)
+                await contentBlockerService.applyBlockingState(newState)
+                userDefaultsService.save(newState, forKey: .adBlockerEnabled)
                 await MainActor.run {
                     // Обновляем состояние с анимацией
                     withAnimation(.bouncy(duration: 0.2)) {

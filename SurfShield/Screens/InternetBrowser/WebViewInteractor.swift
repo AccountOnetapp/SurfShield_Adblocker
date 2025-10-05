@@ -45,7 +45,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     weak var navigationDelegate: WebViewNavigationDelegate?
     
     let userDefaultsObserver = UserDefaultsObserver.shared
-    private let rulesConverter = RulesConverter()
+    private let rulesConverter = ContentBlockerService()
     private var resourceMonitor: ResourceMonitor?
     
     init() {

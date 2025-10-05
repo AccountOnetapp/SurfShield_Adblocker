@@ -22,7 +22,7 @@ struct InstructionView: View {
             // Light dark gradient overlay
             LightDarkGradientOverlay()
             
-            VStack(spacing: 0) {
+            VStack(spacing: 16) {
                 // 1. Главный заголовок
                 VStack(spacing: 12) {
                     Text("Enable Extensions")
@@ -36,7 +36,7 @@ struct InstructionView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
                 }
-                .padding(.top, 20)
+                .padding(.top, 40)
                 
                 // Красивая инструкция
                 VStack(spacing: 16) {
@@ -54,11 +54,17 @@ struct InstructionView: View {
                         icon: "safari",
                         text: "Find Safari → Extensions"
                     )
+                    
+                    InstructionCardView(
+                        icon: "Onboarding0AppIcon",
+                        text: "Enable SurfShield Extensions"
+                    )
                 }
                 .padding(.horizontal, 19)
                 .padding(.top, 20)
                 // 4. Список расширений
                 SettingsFormView(settingsItems: settingsItems, enabledItems: enabledItems)
+                    .offset(y: -30)
             }
         }
         
@@ -260,7 +266,7 @@ struct SettingsRowView: View {
             Spacer()
             
             HStack(spacing: 4) {
-                Text(enabledItems.contains(item.id) ? "Enable." : "Disable.")
+                Text(enabledItems.contains(item.id) ? "On" : "Off")
                     .font(.system(size: 16, weight: .regular))
                     .foregroundColor(.tm.subTitle)
                 Image(systemName: "chevron.right")
