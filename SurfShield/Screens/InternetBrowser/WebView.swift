@@ -63,17 +63,16 @@ struct WebView: UIViewRepresentable {
         return webView
     }
     
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Позволяем WebView автоматически определять тему
-//        uiView.overrideUserInterfaceStyle = .unspecified
-    }
+    func updateUIView(_ uiView: WKWebView, context: Context) { }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     fileprivate func applyTheme(_ config: WKWebViewConfiguration) {
-//        if interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode {
+        // Применяем тему статически при создании WebView для предотвращения мигания
+        let isDarkMode = interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode
+        if isDarkMode {
             let darkThemeScript = interactor.darkThemeScript
             let userDarkThemeScript = WKUserScript(
                 source: darkThemeScript,
@@ -81,7 +80,7 @@ struct WebView: UIViewRepresentable {
                 forMainFrameOnly: true
             )
             config.userContentController.addUserScript(userDarkThemeScript)
-//        }
+        }
     }
     
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
@@ -103,12 +102,12 @@ struct WebView: UIViewRepresentable {
             super.init()
             self.parent?.interactor.navigationDelegate = self
             self.addedContentRules()
-//            subscribe()
+            subscribe()
         }
         
         func subscribe() {
             parent?.interactor.userDefaultsObserver.$appSettings.sink(receiveValue: { [weak self] settings in
-                print("Debug: Settings updated \(settings)")
+                print("Debug: Settings updated \(settings.enableBrowserDarkMode)")
                 self?.applyTheme(isDarkMode: settings.enableBrowserDarkMode)
             })
             .store(in: &cancellable)
@@ -122,9 +121,9 @@ struct WebView: UIViewRepresentable {
                 let darkThemeScript = parent?.interactor.darkThemeScript ?? ""
                 webView.evaluateJavaScript(darkThemeScript) { result, error in
                     if let error = error {
-                        print("❌ Ошибка применения темной темы: \(error)")
+                        print("❌ DEBUG: Theme Ошибка применения темной темы: \(error)")
                     } else {
-                        print("✅ Темная тема применена")
+                        print("✅ DEBUG: Theme Темная тема применена")
                     }
                 }
             } else {
@@ -148,9 +147,9 @@ struct WebView: UIViewRepresentable {
                 """
                 webView.evaluateJavaScript(lightThemeScript) { result, error in
                     if let error = error {
-                        print("❌ Ошибка отключения темной темы: \(error)")
+                        print("❌ DEBUG: Theme Ошибка отключения темной темы: \(error)")
                     } else {
-                        print("✅ Темная тема отключена")
+                        print("✅ DEBUG: Theme Темная тема отключена")
                     }
                 }
             }
@@ -178,6 +177,10 @@ struct WebView: UIViewRepresentable {
             if let currentURL = webView.url {
                 parent?.interactor.updateAddress(currentURL)
             }
+            
+            // Применяем тему после загрузки страницы
+//            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+//            applyTheme(isDarkMode: isDarkMode)
             
             print("DEBUG: Загрузка страницы завершена")
         }

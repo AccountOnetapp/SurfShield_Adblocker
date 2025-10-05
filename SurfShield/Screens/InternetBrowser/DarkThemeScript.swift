@@ -37,6 +37,9 @@ class DarkThemeScript {
                 return luminance > 0.85;
             }
 
+
+
+
             // Применяем темную тему к фону, сохраняя цвет текста
             function applyDarkTheme() {
                 document.querySelectorAll('*').forEach(el => {
@@ -45,11 +48,19 @@ class DarkThemeScript {
                     const style = getComputedStyle(el);
 
                     if (style.backgroundColor && isLightColor(style.backgroundColor)) {
-                        el.style.setProperty('background-color', 'transparent', 'important');
+                        el.style.setProperty('background-color', '#161618', 'important');
                     }
 
                     if (style.borderColor && isLightColor(style.borderColor)) {
                         el.style.setProperty('border-color', 'white', 'important');
+                    }
+
+                    // Заменяем тени на черные
+                    if (style.boxShadow && style.boxShadow !== 'none') {
+                        el.style.setProperty('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.3)', 'important');
+                    }
+                    if (style.textShadow && style.textShadow !== 'none') {
+                        el.style.setProperty('text-shadow', '0 1px 2px rgba(0, 0, 0, 0.5)', 'important');
                     }
 
                     if (!isLightColor(style.color)) {
@@ -97,11 +108,19 @@ class DarkThemeScript {
                                     const style = getComputedStyle(node);
                                     
                                     if (style.backgroundColor && isLightColor(style.backgroundColor)) {
-                                        node.style.setProperty('background-color', 'transparent', 'important');
+                                        node.style.setProperty('background-color', '#161618', 'important');
                                     }
                                     
                                     if (style.borderColor && isLightColor(style.borderColor)) {
                                         node.style.setProperty('border-color', 'white', 'important');
+                                    }
+                                    
+                                    // Заменяем тени на черные
+                                    if (style.boxShadow && style.boxShadow !== 'none') {
+                                        node.style.setProperty('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.3)', 'important');
+                                    }
+                                    if (style.textShadow && style.textShadow !== 'none') {
+                                        node.style.setProperty('text-shadow', '0 1px 2px rgba(0, 0, 0, 0.5)', 'important');
                                     }
                                     
                                     if (!isLightColor(style.color)) {
@@ -114,11 +133,19 @@ class DarkThemeScript {
                                         const childStyle = getComputedStyle(child);
                                         
                                         if (childStyle.backgroundColor && isLightColor(childStyle.backgroundColor)) {
-                                            child.style.setProperty('background-color', 'transparent', 'important');
+                                            child.style.setProperty('background-color', '#161618', 'important');
                                         }
                                         
                                         if (childStyle.borderColor && isLightColor(childStyle.borderColor)) {
                                             child.style.setProperty('border-color', 'white', 'important');
+                                        }
+                                        
+                                        // Заменяем тени на черные
+                                        if (childStyle.boxShadow && childStyle.boxShadow !== 'none') {
+                                            child.style.setProperty('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.3)', 'important');
+                                        }
+                                        if (childStyle.textShadow && childStyle.textShadow !== 'none') {
+                                            child.style.setProperty('text-shadow', '0 1px 2px rgba(0, 0, 0, 0.5)', 'important');
                                         }
                                         
                                         if (!isLightColor(childStyle.color)) {
