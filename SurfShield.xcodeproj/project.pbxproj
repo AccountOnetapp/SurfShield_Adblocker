@@ -58,6 +58,7 @@
 		8E6A741D2E918AED00486954 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741C2E918AED00486954 /* InstructionView.swift */; };
 		8E6A741F2E918B3000486954 /* BlockAdsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */; };
 		8E6A74212E919EEC00486954 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A74202E919EEC00486954 /* MainButton.swift */; };
+		8E6A74232E928BCD00486954 /* BorderedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A74222E928BCD00486954 /* BorderedButton.swift */; };
 		8E78603D2E650542000C7CB5 /* adblock_rules2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E78603C2E650542000C7CB5 /* adblock_rules2.txt */; };
 		8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */; };
 		8E7B5DF42E61D0C200D5E817 /* PublicSuffixList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */; };
@@ -509,6 +510,7 @@
 		8E6A741C2E918AED00486954 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockAdsViewModel.swift; sourceTree = "<group>"; };
 		8E6A74202E919EEC00486954 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
+		8E6A74222E928BCD00486954 /* BorderedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedButton.swift; sourceTree = "<group>"; };
 		8E78603C2E650542000C7CB5 /* adblock_rules2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules2.txt; sourceTree = "<group>"; };
 		8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicSuffixList.swift; sourceTree = "<group>"; };
 		8E7B5DF12E61D0C200D5E817 /* ByteArraySuffixTrie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArraySuffixTrie.swift; sourceTree = "<group>"; };
@@ -735,6 +737,7 @@
 			children = (
 				8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */,
 				8E6A74202E919EEC00486954 /* MainButton.swift */,
+				8E6A74222E928BCD00486954 /* BorderedButton.swift */,
 			);
 			path = ViewComponents;
 			sourceTree = "<group>";
@@ -2027,6 +2030,7 @@
 				8E8FFB402E68159900F20BF0 /* InternetBrowserView.swift in Sources */,
 				8EBB258D2E61C79500E29966 /* ContentBlockerConverter.swift in Sources */,
 				8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */,
+				8E6A74232E928BCD00486954 /* BorderedButton.swift in Sources */,
 				8E7B5E5C2E61D7B100D5E817 /* SafariRegex.swift in Sources */,
 				8EBB25BA2E61C7C700E29966 /* CosmeticRuleMarker.swift in Sources */,
 				8EBB25852E61C79500E29966 /* ConversionResult.swift in Sources */,

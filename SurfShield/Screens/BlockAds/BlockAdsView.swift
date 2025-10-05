@@ -81,7 +81,7 @@ struct BlockAdsView: View {
         }
         .sheet(isPresented: $showSheet) {
             InstructionView()
-                .presentationDetents([.fraction(0.73)])
+                .presentationDetents([.fraction(0.9)])
                 .presentationDragIndicator(.visible)
         }
     }

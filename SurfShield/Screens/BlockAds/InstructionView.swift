@@ -22,12 +22,8 @@ struct InstructionView: View {
             // Light dark gradient overlay
             LightDarkGradientOverlay()
             
-            // Floating geometric shapes
-            FloatingShapesView()
-                .opacity(0.3)
-            
             VStack(spacing: 0) {
-                // Simple header
+                // 1. Главный заголовок
                 VStack(spacing: 12) {
                     Text("Enable Extensions")
                         .font(.title2)
@@ -41,12 +37,28 @@ struct InstructionView: View {
                         .padding(.horizontal, 20)
                 }
                 .padding(.top, 20)
-                // Simple Form
+                
+                // Красивая инструкция
+                VStack(spacing: 16) {
+                    InstructionCardView(
+                        icon: "settings",
+                        text: "Open Settings"
+                    )
+                    
+                    InstructionCardView(
+                        icon: "applications",
+                        text: "Open applications"
+                    )
+                    
+                    InstructionCardView(
+                        icon: "safari",
+                        text: "Find Safari → Extensions"
+                    )
+                }
+                .padding(.horizontal, 19)
+                .padding(.top, 20)
+                // 4. Список расширений
                 SettingsFormView(settingsItems: settingsItems, enabledItems: enabledItems)
-                // Elegant action button
-                SafariSettingsButton()
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
             }
         }
         
@@ -62,9 +74,10 @@ struct InstructionView: View {
         let items = settingsItems
         var currentIndex = 0
         var isResetting = false
+        var isPaused = false
         
         timer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { timer in
-            if !isResetting && currentIndex < items.count {
+            if !isResetting && !isPaused && currentIndex < items.count {
                 // Включаем элементы по очереди
                 let item = items[currentIndex]
                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -72,14 +85,20 @@ struct InstructionView: View {
                 }
                 currentIndex += 1
                 
-                // Если все элементы включены, начинаем сброс
+                // Если все элементы включены, делаем паузу на секунду
                 if currentIndex >= items.count {
-                    isResetting = true
-                    currentIndex = 0
+                    isPaused = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        isPaused = false
+                        isResetting = true
+                        currentIndex = 0
+                    }
                 }
-            } else if isResetting {
-                // Резко сбрасываем все элементы
-                enabledItems.removeAll()
+            } else if isResetting && !isPaused {
+                // Сбрасываем все элементы с анимацией
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    enabledItems.removeAll()
+                }
                 isResetting = false
                 currentIndex = 0
             }
@@ -188,35 +207,6 @@ struct StaticGradientBackground: View {
     }
 }
 
-struct FloatingShapesView: View {
-    @State private var animation = false
-    
-    var body: some View {
-        ZStack {
-            ForEach(0..<5) { index in
-                Circle()
-                    .fill(.tm.subTitle.opacity(0.03))
-                    .frame(width: CGFloat.random(in: 30...60))
-                    .position(
-                        x: CGFloat.random(in: 0...UIScreen.main.bounds.width),
-                        y: CGFloat.random(in: 0...UIScreen.main.bounds.height)
-                    )
-                    .scaleEffect(animation ? 1.1 : 0.9)
-                    .animation(
-                        .easeInOut(duration: Double.random(in: 8...15))
-                        .repeatForever(autoreverses: true)
-                        .delay(Double.random(in: 0...2)),
-                        value: animation
-                    )
-            }
-        }
-        .onAppear {
-            animation.toggle()
-        }
-    }
-}
-
-
 struct LightDarkGradientOverlay: View {
     var body: some View {
         LinearGradient(
@@ -281,35 +271,30 @@ struct SettingsRowView: View {
     }
 }
 
-// MARK: - Safari Settings Button Component
-struct SafariSettingsButton: View {
+// MARK: - Instruction Card Component
+struct InstructionCardView: View {
+    let icon: String
+    let text: String
+    
     var body: some View {
-        Button(action: {
-            // Open Safari settings
-            if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsUrl)
-            }
-        }) {
-            HStack(spacing: 8) {
-                Image(systemName: "gear")
-                    .font(.system(size: 16, weight: .medium))
-                Text("Go to Safari Settings")
-                    .font(.system(size: 16, weight: .medium))
-                Spacer()
-                Image(systemName: "arrow.up.right")
-                    .font(.system(size: 14, weight: .medium))
-            }
-            .foregroundColor(.tm.accentSecondary)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(.tm.accentSecondary.opacity(0.3), lineWidth: 1)
-                    .background(Color.tm.accentSecondary.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .shadow(color: Color.tm.accentSecondary.opacity(0.3), radius: 15)
-            )
+        HStack(spacing: 12) {
+            Image(icon)
+                .resizable()
+                .frame(width: 24, height: 24)
+                .foregroundColor(.tm.accentSecondary)
+            
+            Text(text)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.tm.title)
+            
+            Spacer()
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.tm.container)
+        )
     }
 }
 
