@@ -55,7 +55,7 @@
 		8E3933CF2E626047003FDE0A /* AdBlockerStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */; };
 		8E3933D02E626052003FDE0A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E6A741B2E9185B500486954 /* ScrollableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741A2E9185B500486954 /* ScrollableScrollView.swift */; };
-		8E6A741D2E918AED00486954 /* EnableBlockerInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741C2E918AED00486954 /* EnableBlockerInstructionView.swift */; };
+		8E6A741D2E918AED00486954 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741C2E918AED00486954 /* InstructionView.swift */; };
 		8E6A741F2E918B3000486954 /* BlockAdsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */; };
 		8E6A74212E919EEC00486954 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A74202E919EEC00486954 /* MainButton.swift */; };
 		8E78603D2E650542000C7CB5 /* adblock_rules2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E78603C2E650542000C7CB5 /* adblock_rules2.txt */; };
@@ -506,7 +506,7 @@
 		8E3933A02E625F70003FDE0A /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
 		8E3933A22E625F70003FDE0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E6A741A2E9185B500486954 /* ScrollableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableScrollView.swift; sourceTree = "<group>"; };
-		8E6A741C2E918AED00486954 /* EnableBlockerInstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableBlockerInstructionView.swift; sourceTree = "<group>"; };
+		8E6A741C2E918AED00486954 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockAdsViewModel.swift; sourceTree = "<group>"; };
 		8E6A74202E919EEC00486954 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
 		8E78603C2E650542000C7CB5 /* adblock_rules2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules2.txt; sourceTree = "<group>"; };
@@ -755,7 +755,7 @@
 			children = (
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
 				8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */,
-				8E6A741C2E918AED00486954 /* EnableBlockerInstructionView.swift */,
+				8E6A741C2E918AED00486954 /* InstructionView.swift */,
 				8E6A741A2E9185B500486954 /* ScrollableScrollView.swift */,
 			);
 			path = BlockAds;
@@ -2042,7 +2042,7 @@
 				8EBEC6632E6CD829005E5AF4 /* OnboardingViewOld.swift in Sources */,
 				8EC73F9A2E69AD1D00EAA93F /* AddressBarView.swift in Sources */,
 				8EBB25C62E61C7C700E29966 /* Rule.swift in Sources */,
-				8E6A741D2E918AED00486954 /* EnableBlockerInstructionView.swift in Sources */,
+				8E6A741D2E918AED00486954 /* InstructionView.swift in Sources */,
 				8EBB25892E61C79500E29966 /* ContentBlockerConverterVersion.swift in Sources */,
 				8EBB25AE2E61C7C700E29966 /* NetworkRuleParser.swift in Sources */,
 				8EE69D072E6F0F0F00BA1BF1 /* SettingsViewModel.swift in Sources */,

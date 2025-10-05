@@ -80,8 +80,8 @@ struct BlockAdsView: View {
             viewModel.cancelBlockingTask()
         }
         .sheet(isPresented: $showSheet) {
-            EnableBlockerInstructionView()
-                .presentationDetents([.fraction(0.7)])
+            InstructionView()
+                .presentationDetents([.fraction(0.73)])
                 .presentationDragIndicator(.visible)
         }
     }
