@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct TabBarView: View {
-    @State var selection: Int = 0
+    @State var selection: Int = 1
     
     @EnvironmentObject var appState: AppState
     

@@ -73,15 +73,15 @@ struct WebView: UIViewRepresentable {
     }
     
     fileprivate func applyTheme(_ config: WKWebViewConfiguration) {
-        if interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode {
-            let darkThemeScript = interactor.getDarkThemeScript()
+//        if interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode {
+            let darkThemeScript = interactor.darkThemeScript
             let userDarkThemeScript = WKUserScript(
                 source: darkThemeScript,
                 injectionTime: .atDocumentStart,
                 forMainFrameOnly: true
             )
             config.userContentController.addUserScript(userDarkThemeScript)
-        }
+//        }
     }
     
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
@@ -103,7 +103,7 @@ struct WebView: UIViewRepresentable {
             super.init()
             self.parent?.interactor.navigationDelegate = self
             self.addedContentRules()
-            subscribe()
+//            subscribe()
         }
         
         func subscribe() {
@@ -119,7 +119,7 @@ struct WebView: UIViewRepresentable {
             
             if isDarkMode {
                 // Применяем темную тему
-                let darkThemeScript = parent?.interactor.getDarkThemeScript() ?? ""
+                let darkThemeScript = parent?.interactor.darkThemeScript ?? ""
                 webView.evaluateJavaScript(darkThemeScript) { result, error in
                     if let error = error {
                         print("❌ Ошибка применения темной темы: \(error)")
