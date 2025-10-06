@@ -526,6 +526,8 @@
 		8E6A742D2E92B77700486954 /* SafariExtensionsChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionsChecker.swift; sourceTree = "<group>"; };
 		8E6A742F2E92E51D00486954 /* DarkThemeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkThemeScript.swift; sourceTree = "<group>"; };
 		8E6A74322E938EFE00486954 /* WaveShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveShape.swift; sourceTree = "<group>"; };
+		8E6A74342E93AB8300486954 /* SurfShieldDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SurfShieldDebug.entitlements; sourceTree = "<group>"; };
+		8E6A74352E93ABAF00486954 /* adblockerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblockerDebug.entitlements; sourceTree = "<group>"; };
 		8E78603C2E650542000C7CB5 /* adblock_rules2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules2.txt; sourceTree = "<group>"; };
 		8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicSuffixList.swift; sourceTree = "<group>"; };
 		8E7B5DF12E61D0C200D5E817 /* ByteArraySuffixTrie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArraySuffixTrie.swift; sourceTree = "<group>"; };
@@ -836,6 +838,7 @@
 		8EBA83FB2E5BB15600206493 /* adblocker */ = {
 			isa = PBXGroup;
 			children = (
+				8E6A74352E93ABAF00486954 /* adblockerDebug.entitlements */,
 				8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */,
 				8EBA83FC2E5BB15600206493 /* blockerList.json */,
 				8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */,
@@ -1071,6 +1074,7 @@
 		8ECF28092E59BAFE000A5748 /* SurfShield */ = {
 			isa = PBXGroup;
 			children = (
+				8E6A74342E93AB8300486954 /* SurfShieldDebug.entitlements */,
 				8E848FE02E74A09100B03CF0 /* codemagic.yaml */,
 				8EF3E7ED2E70CB990090F1AD /* Info.plist */,
 				8EE142A62E6B7D6300918447 /* domains.txt */,
@@ -2232,7 +2236,7 @@
 			baseConfigurationReference = 5340263FB723FDD992F0B796 /* Pods-adblocker.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CODE_SIGN_ENTITLEMENTS = adblocker/adblocker.entitlements;
+				CODE_SIGN_ENTITLEMENTS = adblocker/adblockerDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2743,7 +2747,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SurfShield/SurfShield.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SurfShield/SurfShieldDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;

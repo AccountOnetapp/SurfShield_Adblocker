@@ -53,6 +53,20 @@ struct WebView: UIViewRepresentable {
         webView.isOpaque = true
         webView.scrollView.backgroundColor = UIColor(named: "Container")
         
+        // Применяем тему немедленно при создании WebView
+        let isDarkMode = interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode
+        if isDarkMode {
+            DispatchQueue.main.async {
+                webView.evaluateJavaScript(interactor.darkThemeScript) { result, error in
+                    if let error = error {
+                        print("❌ Ошибка применения темы: \(error)")
+                    } else {
+                        print("✅ Тема применена немедленно при создании WebView")
+                    }
+                }
+            }
+        }
+        
         webView.load(URLRequest(url: interactor.url))
         // Добавляем наблюдатели для отслеживания состояния навигации
         webView.addObserver(context.coordinator, forKeyPath: #keyPath(WKWebView.url), options: [.new], context: nil)
@@ -72,6 +86,7 @@ struct WebView: UIViewRepresentable {
     fileprivate func applyTheme(_ config: WKWebViewConfiguration) {
         // Применяем тему статически при создании WebView для предотвращения мигания
         let isDarkMode = interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode
+        
         if isDarkMode {
             let darkThemeScript = interactor.darkThemeScript
             let userDarkThemeScript = WKUserScript(
@@ -159,12 +174,41 @@ struct WebView: UIViewRepresentable {
         
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
             print("DEBUG: Начало загрузки страницы")
+            
+            // Применяем тему как можно раньше
+            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            if isDarkMode {
+                DispatchQueue.main.async {
+                    webView.evaluateJavaScript(self.parent?.interactor.darkThemeScript ?? "") { result, error in
+                        if let error = error {
+                            print("❌ Ошибка применения темы в didStartProvisionalNavigation: \(error)")
+                        } else {
+                            print("✅ Тема применена в didStartProvisionalNavigation")
+                        }
+                    }
+                }
+            }
         }
         
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             // Обновляем состояние навигации при начале загрузки
             parent?.interactor.setCanGoBack(webView.canGoBack)
             parent?.interactor.setCanGoForward(webView.canGoForward)
+            
+            // Применяем тему при коммите навигации для предотвращения мигания
+            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            if isDarkMode {
+                DispatchQueue.main.async {
+                    webView.evaluateJavaScript(self.parent?.interactor.darkThemeScript ?? "") { result, error in
+                        if let error = error {
+                            print("❌ Ошибка применения темы в didCommit: \(error)")
+                        } else {
+                            print("✅ Тема применена в didCommit")
+                        }
+                    }
+                }
+            }
+            
             print("DEBUG: Загрузка страницы началась")
         }
         
@@ -178,9 +222,9 @@ struct WebView: UIViewRepresentable {
                 parent?.interactor.updateAddress(currentURL)
             }
             
-            // Применяем тему после загрузки страницы
-//            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
-//            applyTheme(isDarkMode: isDarkMode)
+            // Принудительно применяем тему после загрузки страницы для исправления бага с первым запуском
+            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            applyTheme(isDarkMode: isDarkMode)
             
             print("DEBUG: Загрузка страницы завершена")
         }
