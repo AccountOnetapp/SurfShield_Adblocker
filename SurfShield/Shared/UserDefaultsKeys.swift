@@ -30,6 +30,7 @@ enum UserDefaultsKeys: String, CaseIterable {
     case enableBrowserDarkMode = "enableBrowserDarkMode"
     case enableBrowserHistory = "enableBrowserHistory"
     case startPage = "startPage"
+    case lastVisitedURL = "lastVisitedURL"
     
     var key: String {
         return self.rawValue

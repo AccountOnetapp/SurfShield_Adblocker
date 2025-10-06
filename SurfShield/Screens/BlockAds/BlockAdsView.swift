@@ -6,204 +6,35 @@
 //
 
 import SwiftUI
-import Combine
-import SafariServices
-// MARK: - ViewModel
-@MainActor
-class BlockAdsViewModel: ObservableObject {
-    
-    @Published var waveProgress: Double = 0
-    @Published var circleRotation: Double = 0
-    @Published var isEnabled: Bool = false
-    @Published var isProcess: Bool = false
-    @Published var waveHeight: CGFloat = 0
-    let rulesConverter = RulesConverter()
-    let userDefaultsInteractor = UserDefaultsService.shared
-    
-    private var blockingTask: Task<Void, Never>?
-    private var continuousAnimationTask: Task<Void, Never>?
-    var animationID = UUID() // Для отслеживания текущей анимации
-    
-    init() {
-        // Инициализируем блокировщик с сохраненным состоянием
-        let isEnabled = userDefaultsInteractor.load(Bool.self, forKey: .adBlockerEnabled)
-        self.isEnabled = isEnabled ?? false
-    }
-    
-    func toggleBlocking() {
-        if !isProcess {
-            toggleAllBlocking()
-        } else {
-            cancelBlockingTask()
-        }
-    }
-    
-    private func toggleAllBlocking() {
-        animate()
-        
-        // Сразу определяем новое состояние
-        let newState = !isEnabled
-        
-        blockingTask = Task {
-            if !newState {
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-            }
-            
-            if !Task.isCancelled {
-                // Применяем новое состояние через RulesConverter
-                await rulesConverter.applyBlockingState(newState)
-                userDefaultsInteractor.save(newState, forKey: .adBlockerEnabled)
-                await MainActor.run {
-                    // Обновляем состояние с анимацией
-                    withAnimation(.bouncy(duration: 0.2)) {
-                        isProcess = false
-                        isEnabled = newState
-                    }
-                    
-                    // Запускаем или останавливаем постоянную анимацию
-                    if newState {
-                        startContinuousAnimation()
-                    } else {
-                        stopContinuousAnimation()
-                    }
-                }
-            }
-        }
-    }
-
-    
-    func animate() {
-        animationID = UUID()
-
-        // Disable previous animation
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-            circleRotation = 0
-            waveHeight = 0
-            waveProgress = 0
-        }
-
-        withAnimation(.bouncy(duration: 0.2, extraBounce: 0.1)) {
-            isProcess = true
-        }
-        
-        withAnimation(.easeInOut(duration: 1.0).repeatForever()) {
-            self.waveProgress = 1.0
-        }
-        
-//        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-            self.circleRotation = 360
-//        }
-    }
-    
-    func cancelBlockingTask() {
-        blockingTask?.cancel()
-        blockingTask = nil
-        
-        // Обновляем состояние
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isProcess = false
-        }
-        
-        // Если блокировка не включена, останавливаем анимацию
-        if !isEnabled {
-            stopContinuousAnimation()
-        }
-    }
-    
-    private func resetAnimations() {
-        // Отменяем текущую анимацию
-        animationID = UUID()
-        
-        // Отключаем анимацию для сброса
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        
-        withTransaction(transaction) {
-            circleRotation = 0
-            waveHeight = 0
-            waveProgress = 0
-        }
-    }
-    
-    func startContinuousAnimation() {
-        stopContinuousAnimation() // Останавливаем предыдущую анимацию если есть
-        
-        animationID = UUID()
-        
-        // Сбрасываем состояние
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-            circleRotation = 0
-            waveProgress = 0
-        }
-        
-        // Запускаем постоянную анимацию
-        withAnimation(.easeInOut(duration: 1.0).repeatForever()) {
-            self.waveProgress = 1.0
-        }
-        
-        withAnimation(.linear(duration: 8.0).repeatForever(autoreverses: false)) {
-            self.circleRotation = 360
-        }
-    }
-    
-    private func stopContinuousAnimation() {
-        continuousAnimationTask?.cancel()
-        continuousAnimationTask = nil
-        
-        // Сбрасываем анимации
-        resetAnimations()
-    }
-    
-    // MARK: - Extension Reload Methods
-    func reloadExtension(bundleId: String) {
-        Task {
-            print("🔄 Перезагружаем расширение: \(bundleId)")
-            do {
-                try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundleId)
-                print("✅ Расширение \(bundleId) успешно перезагружено")
-            } catch {
-                print("❌ Ошибка перезагрузки расширения \(bundleId): \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    func reloadAdBlocker() {
-        reloadExtension(bundleId: "com.surfshield.app.adblocker")
-    }
-    
-    func reloadPrivacy() {
-        reloadExtension(bundleId: "com.surfshield.app.privacy")
-    }
-    
-    func reloadBanners() {
-        reloadExtension(bundleId: "com.surfshield.app.banners")
-    }
-    
-    func reloadTrackers() {
-        reloadExtension(bundleId: "com.surfshield.app.trackers")
-    }
-    
-    func reloadAdvanced() {
-        reloadExtension(bundleId: "com.surfshield.app.advanced")
-    }
-}
-
-
 
 // MARK: - View
 struct BlockAdsView: View {
     @StateObject private var viewModel = BlockAdsViewModel()
+    @State private var showSheet = false
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         content
+            .onAppear {
+                if viewModel.isEnabled { viewModel.startContinuousAnimation() }
+                viewModel.checkBlockingActivity()
+            }
+            .onDisappear {
+                viewModel.cancelBlockingTask()
+            }
+            .onChange(of: scenePhase) { phase in
+                if phase == .active {
+                    // Проверяем состояние расширений Safari при переходе приложения в активное состояние
+                    viewModel.checkBlockingActivity()
+                }
+            }
+            .sheet(isPresented: $viewModel.isShowInstructions) {
+                InstructionView()
+                    .presentationDragIndicator(.visible)
+            }
     }
     
-
-    let id = UUID()
+    
     var content: some View {
         ZStack {
             // Анимированный фон с градиентом
@@ -214,54 +45,73 @@ struct BlockAdsView: View {
             ParticlesView()
                 .opacity(0.3)
             
-            VStack {
-                Spacer()
-                
-                VStack(spacing: 32) {
-                    blockAdsButton
-//                    testButton
-                    // Статус кнопки с лоадером
-                    VStack(spacing: 12) {
-                        Text(buttonStatusTitle)
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .tm.title)
-                            .opacity(viewModel.isProcess ? 0.7 : 1.0)
-                            .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.3 : 0), radius: 8)
-                        
-                        // Красивый лоадер для процесса
-                        ProcessLoader()
-                            .transition(.scale.combined(with: .opacity))
-                            .opacity(viewModel.isProcess ? 1 : 0)
-                    }
-                    .id(viewModel.animationID)
-                }
-                
-                Spacer()
-                
-                // Описание приложения
-                VStack(spacing: 16) {
-                    Text("Blocking advertising")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.tm.accentSecondary)
-                    
-                    Text("Click the button to activate or deactivate advertising blocking in Safari and App Browser")
-                        .font(.body)
-                        .foregroundColor(.tm.subTitle.opacity(0.8))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                }
+            buttonContainer
+            // Описание приложения
+            descriptionContainer
+                .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 50)
-            }
-        }
-        .onAppear {
-            if viewModel.isEnabled { viewModel.startContinuousAnimation() }
-        }
-        .onDisappear {
-            viewModel.cancelBlockingTask()
         }
     }
-
+    
+    
+    var buttonContainer: some View {
+        VStack(spacing: 32) {
+            blockAdsButton
+                .overlay(alignment: .top) {
+                    if !viewModel.isExtensionsEnabled {
+                        safariExtensionInfoText
+                            .offset(y: -70)
+                    }
+                }
+            // Статус кнопки с лоадером
+            VStack(spacing: 12) {
+                Text(buttonStatusTitle)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .tm.title)
+                    .opacity(viewModel.isProcess ? 0.7 : 1.0)
+                    .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.3 : 0), radius: 8)
+                
+                // Красивый лоадер для процесса
+                ProcessLoader()
+                    .transition(.scale.combined(with: .opacity))
+                    .opacity(viewModel.isProcess ? 1 : 0)
+            }
+            .id(viewModel.animationID)
+        }
+    }
+    
+    var descriptionContainer: some View {
+        VStack(spacing: 16) {
+            Text("Blocking advertising")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundStyle(.tm.accentSecondary)
+            
+            Text("Click the button to activate or deactivate advertising blocking in Safari and App Browser")
+                .font(.body)
+                .foregroundColor(.tm.subTitle.opacity(0.8))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+        }
+    }
+    
+    var safariExtensionInfoText: some View {
+        var attributedText = AttributedString("Safari Extensions Disabled, please see the instructions")
+        
+        // Находим диапазон слова "instructions"
+        if let range = attributedText.range(of: "instructions") {
+            attributedText[range].foregroundColor = .tm.accentSecondary
+        }
+        return Text(attributedText)
+            .foregroundStyle(.tm.subTitle)
+            .multilineTextAlignment(.center)
+            .onTapGesture {
+                viewModel.showInstructions()
+            }
+            .frame(width: 240)
+    }
+    
+    
     @ViewBuilder
     var blockAdsButton: some View {
         AnimatedBlockButton(
@@ -274,7 +124,11 @@ struct BlockAdsView: View {
                 // Haptic feedback
                 let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
                 impactFeedback.impactOccurred()
-                viewModel.toggleBlocking()
+                if viewModel.isExtensionsEnabled {
+                    viewModel.toggleBlocking()
+                } else {
+                    viewModel.showInstructions()
+                }
             }
         )
     }
@@ -338,13 +192,13 @@ struct AnimatedBlockButton: View {
                     .scaleEffect(2.15)
                     .blur(radius: 20)
             }
-
-                Image(systemName: iconName)
-                    .font(.system(size: 32, weight: .medium))
-                    .foregroundStyle(iconColor)
-                    .shadow(color: iconShadow, radius: iconShadowRadius)
-                    .scaleEffect(1.0)
-                    .animation(.easeInOut(duration: 0.2), value: isProcess)
+            
+            Image(systemName: iconName)
+                .font(.system(size: 32, weight: .medium))
+                .foregroundStyle(iconColor)
+                .shadow(color: iconShadow, radius: iconShadowRadius)
+                .scaleEffect(1.0)
+                .animation(.easeInOut(duration: 0.2), value: isProcess)
         }
     }
     
@@ -424,58 +278,7 @@ struct AnimatedBlockButton: View {
 
 // MARK: - Custom Shape
 // Кастомная волнистая форма
-struct WaveShape: Shape {
-    let waveCount: Int
-    let waveHeight: CGFloat
-    let progress: Double
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        let radius = min(rect.width, rect.height) / 2
-        let adjustedRadius = radius - waveHeight
-        
-        // Если progress == 0, рисуем обычный круг
-        if progress == 0 {
-            path.addArc(
-                center: center,
-                radius: adjustedRadius,
-                startAngle: .degrees(0),
-                endAngle: .degrees(360),
-                clockwise: false
-            )
-            path.closeSubpath()
-            return path
-        }
-        
-        // Начинаем с верхней точки
-        let startAngle = -CGFloat.pi / 2
-        
-        // Рисуем волнистую окружность
-        for i in stride(from: 0, through: 360, by: 1) {
-            let angle = startAngle + CGFloat(i) * .pi / 180
-            let waveOffset = sin(CGFloat(i) * CGFloat(waveCount) * .pi / 180) * waveHeight * CGFloat(progress)
-            let currentRadius = adjustedRadius + waveOffset
-            
-            let point = CGPoint(
-                x: center.x + currentRadius * cos(angle),
-                y: center.y + currentRadius * sin(angle)
-            )
-            
-            if i == 0 {
-                path.move(to: point)
-            } else {
-                path.addLine(to: point)
-            }
-        }
-        
-        // Замыкаем путь
-        path.closeSubpath()
-        
-        return path
-    }
-}
+
 
 
 // MARK: - Custom Loaders
@@ -667,7 +470,6 @@ struct ProcessLoader: View {
         }
     }
 }
-
 
 #Preview {
     BlockAdsView()

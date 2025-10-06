@@ -20,7 +20,7 @@ struct AppSettings: Codable {
     
     // MARK: - Browser Settings
     var enableCookies: Bool = false
-    var enableBrowserDarkMode: Bool = true
+    var enableBrowserDarkMode: Bool = false  // Отключаем темную тему по умолчанию
     var enableBrowserHistory: Bool = true
     var startPage: String = "https://www.google.com"
     

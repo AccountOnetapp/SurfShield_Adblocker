@@ -13,12 +13,6 @@ struct SurfShieldApp: App {
         WindowGroup {
             MainView()
                 .preferredColorScheme(.dark)
-                .onAppear(perform: {
-                    UIFont.familyNames.forEach({ familyName in
-                        let fontNames = UIFont.fontNames(forFamilyName: familyName)
-                        print(familyName, fontNames)
-                    })
-                })
         }
     }
 }

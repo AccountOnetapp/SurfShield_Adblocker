@@ -9,6 +9,7 @@ import SwiftUI
 
 struct InternetBrowserView: View {
     @StateObject var interactor = WebViewInteractor()
+    @State private var showShareSheet = false
     
     private let panelHeight: CGFloat = 56
     
@@ -27,38 +28,48 @@ struct InternetBrowserView: View {
             WebViewPanel(
                 observables: interactor,
                 onGoBack: {
-                    print("Назад")
                     interactor.goBack(true)
-                    // TODO: Реализовать навигацию назад
                 },
                 onGoForward: {
-                    print("Вперед")
                     interactor.goForward(true)
-                    // TODO: Реализовать навигацию вперед
                 },
                 onRefresh: {
                     interactor.refreshPage()
-                    print("Обновление страницы")
-                    // TODO: Реализовать обновление страницы
                 },
                 onGoToURL: { url in
-                
                     interactor.goToUrl(string: url)
-                    print("Переход к URL: \(url)")
-                    // TODO: Реализовать переход по URL
                 },
                 onShare: { url in
-                    print("Sharing: \(url)")
-                    // TODO: Реализовать функциональность поделиться
+                    showShareSheet = true
                 }
             )
             .zIndex(1) // Панель всегда поверх WebView
+        }
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheet(activityItems: [interactor.url])
         }
     }
     
     
 }
 
+// MARK: - ShareSheet
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: applicationActivities
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+        // Ничего не нужно обновлять
+    }
+}
 
 #Preview {
     InternetBrowserView()

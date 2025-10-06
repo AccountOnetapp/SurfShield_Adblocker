@@ -9,18 +9,14 @@ import SafariServices
 
 
 /// Модуль блокировщика рекламы
-public class RulesConverter {
-    // MARK: - Singleton
-    public static let shared = RulesConverter()
-    
+public class ContentBlockerService {
     // MARK: Internal Properties
     private let groupID: String = Constants.adblockGroupId
     private let extensionsBundles: [String] = Constants.BlockExtenesionBundleIds.all
     
     /// Получить URL файла правил с fallback к bundle
-    /// - Parameter type: тип расширения
-    /// - Returns: URL файла правил или fallback к bundle
-    internal func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
+    /// Используется в расширениях
+    public func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
         return type.filePath
     }
     // MARK: - Public Methods
@@ -43,28 +39,17 @@ public class RulesConverter {
         print("✅ Пустые правила применены ко всем расширениям")
     }
     
-    /// Сохраняет уже сконвертированные правила (включает блокировщик)
-    /// - Parameter convertedRules: массив сконвертированных правил в JSON формате
-    public func saveConvertedRules(_ convertedRules: [String]) async {
-        await saveConvertedRulesToGroup(convertedRules)
-        
-        print("🔄 Перезагружаем расширения после сохранения сконвертированных правил...")
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-        print("✅ Сконвертированные правила применены ко всем расширениям")
-    }
-    
     /// Применяет или отменяет правила блокировки в зависимости от состояния
     public func applyBlockingState(_ isEnabled: Bool) async {
         print("🔄 Применяем состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
         
         if isEnabled {
-//            await generateFiles()
             await enableContentBlocker()
         } else {
             await generateEmptyRules()
         }
     }
-    
+
     //MARK: Main Method
     private func enableContentBlocker() async  {
         // Проверяем есть ли кэшированные правила
@@ -80,6 +65,17 @@ public class RulesConverter {
         print("🔄 Кэш не найден, конвертируем правила...")
         await convertAndSaveRules()
     }
+    
+    /// Сохраняет уже сконвертированные правила (включает блокировщик)
+    /// - Parameter convertedRules: массив сконвертированных правил в JSON формате
+    private func saveConvertedRules(_ convertedRules: [String]) async {
+        await saveConvertedRulesToGroup(convertedRules)
+        
+        print("🔄 Перезагружаем расширения после сохранения сконвертированных правил...")
+        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+        print("✅ Сконвертированные правила применены ко всем расширениям")
+    }
+    
     
     /// Конвертирует правила и сохраняет в кэш
     private func convertAndSaveRules() async {
@@ -163,7 +159,6 @@ public class RulesConverter {
             }
         }
     }
-    
     
     /// Сохраняет JSON в файл для просмотра
     private func saveJSONToFile(json: String) {
@@ -305,65 +300,6 @@ public class RulesConverter {
         
         print("⚠️ Не удалось перезагрузить расширение \(bundle) после \(maxRetries) попыток")
     }
-    
-    
-    
-    //MARK: OLD
-    /// Генерирует файлы правил
-//    private func generateFiles() async {
-//        do {
-//            let domains = try self.loadAndParseDomains()
-//            let preparedRules = self.convertDomainsToSafariRules(domains)
-//            self.saveRulesToFiles(preparedRules)
-//            
-//            print("🔄 Перезагружаем расширения после создания правил блокировки...")
-//            await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-//            print("✅ Правила блокировки применены ко всем расширениям")
-//        } catch {
-//            print("❌ Ошибка генерации файлов: \(error)")
-//        }
-//    }
-    
-//    func loadAndParseDomains() throws -> [String] {
-//        guard let rulesPath = Bundle.main.path(forResource: "domains", ofType: "txt") else {
-//            throw RulesConverterError.fileNotFound
-//        }
-//        
-//        let rulesString = try String(contentsOfFile: rulesPath, encoding: .utf8)
-//        let lines = rulesString.components(separatedBy: .newlines)
-//        return lines.compactMap { line in
-//            let trimmed = line.trimmingCharacters(in: .whitespaces)
-//            guard !trimmed.isEmpty, !trimmed.hasPrefix("!"), !trimmed.hasPrefix("[") else { return nil }
-//            guard !trimmed.contains("##") else { return nil }
-//            return trimmed
-//        }
-//    }
-    
-//    private func convertDomainsToSafariRules(_ rules: [String]) -> [String] {
-//        let chunks = rules.chunked(by: 35000)
-//        var preparedRules = [String]()
-//        
-//        for chunk in chunks {
-//            let safariRules = chunk.compactMap { domain in
-//                let escapedDomain = domain.replacingOccurrences(of: ".", with: "\\.")
-//                return [
-//                    "trigger": [
-//                        "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
-//                        "load-type": ["third-party", "first-party"]
-//                    ],
-//                    "action": ["type": "block"]
-//                ]
-//            }
-//            
-//            if let jsonString = convertRulesToJSON(safariRules.isEmpty ? [createEmptyRule()] : safariRules) {
-//                preparedRules.append(jsonString)
-//            }
-//        }
-//        
-//        return preparedRules
-//    }
-//    
-
 }
 
 /// Тип екстеншена блокировщика
@@ -430,28 +366,3 @@ public enum RulesType: String, Codable, CaseIterable {
         return fileURL
     }
 }
-
-extension Array {
-    public func chunked(by chunkSize: Int) -> [[Element]] {
-        return stride(from: 0, to: self.count, by: chunkSize).map {
-            Array(self[$0..<Swift.min($0 + chunkSize, self.count)])
-        }
-    }
-}
-
-extension Array {
-    subscript(safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
-}
-
-
-
-// MARK: - Error Types
-
-private enum RulesConverterError: Error {
-    case fileNotFound
-}
-
-// MARK: - AdBlock Rule Parser
-
