@@ -38,6 +38,7 @@ class BlockAdsViewModel: ObservableObject {
                 self.isExtensionsEnabled = false
                 return
             }
+            self.isExtensionsEnabled = true
             let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled)
             self.isEnabled = isEnabled ?? false
         }

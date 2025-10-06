@@ -35,7 +35,9 @@ class SafariExtensionsChecker {
     private func isExtensionEnabled(_ id: String) async -> Bool {
         await withCheckedContinuation { continuation in
             SFContentBlockerManager.getStateOfContentBlocker(withIdentifier: id) { state, error in
-                continuation.resume(returning: state != nil)
+                // Проверяем наличие расширения и его состояние
+                let isEnabled = state?.isEnabled == true
+                continuation.resume(returning: isEnabled)
             }
         }
     }
