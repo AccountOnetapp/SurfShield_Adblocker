@@ -69,6 +69,7 @@
 		8E6A742C2E92B61A00486954 /* Collections+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A74242E92B5CE00486954 /* Collections+Extensions.swift */; };
 		8E6A742E2E92B77700486954 /* SafariExtensionsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A742D2E92B77700486954 /* SafariExtensionsChecker.swift */; };
 		8E6A74302E92E51D00486954 /* DarkThemeScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A742F2E92E51D00486954 /* DarkThemeScript.swift */; };
+		8E6A74332E938EFE00486954 /* WaveShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6A74322E938EFE00486954 /* WaveShape.swift */; };
 		8E78603D2E650542000C7CB5 /* adblock_rules2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E78603C2E650542000C7CB5 /* adblock_rules2.txt */; };
 		8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */; };
 		8E7B5DF42E61D0C200D5E817 /* PublicSuffixList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */; };
@@ -524,6 +525,7 @@
 		8E6A74242E92B5CE00486954 /* Collections+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collections+Extensions.swift"; sourceTree = "<group>"; };
 		8E6A742D2E92B77700486954 /* SafariExtensionsChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionsChecker.swift; sourceTree = "<group>"; };
 		8E6A742F2E92E51D00486954 /* DarkThemeScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkThemeScript.swift; sourceTree = "<group>"; };
+		8E6A74322E938EFE00486954 /* WaveShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveShape.swift; sourceTree = "<group>"; };
 		8E78603C2E650542000C7CB5 /* adblock_rules2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules2.txt; sourceTree = "<group>"; };
 		8E7B5DF02E61D0C200D5E817 /* PublicSuffixList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicSuffixList.swift; sourceTree = "<group>"; };
 		8E7B5DF12E61D0C200D5E817 /* ByteArraySuffixTrie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArraySuffixTrie.swift; sourceTree = "<group>"; };
@@ -769,12 +771,21 @@
 		8E6A74192E91859600486954 /* BlockAds */ = {
 			isa = PBXGroup;
 			children = (
+				8E6A74312E938EEF00486954 /* Components */,
 				8ECF280C2E59BAFE000A5748 /* BlockAdsView.swift */,
 				8E6A741E2E918B3000486954 /* BlockAdsViewModel.swift */,
 				8E6A741C2E918AED00486954 /* InstructionView.swift */,
 				8E6A741A2E9185B500486954 /* ScrollableScrollView.swift */,
 			);
 			path = BlockAds;
+			sourceTree = "<group>";
+		};
+		8E6A74312E938EEF00486954 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8E6A74322E938EFE00486954 /* WaveShape.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		8E7B5DEF2E61D0B500D5E817 /* PSL */ = {
@@ -2060,6 +2071,7 @@
 				8E7B5E5C2E61D7B100D5E817 /* SafariRegex.swift in Sources */,
 				8EBB25BA2E61C7C700E29966 /* CosmeticRuleMarker.swift in Sources */,
 				8EBB25852E61C79500E29966 /* ConversionResult.swift in Sources */,
+				8E6A74332E938EFE00486954 /* WaveShape.swift in Sources */,
 				8EBB25E82E61C7E200E29966 /* DomainUtils.swift in Sources */,
 				8ECF281C2E59BC45000A5748 /* TabBarView.swift in Sources */,
 				8EBB25E02E61C7E200E29966 /* ErrorsCounter.swift in Sources */,

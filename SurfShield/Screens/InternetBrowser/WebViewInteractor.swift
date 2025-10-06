@@ -78,7 +78,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
         if userDefaultsObserver.appSettings.enableBrowserHistory, let lastVisitedUrl = userDefaultsObserver.userDefaultsService.load(URL.self, forKey: .lastVisitedURL) {
             self.url = lastVisitedUrl
         } else {
-            self.url = URL(string: "https://google.com")!
+            self.url = URL(string: userDefaultsObserver.appSettings.startPage)!
         }
     }
     

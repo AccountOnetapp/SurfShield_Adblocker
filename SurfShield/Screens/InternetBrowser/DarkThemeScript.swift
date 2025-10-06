@@ -9,6 +9,7 @@ import Foundation
 
 class DarkThemeScript {
     
+    
     /// Возвращает JavaScript код для белого текста и черных фонов
     func getDarkThemeScript() -> String {
         return """
@@ -36,9 +37,6 @@ class DarkThemeScript {
                 // Считаем цвет светлым, если яркость больше 0.85 (85%) - более консервативно
                 return luminance > 0.85;
             }
-
-
-
 
             // Применяем темную тему к фону, сохраняя цвет текста
             function applyDarkTheme() {

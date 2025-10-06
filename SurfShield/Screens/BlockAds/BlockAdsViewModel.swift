@@ -13,6 +13,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var waveProgress: Double = 0
     @Published var circleRotation: Double = 0
     @Published var isEnabled: Bool = false
+    @Published var isShowInstructions: Bool = false
     @Published var isProcess: Bool = false
     @Published var waveHeight: CGFloat = 0
     let contentBlockerService = ContentBlockerService()
@@ -22,6 +23,7 @@ class BlockAdsViewModel: ObservableObject {
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации
+    var isExtensionsEnabled: Bool = true
     
     init() {
         // Инициализируем блокировщик с сохраненным состоянием
@@ -29,10 +31,11 @@ class BlockAdsViewModel: ObservableObject {
     }
     
     func checkBlockingActivity() {
-        Task {
+        Task { @MainActor in
             let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
             guard isExtensionsEnabled else {
                 userDefaultsService.save(false, forKey: .adBlockerEnabled)
+                self.isExtensionsEnabled = false
                 return
             }
             let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled)
@@ -46,6 +49,10 @@ class BlockAdsViewModel: ObservableObject {
         } else {
             cancelBlockingTask()
         }
+    }
+    
+    func showInstructions() {
+        isShowInstructions.toggle()
     }
     
     private func toggleAllBlocking() {
