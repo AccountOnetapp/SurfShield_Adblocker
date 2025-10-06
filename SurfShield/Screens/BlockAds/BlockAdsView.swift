@@ -30,6 +30,12 @@ struct BlockAdsView: View {
                 
                 VStack(spacing: 32) {
                     blockAdsButton
+                        .overlay(alignment: .top) {
+                            if !viewModel.isExtensionsEnabled {
+                                safariExtensionInfoText
+                                    .offset(y: -70)
+                            }
+                        }
                     // Статус кнопки с лоадером
                     VStack(spacing: 12) {
                         Text(buttonStatusTitle)
@@ -75,6 +81,23 @@ struct BlockAdsView: View {
                 .presentationDragIndicator(.visible)
         }
     }
+    
+    var safariExtensionInfoText: some View {
+        var attributedText = AttributedString("Safari Extensions Disabled, please see the instructions")
+        
+        // Находим диапазон слова "instructions"
+        if let range = attributedText.range(of: "instructions") {
+            attributedText[range].foregroundColor = .tm.accentSecondary
+        }
+       return Text(attributedText)
+            .foregroundStyle(.tm.subTitle)
+            .multilineTextAlignment(.center)
+            .onTapGesture {
+                viewModel.showInstructions()
+            }
+            .frame(width: 240)
+    }
+
 
     @ViewBuilder
     var blockAdsButton: some View {
