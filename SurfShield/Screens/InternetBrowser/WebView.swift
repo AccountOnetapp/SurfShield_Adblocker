@@ -17,7 +17,6 @@ struct WebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         // Создаем конфигурацию с предустановленным скриптом
         let config = WKWebViewConfiguration()
-        applyTheme(config)
         
         let webView = WKWebView(frame: .zero, configuration: config)
         
