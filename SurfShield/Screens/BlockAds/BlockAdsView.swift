@@ -14,7 +14,19 @@ struct BlockAdsView: View {
     
     var body: some View {
         content
+            .onAppear {
+                if viewModel.isEnabled { viewModel.startContinuousAnimation() }
+            }
+            .onDisappear {
+                viewModel.cancelBlockingTask()
+            }
+            .sheet(isPresented: $viewModel.isShowInstructions) {
+                InstructionView()
+                    .presentationDragIndicator(.visible)
+            }
     }
+    
+    
     var content: some View {
         ZStack {
             // Анимированный фон с градиентом
@@ -25,60 +37,53 @@ struct BlockAdsView: View {
             ParticlesView()
                 .opacity(0.3)
             
-            VStack {
-                Spacer()
-                
-                VStack(spacing: 32) {
-                    blockAdsButton
-                        .overlay(alignment: .top) {
-                            if !viewModel.isExtensionsEnabled {
-                                safariExtensionInfoText
-                                    .offset(y: -70)
-                            }
-                        }
-                    // Статус кнопки с лоадером
-                    VStack(spacing: 12) {
-                        Text(buttonStatusTitle)
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .tm.title)
-                            .opacity(viewModel.isProcess ? 0.7 : 1.0)
-                            .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.3 : 0), radius: 8)
-                        
-                        // Красивый лоадер для процесса
-                        ProcessLoader()
-                            .transition(.scale.combined(with: .opacity))
-                            .opacity(viewModel.isProcess ? 1 : 0)
-                    }
-                    .id(viewModel.animationID)
-                }
-                
-                Spacer()
-                
-                // Описание приложения
-                VStack(spacing: 16) {
-                    Text("Blocking advertising")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.tm.accentSecondary)
-                    
-                    Text("Click the button to activate or deactivate advertising blocking in Safari and App Browser")
-                        .font(.body)
-                        .foregroundColor(.tm.subTitle.opacity(0.8))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                }
+            buttonContainer
+            // Описание приложения
+            descriptionContainer
+                .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 50)
+        }
+    }
+    
+    
+    var buttonContainer: some View {
+        VStack(spacing: 32) {
+            blockAdsButton
+                .overlay(alignment: .top) {
+                    if !viewModel.isExtensionsEnabled {
+                        safariExtensionInfoText
+                            .offset(y: -70)
+                    }
+                }
+            // Статус кнопки с лоадером
+            VStack(spacing: 12) {
+                Text(buttonStatusTitle)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(viewModel.isEnabled ? .tm.accentSecondary : .tm.title)
+                    .opacity(viewModel.isProcess ? 0.7 : 1.0)
+                    .shadow(color: .tm.accentSecondary.opacity(viewModel.isEnabled ? 0.3 : 0), radius: 8)
+                
+                // Красивый лоадер для процесса
+                ProcessLoader()
+                    .transition(.scale.combined(with: .opacity))
+                    .opacity(viewModel.isProcess ? 1 : 0)
             }
+            .id(viewModel.animationID)
         }
-        .onAppear {
-            if viewModel.isEnabled { viewModel.startContinuousAnimation() }
-        }
-        .onDisappear {
-            viewModel.cancelBlockingTask()
-        }
-        .sheet(isPresented: $viewModel.isShowInstructions) {
-            InstructionView()
-                .presentationDragIndicator(.visible)
+    }
+    
+    var descriptionContainer: some View {
+        VStack(spacing: 16) {
+            Text("Blocking advertising")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundStyle(.tm.accentSecondary)
+            
+            Text("Click the button to activate or deactivate advertising blocking in Safari and App Browser")
+                .font(.body)
+                .foregroundColor(.tm.subTitle.opacity(0.8))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
         }
     }
     
@@ -89,7 +94,7 @@ struct BlockAdsView: View {
         if let range = attributedText.range(of: "instructions") {
             attributedText[range].foregroundColor = .tm.accentSecondary
         }
-       return Text(attributedText)
+        return Text(attributedText)
             .foregroundStyle(.tm.subTitle)
             .multilineTextAlignment(.center)
             .onTapGesture {
@@ -97,8 +102,8 @@ struct BlockAdsView: View {
             }
             .frame(width: 240)
     }
-
-
+    
+    
     @ViewBuilder
     var blockAdsButton: some View {
         AnimatedBlockButton(
@@ -179,13 +184,13 @@ struct AnimatedBlockButton: View {
                     .scaleEffect(2.15)
                     .blur(radius: 20)
             }
-
-                Image(systemName: iconName)
-                    .font(.system(size: 32, weight: .medium))
-                    .foregroundStyle(iconColor)
-                    .shadow(color: iconShadow, radius: iconShadowRadius)
-                    .scaleEffect(1.0)
-                    .animation(.easeInOut(duration: 0.2), value: isProcess)
+            
+            Image(systemName: iconName)
+                .font(.system(size: 32, weight: .medium))
+                .foregroundStyle(iconColor)
+                .shadow(color: iconShadow, radius: iconShadowRadius)
+                .scaleEffect(1.0)
+                .animation(.easeInOut(duration: 0.2), value: isProcess)
         }
     }
     
@@ -457,56 +462,6 @@ struct ProcessLoader: View {
         }
     }
 }
-
-// MARK: - Content Card
-struct ContentCard: View {
-    let index: Int
-    
-    private var cardData: (String, String, String) {
-        let icons = ["shield.fill", "lock.fill", "eye.fill", "hand.raised.fill", "checkmark.circle.fill", "star.fill"]
-        let titles = ["Блокировка рекламы", "Защита приватности", "Антитрекинг", "Блокировка всплывающих окон", "Фильтрация контента", "Премиум защита"]
-        let descriptions = ["Активна и работает", "Включена", "Мониторинг трекеров", "Блокировка pop-up", "Фильтрация вредоносного контента", "Расширенные возможности"]
-        
-        let iconIndex = index % icons.count
-        return (icons[iconIndex], titles[iconIndex], descriptions[iconIndex])
-    }
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: cardData.0)
-                .font(.system(size: 24))
-                .foregroundColor(.tm.accentSecondary)
-                .frame(width: 30)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(cardData.1)
-                    .font(.headline)
-                    .foregroundColor(.tm.title)
-                Text(cardData.2)
-                    .font(.caption)
-                    .foregroundColor(.tm.subTitle)
-            }
-            
-            Spacer()
-            
-            Circle()
-                .fill(.tm.accentSecondary.opacity(0.2))
-                .frame(width: 8, height: 8)
-        }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.tm.container.opacity(0.5))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(.tm.accentSecondary.opacity(0.1), lineWidth: 1)
-                )
-        )
-        .id(index)
-    }
-}
-
 
 #Preview {
     BlockAdsView()
