@@ -23,19 +23,19 @@
         <key>com.surfshield.adblocker</key>
         <string>Adblocker App</string>
         <key>com.surfshield.adblocker.bannersextension</key>
-        <string>extension banners ios_app_store 1757596415</string>
+        <string>bannersextension</string>
         <key>com.surfshield.adblocker.adblockerextension</key>
-        <string>extension adblocker ios_app_store 1757596414</string>
+        <string>adblockerextension</string>
         <key>com.surfshield.adblocker.trackersextension</key>
-        <string>Adblocker Extensions ios_app_store 1757593596</string>
+        <string>trackersextension</string>
         <key>com.surfshield.adblocker.secureextension</key>
-        <string>extension secure ios_app_store 1757596416</string>
+        <string>secureextension</string>
         <key>com.surfshield.adblocker.basicextension</key>
-        <string>extension basic ios_app_store 1757596416</string>
+        <string>basicextension</string>
         <key>com.surfshield.adblocker.privacyextension</key>
-        <string>extension privacy ios_app_store 1757596416</string>
+        <string>privacyextension</string>
         <key>com.surfshield.adblocker.advancedextension</key>
-        <string>extension advanced ios_app_store 1757596415</string>
+        <string>advancedextension</string>
     </dict>
 </dict>
 </plist>
