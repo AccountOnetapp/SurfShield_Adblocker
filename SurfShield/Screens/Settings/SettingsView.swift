@@ -306,13 +306,13 @@ struct SettingsView: View {
                     )
                 }
                 
-                ModernToggleRow(
-                    title: "Cookies",
-                    subtitle: "Website data storage",
-                    icon: "externaldrive.connected.to.line.below",
-                    isOn: $viewModel.appSettings.enableCookies,
-                    accentColor: .calm
-                )
+//                ModernToggleRow(
+//                    title: "Cookies",
+//                    subtitle: "Website data storage",
+//                    icon: "externaldrive.connected.to.line.below",
+//                    isOn: $viewModel.appSettings.enableCookies,
+//                    accentColor: .calm
+//                )
                 
                 ModernToggleRow(
                     title: "Dark Theme",
@@ -346,8 +346,8 @@ struct SettingsView: View {
     
     var aboutSection: some View {
         ModernSectionCard(
-            title: "About & Support",
-            subtitle: "App information and help",
+            title: "About",
+            subtitle: "App information",
             icon: "info.circle",
             accentColor: .tm.accentTertiary
         ) {
@@ -361,17 +361,18 @@ struct SettingsView: View {
                     // Haptic feedback
                     let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
                     impactFeedback.impactOccurred()
+                    viewModel.openAppStore()
                 }
-                
-                ActionRow(
-                    title: "Contact Support",
-                    subtitle: "Get help and assistance",
-                    icon: "envelope.fill",
-                    accentColor: .tm.accent
-                ) {
-                    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-                    impactFeedback.impactOccurred()
-                }
+//                
+//                ActionRow(
+//                    title: "Contact Support",
+//                    subtitle: "Get help and assistance",
+//                    icon: "envelope.fill",
+//                    accentColor: .tm.accent
+//                ) {
+//                    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+//                    impactFeedback.impactOccurred()
+//                }
                 
                 Divider()
                     .background(Color.tm.subTitle.opacity(0.2))

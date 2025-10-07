@@ -36,11 +36,15 @@ class BlockAdsViewModel: ObservableObject {
             guard isExtensionsEnabled else {
                 userDefaultsService.save(false, forKey: .adBlockerEnabled)
                 self.isExtensionsEnabled = false
+                self.isEnabled = false
                 return
             }
             self.isExtensionsEnabled = true
-            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled)
-            self.isEnabled = isEnabled ?? false
+            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
+            self.isEnabled = isEnabled
+            if isEnabled {
+                startContinuousAnimation()
+            }
         }
     }
     

@@ -16,22 +16,26 @@
     <true/>
     <key>thinning</key>
     <string>&lt;none&gt;</string>
+    <key>signingStyle</key>
+    <string>manual</string>
     <key>provisioningProfiles</key>
     <dict>
-        <key>com.surfshield.app.banners</key>
-        <string>match AppStore com.surfshield.app.banners</string>
-        <key>com.surfshield.app.adblocker</key>
-        <string>match AppStore com.surfshield.app.adblocker</string>
-        <key>com.surfshield.app.trackers</key>
-        <string>match AppStore com.surfshield.app.trackers</string>
-        <key>com.surfshield.app.secure</key>
-        <string>match AppStore com.surfshield.app.secure</string>
-        <key>com.surfshield.app.basic</key>
-        <string>match AppStore com.surfshield.app.basic</string>
-        <key>com.surfshield.app.privacy</key>
-        <string>match AppStore com.surfshield.app.privacy</string>
-        <key>com.surfshield.app.advanced</key>
-        <string>match AppStore com.surfshield.app.advanced</string>
+        <key>com.surfshield.adblocker</key>
+        <string>Adblocker App ios_app_store 1757589530</string>
+        <key>com.surfshield.adblocker.bannersextension</key>
+        <string>extension banners ios_app_store 1757596415</string>
+        <key>com.surfshield.adblocker.adblockerextension</key>
+        <string>extension adblocker ios_app_store 1757596414</string>
+        <key>com.surfshield.adblocker.trackersextension</key>
+        <string>Adblocker Extensions ios_app_store 1757593596</string>
+        <key>com.surfshield.adblocker.secureextension</key>
+        <string>extension secure ios_app_store 1757596416</string>
+        <key>com.surfshield.adblocker.basicextension</key>
+        <string>extension basic ios_app_store 1757596416</string>
+        <key>com.surfshield.adblocker.privacyextension</key>
+        <string>extension privacy ios_app_store 1757596416</string>
+        <key>com.surfshield.adblocker.advancedextension</key>
+        <string>extension advanced ios_app_store 1757596415</string>
     </dict>
 </dict>
 </plist>

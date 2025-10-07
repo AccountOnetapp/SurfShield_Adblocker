@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import Combine
 
 final class SettingsViewModel: ObservableObject {
@@ -24,6 +25,14 @@ final class SettingsViewModel: ObservableObject {
     init() {
         initialState()
         subscribe()
+    }
+    
+    public func openAppStore() {
+        if let url = URL(string: Constants.appStoreLink) {
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
     }
     
     private func initialState() {

@@ -8,7 +8,7 @@ workflows:
           XCODE_WORKSPACE: "SurfShield.xcworkspace"
           XCODE_SCHEME: "SurfShield"
           BUNDLE_ID: "com.surfshield.adblocker"
-          APP_STORE_APP_ID: 6752248631
+          APP_STORE_APP_ID: 6752290793
         xcode: latest
         cocoapods: 1.14.2
       scripts:
