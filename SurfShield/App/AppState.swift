@@ -9,6 +9,7 @@ import SwiftUI
 
 final class AppState: ObservableObject {
     @Published var viewState: AppViewState
+    @Published public var isShowPaywall: Bool = false
     var isFirstLoad: Bool = true
     private let userDefaultsService = UserDefaultsService.shared
     
