@@ -20,7 +20,7 @@ class BlockAdsViewModel: ObservableObject {
     let contentBlockerService = ContentBlockerService()
     let safariExtensionChecker = SafariExtensionsChecker()
     let userDefaultsService = UserDefaultsService.shared
-    
+    let purchaseInteractor = Executor.purchaseInteractor
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации

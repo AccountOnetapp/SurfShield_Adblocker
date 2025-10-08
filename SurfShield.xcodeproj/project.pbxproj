@@ -129,7 +129,13 @@
 		8E9F1AF32E5C94EC0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF52E5C94EE0093C76B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F1AF12E5C94C30093C76B /* Constants.swift */; };
 		8E9F1AF82E5CD12B0093C76B /* ContentBlockerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA84072E5BBA0900206493 /* ContentBlockerService.swift */; };
+		8EAD12352E59CAFE000A1235 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAD12342E59CAFE000A1234 /* AppDelegate.swift */; };
 		8EADC1192E6F319300B52000 /* BrowserTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EADC1182E6F319300B52000 /* BrowserTheme.swift */; };
+		8EB7913C2E967B6F0000A4A6 /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8EB7913B2E967B6F0000A4A6 /* ApphudSDK */; };
+		8EB7913F2E96822E0000A4A6 /* PurchaseInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB7913E2E96822E0000A4A6 /* PurchaseInteractor.swift */; };
+		8EB791412E9682BB0000A4A6 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791402E9682BB0000A4A6 /* DIContainer.swift */; };
+		8EB791432E9682DD0000A4A6 /* PurchaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791422E9682DD0000A4A6 /* PurchaseService.swift */; };
+		8EB791462E9684910000A4A6 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791452E9684910000A4A6 /* Executor.swift */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -553,7 +559,12 @@
 		8E9F1AF02E5C8CCF0093C76B /* adblocker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adblocker.entitlements; sourceTree = "<group>"; };
 		8E9F1AF12E5C94C30093C76B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E9F1AFA2E5CD15A0093C76B /* sequrity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sequrity.entitlements; sourceTree = "<group>"; };
+		8EAD12342E59CAFE000A1234 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EADC1182E6F319300B52000 /* BrowserTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserTheme.swift; sourceTree = "<group>"; };
+		8EB7913E2E96822E0000A4A6 /* PurchaseInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseInteractor.swift; sourceTree = "<group>"; };
+		8EB791402E9682BB0000A4A6 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
+		8EB791422E9682DD0000A4A6 /* PurchaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseService.swift; sourceTree = "<group>"; };
+		8EB791452E9684910000A4A6 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -723,6 +734,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E7B5E292E61D4B800D5E817 /* Punycode in Frameworks */,
+				8EB7913C2E967B6F0000A4A6 /* ApphudSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,6 +850,25 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		8EB7913D2E9682110000A4A6 /* Interactors */ = {
+			isa = PBXGroup;
+			children = (
+				8EB7913E2E96822E0000A4A6 /* PurchaseInteractor.swift */,
+			);
+			path = Interactors;
+			sourceTree = "<group>";
+		};
+		8EB791442E9684780000A4A6 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				8EBEC6532E6C62FC005E5AF4 /* Services */,
+				8EB7913D2E9682110000A4A6 /* Interactors */,
+				8EB791402E9682BB0000A4A6 /* DIContainer.swift */,
+				8EB791452E9684910000A4A6 /* Executor.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		8EBA83FB2E5BB15600206493 /* adblocker */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,6 +960,7 @@
 			children = (
 				8EBEC6522E6C62EF005E5AF4 /* UserDefaultsService */,
 				8E6A742D2E92B77700486954 /* SafariExtensionsChecker.swift */,
+				8EB791422E9682DD0000A4A6 /* PurchaseService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1090,7 +1122,7 @@
 				8E9F1AEF2E5C8C8B0093C76B /* SurfShield.entitlements */,
 				8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */,
 				8ECF28182E59BC33000A5748 /* App */,
-				8EBEC6532E6C62FC005E5AF4 /* Services */,
+				8EB791442E9684780000A4A6 /* Core */,
 				8EC4E9102E6F072500822E21 /* Models */,
 				8E9F1AF62E5CBBBE0093C76B /* Shared */,
 				8ECF28282E59BDCB000A5748 /* Screens */,
@@ -1116,6 +1148,7 @@
 			isa = PBXGroup;
 			children = (
 				8ECF280A2E59BAFE000A5748 /* SurfShieldApp.swift */,
+				8EAD12342E59CAFE000A1234 /* AppDelegate.swift */,
 				8ECF28192E59BC3F000A5748 /* MainView.swift */,
 				8ECF281B2E59BC45000A5748 /* TabBarView.swift */,
 				8ECF281D2E59BC4E000A5748 /* Coordinator.swift */,
@@ -1371,6 +1404,7 @@
 			name = SurfShield;
 			packageProductDependencies = (
 				8E7B5E282E61D4B800D5E817 /* Punycode */,
+				8EB7913B2E967B6F0000A4A6 /* ApphudSDK */,
 			);
 			productName = SurfShield;
 			productReference = 8ECF28072E59BAFE000A5748 /* SurfShield.app */;
@@ -1423,6 +1457,7 @@
 			mainGroup = 8ECF27FE2E59BAFE000A5748;
 			packageReferences = (
 				8E7B5E272E61D4B800D5E817 /* XCRemoteSwiftPackageReference "PunycodeSwift" */,
+				8EB7913A2E967B6F0000A4A6 /* XCRemoteSwiftPackageReference "ApphudSDK" */,
 			);
 			productRefGroup = 8ECF28082E59BAFE000A5748 /* Products */;
 			projectDirPath = "";
@@ -2065,6 +2100,7 @@
 				8E6A741F2E918B3000486954 /* BlockAdsViewModel.swift in Sources */,
 				8E6A742E2E92B77700486954 /* SafariExtensionsChecker.swift in Sources */,
 				8E6A74252E92B5CE00486954 /* Collections+Extensions.swift in Sources */,
+				8EB791432E9682DD0000A4A6 /* PurchaseService.swift in Sources */,
 				8E6A74302E92E51D00486954 /* DarkThemeScript.swift in Sources */,
 				8EBB25D82E61C7E200E29966 /* StringExtension.swift in Sources */,
 				8ECF281A2E59BC3F000A5748 /* MainView.swift in Sources */,
@@ -2088,6 +2124,7 @@
 				8EBB25E02E61C7E200E29966 /* ErrorsCounter.swift in Sources */,
 				8E32FE502E6CE17500E71DD2 /* AppState.swift in Sources */,
 				8E7B5E432E61D6DA00D5E817 /* Compiler.swift in Sources */,
+				8EB7913F2E96822E0000A4A6 /* PurchaseInteractor.swift in Sources */,
 				8EE142A32E6B737900918447 /* ResourceMonitor.swift in Sources */,
 				8EBEC6572E6C630F005E5AF4 /* UserDefaultsKeys.swift in Sources */,
 				8E9F1AF22E5C94C30093C76B /* Constants.swift in Sources */,
@@ -2108,8 +2145,11 @@
 				8E7B5DF32E61D0C200D5E817 /* PublicSuffixList.swift in Sources */,
 				8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */,
 				8ECF280B2E59BAFE000A5748 /* SurfShieldApp.swift in Sources */,
+				8EB791462E9684910000A4A6 /* Executor.swift in Sources */,
+				8EAD12352E59CAFE000A1235 /* AppDelegate.swift in Sources */,
 				8EBB25C22E61C7C700E29966 /* SafariVersion.swift in Sources */,
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
+				8EB791412E9682BB0000A4A6 /* DIContainer.swift in Sources */,
 				8EBB25BE2E61C7C700E29966 /* CosmeticRule.swift in Sources */,
 				8EBEC6562E6C630F005E5AF4 /* UserDefaultsService.swift in Sources */,
 				8E0384D22E5E4B3F001D5E9D /* BackgroundGradient.swift in Sources */,
@@ -2983,6 +3023,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		8EB7913A2E967B6F0000A4A6 /* XCRemoteSwiftPackageReference "ApphudSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apphud/ApphudSDK";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.6.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3000,6 +3048,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E7B5E272E61D4B800D5E817 /* XCRemoteSwiftPackageReference "PunycodeSwift" */;
 			productName = Punycode;
+		};
+		8EB7913B2E967B6F0000A4A6 /* ApphudSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EB7913A2E967B6F0000A4A6 /* XCRemoteSwiftPackageReference "ApphudSDK" */;
+			productName = ApphudSDK;
 		};
 		8EC58DAB2E67D387008D48EF /* Punycode */ = {
 			isa = XCSwiftPackageProductDependency;
