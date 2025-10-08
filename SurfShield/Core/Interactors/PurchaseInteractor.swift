@@ -17,8 +17,6 @@ class PurchaseInteractor {
         self.purchaseService = purchaseService
     }
     
-    
-    
     /// Проверить премиум доступ и выполнить действие или показать paywall
     /// - Parameters:
     ///   - showPaywall: Binding для отображения paywall
@@ -26,7 +24,8 @@ class PurchaseInteractor {
     @MainActor
     func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) async {
         let hasPremium = purchaseService.hasActiveSubscription()
-        
+        let subscriptions = purchaseService.getSubscriptions()
+        let products = await purchaseService.fetchProducts()
         if hasPremium {
             // Есть подписка - выполняем действие
             action()
