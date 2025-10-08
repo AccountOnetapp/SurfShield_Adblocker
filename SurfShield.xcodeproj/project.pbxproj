@@ -136,6 +136,7 @@
 		8EB791412E9682BB0000A4A6 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791402E9682BB0000A4A6 /* DIContainer.swift */; };
 		8EB791432E9682DD0000A4A6 /* PurchaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791422E9682DD0000A4A6 /* PurchaseService.swift */; };
 		8EB791462E9684910000A4A6 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791452E9684910000A4A6 /* Executor.swift */; };
+		8EB791492E96DBC20000A4A6 /* SubscriptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -565,6 +566,7 @@
 		8EB791402E9682BB0000A4A6 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		8EB791422E9682DD0000A4A6 /* PurchaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseService.swift; sourceTree = "<group>"; };
 		8EB791452E9684910000A4A6 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
+		8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionType.swift; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -869,6 +871,15 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		8EB791472E96DAF10000A4A6 /* PurchaseService */ = {
+			isa = PBXGroup;
+			children = (
+				8EB791422E9682DD0000A4A6 /* PurchaseService.swift */,
+				8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */,
+			);
+			path = PurchaseService;
+			sourceTree = "<group>";
+		};
 		8EBA83FB2E5BB15600206493 /* adblocker */ = {
 			isa = PBXGroup;
 			children = (
@@ -960,7 +971,7 @@
 			children = (
 				8EBEC6522E6C62EF005E5AF4 /* UserDefaultsService */,
 				8E6A742D2E92B77700486954 /* SafariExtensionsChecker.swift */,
-				8EB791422E9682DD0000A4A6 /* PurchaseService.swift */,
+				8EB791472E96DAF10000A4A6 /* PurchaseService */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -2114,6 +2125,7 @@
 				8E8FFB402E68159900F20BF0 /* InternetBrowserView.swift in Sources */,
 				8EBB258D2E61C79500E29966 /* ContentBlockerConverter.swift in Sources */,
 				8ECF28262E59BCD4000A5748 /* Colors.swift in Sources */,
+				8EB791492E96DBC20000A4A6 /* SubscriptionType.swift in Sources */,
 				8E6A74232E928BCD00486954 /* BorderedButton.swift in Sources */,
 				8E7B5E5C2E61D7B100D5E817 /* SafariRegex.swift in Sources */,
 				8EBB25BA2E61C7C700E29966 /* CosmeticRuleMarker.swift in Sources */,

@@ -10,7 +10,10 @@ import ApphudSDK
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     
+    private let purchaseService = PurchaseService()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        // Инициализация AppHud
         Apphud.start(apiKey: Constants.apphudApiKey)
         return true
     }

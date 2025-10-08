@@ -123,19 +123,17 @@ struct BlockAdsView: View {
             animationID: viewModel.animationID,
             onTap: {
                 // Haptic feedback
-                Task {
-                    await viewModel.purchaseInteractor.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
+                    viewModel.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
                         print("DEBUG: Premium user - performing action")
                         // Здесь код для премиум пользователей
+                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                        impactFeedback.impactOccurred()
+                        if viewModel.isExtensionsEnabled {
+                            viewModel.toggleBlocking()
+                        } else {
+                            viewModel.showInstructions()
+                        }
                     }
-                }
-//                let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-//                impactFeedback.impactOccurred()
-//                if viewModel.isExtensionsEnabled {
-//                    viewModel.toggleBlocking()
-//                } else {
-//                    viewModel.showInstructions()
-//                }
             }
         )
     }

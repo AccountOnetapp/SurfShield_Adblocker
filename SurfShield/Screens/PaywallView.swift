@@ -7,9 +7,21 @@
 
 import SwiftUI
 
-struct PaywallView: View {
+
+final class PaywallViewModel: ObservableObject {
+    let purchaseInteractor: PurchaseInteractor = Executor.purchaseInteractor
     
+    func purchase() {
+        Task {
+            await purchaseInteractor.purchase(.weekly)
+        }
+    }
+}
+
+struct PaywallView: View {
     @Environment(\.dismiss) var dismiss
+    
+    @StateObject var viewModel = PaywallViewModel()
     
     var body: some View {
         NavigationView {
@@ -135,7 +147,7 @@ struct PaywallView: View {
     
     var continueButton: some View {
         MainButton(title: "Continue") {
-            //TODO: make purchase logic
+            viewModel.purchase()
         }
     }
     

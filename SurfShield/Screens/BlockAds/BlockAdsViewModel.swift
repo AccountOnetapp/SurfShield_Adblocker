@@ -193,23 +193,10 @@ class BlockAdsViewModel: ObservableObject {
         }
     }
     
-    func reloadAdBlocker() {
-        reloadExtension(bundleId: "com.surfshield.app.adblocker")
-    }
-    
-    func reloadPrivacy() {
-        reloadExtension(bundleId: "com.surfshield.app.privacy")
-    }
-    
-    func reloadBanners() {
-        reloadExtension(bundleId: "com.surfshield.app.banners")
-    }
-    
-    func reloadTrackers() {
-        reloadExtension(bundleId: "com.surfshield.app.trackers")
-    }
-    
-    func reloadAdvanced() {
-        reloadExtension(bundleId: "com.surfshield.app.advanced")
+    @MainActor
+    public func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) {
+        Task {
+            await purchaseInteractor.checkPremiumAccess(showPaywall: showPaywall, action: action)
+        }
     }
 }
