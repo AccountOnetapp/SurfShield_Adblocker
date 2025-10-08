@@ -16,7 +16,7 @@ enum Constants {
     static let privacyPolicyURL = "https://docs.google.com/document/d/1mFiYDladzxKrQEaHtCd88oA5Ialv8yqGEjjJAswx13o/edit?tab=t.0"
     static let termsOfUseURL = "https://docs.google.com/document/d/1SfefoNqYwkAAIynePGWyMz53rc7ERZOKbQ0dUwMT154/edit?tab=t.0"
     static let appStoreLink = "https://itunes.apple.com/app/id6752290793?action=write-review"
-    
+    static let apphudApiKey = "app_E1p1cR6AjnHtF4ubgZZRcpg12vaKdu"
     
     enum BlockExtenesionBundleIds: String, CaseIterable {
         case adblocker = "com.surfshield.adblocket.adblockerdev"
