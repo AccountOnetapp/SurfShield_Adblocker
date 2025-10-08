@@ -40,11 +40,6 @@ class PurchaseService {
                 let allProducts = productsArrays.flatMap { $0 }
                 continuation.resume(returning: allProducts)
             }
-            
-//            Apphud.paywallsDidLoadCallback { paywalls, error  in
-//                let products = paywalls.flatMap { $0.products }
-//                continuation.resume(returning: products)
-//            }
         }
     }
     

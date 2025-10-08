@@ -18,6 +18,9 @@ struct MainView: View {
             .fullScreenCover(item: $coordinator.presentedScreen) { screen in
                 coordinator.build(screen: screen)
             }
+            .sheet(isPresented: $appState.isShowPaywall, content: {
+                PaywallView()
+            })
     }
     
     
