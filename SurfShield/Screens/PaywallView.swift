@@ -8,15 +8,7 @@
 import SwiftUI
 
 
-final class PaywallViewModel: ObservableObject {
-    let purchaseInteractor: PurchaseInteractor = Executor.purchaseInteractor
-    
-    func purchase() {
-        Task {
-            await purchaseInteractor.purchase(.weekly)
-        }
-    }
-}
+
 
 struct PaywallView: View {
     @Environment(\.dismiss) var dismiss
