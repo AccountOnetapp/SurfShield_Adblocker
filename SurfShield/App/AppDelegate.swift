@@ -13,8 +13,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     private let purchaseService = PurchaseService()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // Инициализация AppHud
-        Apphud.start(apiKey: Constants.apphudApiKey)
+        
+        // Получаем IDFV (Identifier for Vendor)
+        let idfv = UIDevice.current.identifierForVendor?.uuidString
+        
+        // Инициализация AppHud с IDF
+        Apphud.startManually(apiKey: Constants.apphudApiKey, deviceID: idfv)
         return true
     }
 }

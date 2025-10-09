@@ -19,12 +19,12 @@ class PurchaseInteractor {
 
     
     //TODO: Добавить возвращаемое значение
-    func purchase(_ type: SubscriptionType) async {
+    func purchase(_ type: SubscriptionType) async -> Bool {
         do {
             let purchaseResult = try await purchaseService.purchase(id: type.id)
-            
+            return purchaseResult.success
         } catch {
-            
+            return false
         }
     }
     

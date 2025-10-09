@@ -17,6 +17,17 @@ enum PurchaseError: Error {
     case purchaseFailed
     case restoreFailed
     case cancelled
+    
+    /// Название ошибки для аналитики
+    var analyticsName: String {
+        switch self {
+        case .noProducts: return "no_products"
+        case .noProductWithThisId: return "product_not_found"
+        case .purchaseFailed: return "purchase_failed"
+        case .restoreFailed: return "restore_failed"
+        case .cancelled: return "purchase_cancelled"
+        }
+    }
 }
 
 // MARK: - Result
@@ -51,32 +62,66 @@ class PurchaseService {
     @MainActor
     // ID приходит из Purchase Interactor из энума SubscriptionType
     func purchase(id: String) async throws -> ApphudAsyncPurchaseResult {
-        let products = await getProducts()
-        let product = products.first { $0.id == id }
-        
-        guard let product else { throw PurchaseError.noProductWithThisId }
-        
-        let asyncResult = await Apphud.purchase(product)
-        
-        guard asyncResult.error == nil else { throw asyncResult.error! }
-        
-        return asyncResult
+        do {
+            let products = try await Apphud.fetchProducts()
+            let product = products.first { $0.id == id }
+            
+            guard let product else { throw PurchaseError.noProductWithThisId }
+            
+            let asyncResult = await Apphud.purchase(product)
+            
+            guard asyncResult.error == nil else { throw asyncResult.error! }
+            return asyncResult
+        } catch {
+            print("DEBUG: purchase error \(error.localizedDescription)")
+            throw PurchaseError.noProducts
+        }
     }
     
     @MainActor
     func getProducts() async -> [Product] {
         do {
             let products = try await Apphud.fetchProducts()
-            let groups = await Apphud.permissionGroups() ?? []
+//            let groups = await Apphud.permissionGroups() ?? []
+//            let paywalls = await fetchPaywalls()
+            
+//            let pwproducts = paywalls.map { $0.products }
+//            let pwIds = paywalls.map { $0.identifier }
+//            let resultProducts = pwproducts.flatMap { $0 }.map({ $0.skProduct?.productIdentifier })
 //            let ids = groups.flatMap { $0.productIds }
-//            let result = await Apphud.purchase(products.first!)
-            print("DEBUG: Products \(products)")
+//            print("DEBUG: Products \(products)")
+//            print("DEBUG: PWProduct ids \(pwIds)")
+//            print("DEBUG: Products \(products)")
             
             return products
         } catch {
             return []
         }
     }
+    
+    // MARK: - Paywalls
+    /// Загрузить paywalls с сервера (асинхронно)
+    @MainActor
+    func fetchPaywalls() async -> [ApphudPaywall] {
+        await withCheckedContinuation { continuation in
+            Apphud.paywallsDidLoadCallback { paywalls, error in
+                if let error = error {
+                    print("❌ Ошибка загрузки paywalls: \(error)")
+                    continuation.resume(returning: [])
+                } else {
+                    continuation.resume(returning: paywalls)
+                }
+            }
+        }
+    }
+    
+    /// Получить все продукты из всех paywalls
+    @MainActor
+    func getAllProductsFromPaywalls() async -> [ApphudProduct] {
+        let paywalls = await fetchPaywalls()
+        return paywalls.flatMap { $0.products }
+    }
+
     
     @MainActor
     /// Восстановить покупки

@@ -39,6 +39,15 @@ class BlockAdsViewModel: ObservableObject {
                 self.isEnabled = false
                 return
             }
+            guard purchaseInteractor.purchaseService.hasActiveSubscription() else {
+                Task {
+                    await contentBlockerService.applyBlockingState(false)
+                    cancelBlockingTask()
+                    self.isEnabled = false
+                }
+                return
+            }
+            
             self.isExtensionsEnabled = true
             let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
             self.isEnabled = isEnabled

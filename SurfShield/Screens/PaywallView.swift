@@ -139,7 +139,11 @@ struct PaywallView: View {
     
     var continueButton: some View {
         MainButton(title: "Continue") {
-            viewModel.purchase()
+            viewModel.purchase { isSuccess in
+                if isSuccess {
+                    dismiss()
+                }
+            }
         }
     }
     
