@@ -12,34 +12,26 @@ import Combine
 final class SettingsViewModel: ObservableObject {
     
     let userDefaultsObserver = UserDefaultsObserver.shared
+    @Published var appInteractor = Executor.appInteractor
     
     @Published var resourceStatistics: ResourceAnalysisData = .init()
-    @Published var appSettings: AppSettings = .default {
-        didSet {
-            userDefaultsObserver.updateAppSettings(appSettings)
-        }
-    }
     
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        initialState()
-        subscribe()
+        setupStatisticsObserver()
     }
     
     public func openAppStore() {
         if let url = URL(string: Constants.appStoreLink) {
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                }
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
+        }
     }
     
-    private func initialState() {
-        appSettings = userDefaultsObserver.appSettings
-    }
-    
-    private func subscribe() {
+    private func setupStatisticsObserver() {
+        // Подписываемся на обновления статистики
         userDefaultsObserver.$webViewBlockedStatistics
             .receive(on: DispatchQueue.main)
             .assign(to: \.resourceStatistics, on: self)

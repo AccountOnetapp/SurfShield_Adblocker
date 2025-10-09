@@ -20,9 +20,6 @@ struct SettingsView: View {
                 .navigationTitle("Settings")
                 .navigationBarTitleDisplayMode(.large)
         }
-        .onAppear {
-            print("asf")
-        }
     }
     
     var content: some View {
@@ -198,7 +195,7 @@ struct SettingsView: View {
                     title: "Advanced Protection",
                     subtitle: "Enhanced security features",
                     icon: "shield.lefthalf.filled",
-                    isOn: $viewModel.appSettings.advancedProtection,
+                    isOn: $viewModel.appInteractor.appSettings.advancedProtection,
                     accentColor: .calmSecondary
                 )
                 
@@ -209,45 +206,45 @@ struct SettingsView: View {
                     title: "Banner Blocking",
                     subtitle: "Remove advertising banners",
                     icon: "rectangle.slash",
-                    isOn: $viewModel.appSettings.blockAds,
+                    isOn: $viewModel.appInteractor.appSettings.blockAds,
                     accentColor: .calmSecondary,
-                    isDisabled: !viewModel.appSettings.advancedProtection
+                    isDisabled: !viewModel.appInteractor.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Basic Protection",
                     subtitle: "Essential security measures",
                     icon: "shield",
-                    isOn: $viewModel.appSettings.basicBlock,
+                    isOn: $viewModel.appInteractor.appSettings.basicBlock,
                     accentColor: .calmSecondary,
-                    isDisabled: !viewModel.appSettings.advancedProtection
+                    isDisabled: !viewModel.appInteractor.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Privacy Guard",
                     subtitle: "Protect personal information",
                     icon: "hand.raised.fill",
-                    isOn: $viewModel.appSettings.blockPopups,
+                    isOn: $viewModel.appInteractor.appSettings.blockPopups,
                     accentColor: .calmSecondary,
-                    isDisabled: !viewModel.appSettings.advancedProtection
+                    isDisabled: !viewModel.appInteractor.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Security Shield",
                     subtitle: "Advanced threat protection",
                     icon: "lock.shield",
-                    isOn: $viewModel.appSettings.security,
+                    isOn: $viewModel.appInteractor.appSettings.security,
                     accentColor: .calmSecondary,
-                    isDisabled: !viewModel.appSettings.advancedProtection
+                    isDisabled: !viewModel.appInteractor.appSettings.advancedProtection
                 )
                 
                 ModernToggleRow(
                     title: "Tracker Blocker",
                     subtitle: "Block tracking scripts",
                     icon: "eye.slash",
-                    isOn: $viewModel.appSettings.blockTrackers,
+                    isOn: $viewModel.appInteractor.appSettings.blockTrackers,
                     accentColor: .calmSecondary,
-                    isDisabled: !viewModel.appSettings.advancedProtection
+                    isDisabled: !viewModel.appInteractor.appSettings.advancedProtection
                 )
             }
         }
@@ -273,12 +270,12 @@ struct SettingsView: View {
                     title: "Browser History",
                     subtitle: "Save previous session",
                     icon: "clock.arrow.circlepath",
-                    isOn: $viewModel.appSettings.enableBrowserHistory,
+                    isOn: $viewModel.appInteractor.appSettings.enableBrowserHistory,
                     accentColor: .calm
                 )
                 
                 // Start page input - показывается только если история выключена
-                if !viewModel.appSettings.enableBrowserHistory {
+                if !viewModel.appInteractor.appSettings.enableBrowserHistory {
                     VStack(alignment: .leading, spacing: Layout.Padding.small) {
                         HStack {
                             Image(systemName: "house.fill")
@@ -293,7 +290,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         
-                        TextField("Enter start page URL", text: $viewModel.appSettings.startPage)
+                        TextField("Enter start page URL", text: $viewModel.appInteractor.appSettings.startPage)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .font(.system(size: 14))
                             .padding(.leading, 24)
@@ -310,7 +307,7 @@ struct SettingsView: View {
 //                    title: "Cookies",
 //                    subtitle: "Website data storage",
 //                    icon: "externaldrive.connected.to.line.below",
-//                    isOn: $viewModel.appSettings.enableCookies,
+//                    isOn: $viewModel.appInteractor.appSettings.enableCookies,
 //                    accentColor: .calm
 //                )
                 
@@ -318,7 +315,7 @@ struct SettingsView: View {
                     title: "Dark Theme",
                     subtitle: "Night mode browser",
                     icon: "moon.fill",
-                    isOn: $viewModel.appSettings.enableBrowserDarkMode,
+                    isOn: $viewModel.appInteractor.appSettings.enableBrowserDarkMode,
                     accentColor: .calm
                 )
 //                

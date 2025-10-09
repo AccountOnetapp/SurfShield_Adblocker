@@ -28,9 +28,9 @@ class UserDefaultsObserver: ObservableObject {
     }
     
     func updateAppSettings(_ settings: AppSettings) {
+        // Просто обновляем настройки в памяти
+        // Сохранение в UserDefaults должно происходить в том месте, откуда вызывается этот метод
         self.appSettings = settings
-        userDefaultsService.save(settings, forKey: .appSettings)
-//        self.saveAppSettings()
     }
     
     func updateWebViewBlockedStatistics(_ statistics: ResourceAnalysisData) {
