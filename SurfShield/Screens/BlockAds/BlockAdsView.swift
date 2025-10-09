@@ -18,15 +18,15 @@ struct BlockAdsView: View {
         content
             .onAppear {
                 if viewModel.isEnabled { viewModel.startContinuousAnimation() }
-                viewModel.checkBlockingActivity()
+//                viewModel.checkBlockingActivity()
             }
             .onDisappear {
-                viewModel.cancelBlockingTask()
+//                viewModel.cancelBlockingTask()
             }
             .onChange(of: scenePhase) { phase in
                 if phase == .active {
                     // Проверяем состояние расширений Safari при переходе приложения в активное состояние
-                    viewModel.checkBlockingActivity()
+//                    viewModel.checkBlockingActivity()
                 }
             }
             .sheet(isPresented: $viewModel.isShowInstructions) {

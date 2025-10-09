@@ -18,7 +18,7 @@ final class AppInteractor: ObservableObject {
         self.safariExtensionChecker = safariChecker
         self.appSettings = appSettings
         
-        initialize()
+//        initialize()
     }
     
     func appCheck() {
@@ -27,13 +27,17 @@ final class AppInteractor: ObservableObject {
         }
     }
     
+    @MainActor
     ///Mark check with app start
     func blockerCheck() async {
         let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
-        if !isExtensionsEnabled {
+        guard isExtensionsEnabled else {
             await applyBlocker(false)
             appSettings.isBlockerEnable = false
+            appSettings.isExtensionsEnabled = false
+            return
         }
+        appSettings.isExtensionsEnabled = true
     }
     
     //MARK: Blocker
@@ -49,6 +53,8 @@ final class AppInteractor: ObservableObject {
     }
     
     private func initialize() {
+        
         appSettings = userDefaultsService.load(AppSettings.self, forKey: .appSettings) ?? .default
+        
     }
 }

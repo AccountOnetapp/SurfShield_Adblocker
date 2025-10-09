@@ -45,6 +45,7 @@ class BlockAdsViewModel: ObservableObject {
         // Подписка на isExtensionsEnabled
         appInteractor.$appSettings
             .map { $0.isExtensionsEnabled }
+            .print("DEBUG: is extension enabled")
             .assign(to: &$isExtensionsEnabled)
         
         appInteractor.$appSettings
@@ -224,19 +225,6 @@ class BlockAdsViewModel: ObservableObject {
         
         // Сбрасываем анимации
         resetAnimations()
-    }
-    
-    // MARK: - Extension Reload Methods
-    func reloadExtension(bundleId: String) {
-        Task {
-            print("🔄 Перезагружаем расширение: \(bundleId)")
-            do {
-                try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundleId)
-                print("✅ Расширение \(bundleId) успешно перезагружено")
-            } catch {
-                print("❌ Ошибка перезагрузки расширения \(bundleId): \(error.localizedDescription)")
-            }
-        }
     }
     
     @MainActor

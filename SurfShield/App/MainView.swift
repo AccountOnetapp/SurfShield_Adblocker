@@ -24,7 +24,7 @@ struct MainView: View {
                 PaywallView()
             }
             .onChange(of: scenePhase) { newValue in
-//                appInteractor.appCheck()
+                appInteractor.appCheck()
             }
     }
     
