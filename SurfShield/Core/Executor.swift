@@ -13,4 +13,8 @@ class Executor {
     static var purchaseInteractor: PurchaseRepository {
         return container.purchaseInteractor
     }
+    
+    static var appInteractor: AppInteractor {
+        return container.appInteractor
+    }
 }

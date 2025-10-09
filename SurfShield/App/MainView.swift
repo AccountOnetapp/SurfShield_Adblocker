@@ -10,6 +10,8 @@ import SwiftUI
 struct MainView: View {
     @StateObject var coordinator = Coordinator()
     @StateObject var appState = AppState()
+    @Environment(\.scenePhase) private var scenePhase
+    private let appInteractor = Executor.appInteractor
     
     var body: some View {
         content
@@ -18,9 +20,12 @@ struct MainView: View {
             .fullScreenCover(item: $coordinator.presentedScreen) { screen in
                 coordinator.build(screen: screen)
             }
-            .sheet(isPresented: $appState.isShowPaywall, content: {
+            .sheet(isPresented: $appState.isShowPaywall) {
                 PaywallView()
-            })
+            }
+            .onChange(of: scenePhase) { newValue in
+//                appInteractor.appCheck()
+            }
     }
     
     

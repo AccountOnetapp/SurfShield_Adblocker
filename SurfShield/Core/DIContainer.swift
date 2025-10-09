@@ -9,9 +9,18 @@ import Foundation
 
 class DIContainer {
     let purchaseService = PurchaseService()
+    let blockerService = ContentBlockerService()
+    let safariChecker = SafariExtensionsChecker()
+    let appSettings = AppSettings()
     let purchaseInteractor: PurchaseRepository
+    let appInteractor: AppInteractor
+    
     
     init() {
         self.purchaseInteractor = PurchaseRepository(purchaseService: purchaseService)
+        
+        let blockerRepository = ContentBlockerRepository(blockerService: blockerService)
+        
+        self.appInteractor = AppInteractor(contentBlockerRepository: blockerRepository, safariChecker: safariChecker, appSettings: appSettings)
     }
 }
