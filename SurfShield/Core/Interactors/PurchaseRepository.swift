@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import ApphudSDK
 
-class PurchaseInteractor {
+class PurchaseRepository {
     //TODO: Implement PurchaseService
     var purchaseService: PurchaseService
     

@@ -9,6 +9,8 @@ import Foundation
 
 /// Структура для хранения всех настроек приложения
 class AppSettings: Codable {
+    //MARK: - Adblocker Status
+    var isEnable: Bool = false
     
     // MARK: - AdBlocker Settings
     var advancedProtection = false

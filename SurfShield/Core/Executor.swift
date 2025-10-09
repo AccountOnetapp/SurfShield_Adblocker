@@ -10,7 +10,7 @@ import Foundation
 class Executor {
     static private let container = DIContainer()
     
-    static var purchaseInteractor: PurchaseInteractor {
+    static var purchaseInteractor: PurchaseRepository {
         return container.purchaseInteractor
     }
 }

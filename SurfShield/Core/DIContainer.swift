@@ -9,9 +9,9 @@ import Foundation
 
 class DIContainer {
     let purchaseService = PurchaseService()
-    let purchaseInteractor: PurchaseInteractor
+    let purchaseInteractor: PurchaseRepository
     
     init() {
-        self.purchaseInteractor = PurchaseInteractor(purchaseService: purchaseService)
+        self.purchaseInteractor = PurchaseRepository(purchaseService: purchaseService)
     }
 }

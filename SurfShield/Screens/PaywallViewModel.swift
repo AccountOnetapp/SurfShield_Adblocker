@@ -8,7 +8,7 @@
 import Foundation
 
 final class PaywallViewModel: ObservableObject {
-    let purchaseInteractor: PurchaseInteractor = Executor.purchaseInteractor
+    let purchaseInteractor: PurchaseRepository = Executor.purchaseInteractor
     
     func purchase(isSuccess: @escaping (Bool) -> Void) {
         Task {
