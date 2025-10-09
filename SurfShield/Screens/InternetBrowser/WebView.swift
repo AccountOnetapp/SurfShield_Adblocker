@@ -53,7 +53,7 @@ struct WebView: UIViewRepresentable {
         webView.scrollView.backgroundColor = UIColor(named: "Container")
         
         // Применяем тему немедленно при создании WebView
-        let isDarkMode = interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode
+        let isDarkMode = interactor.appInteractor.appSettings.enableBrowserDarkMode
         if isDarkMode {
             DispatchQueue.main.async {
                 webView.evaluateJavaScript(interactor.darkThemeScript) { result, error in
@@ -84,7 +84,7 @@ struct WebView: UIViewRepresentable {
     
     fileprivate func applyTheme(_ config: WKWebViewConfiguration) {
         // Применяем тему статически при создании WebView для предотвращения мигания
-        let isDarkMode = interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode
+        let isDarkMode = interactor.appInteractor.appSettings.enableBrowserDarkMode
         
         if isDarkMode {
             let darkThemeScript = interactor.darkThemeScript
@@ -120,7 +120,7 @@ struct WebView: UIViewRepresentable {
         }
         
         func subscribe() {
-            parent?.interactor.userDefaultsObserver.$appSettings.sink(receiveValue: { [weak self] settings in
+            parent?.interactor.appInteractor.$appSettings.sink(receiveValue: { [weak self] settings in
                 print("Debug: Settings updated \(settings.enableBrowserDarkMode)")
                 self?.applyTheme(isDarkMode: settings.enableBrowserDarkMode)
             })
@@ -175,7 +175,7 @@ struct WebView: UIViewRepresentable {
             print("DEBUG: Начало загрузки страницы")
             
             // Применяем тему как можно раньше
-            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            let isDarkMode = parent?.interactor.appInteractor.appSettings.enableBrowserDarkMode ?? false
             if isDarkMode {
                 DispatchQueue.main.async {
                     webView.evaluateJavaScript(self.parent?.interactor.darkThemeScript ?? "") { result, error in
@@ -195,7 +195,7 @@ struct WebView: UIViewRepresentable {
             parent?.interactor.setCanGoForward(webView.canGoForward)
             
             // Применяем тему при коммите навигации для предотвращения мигания
-            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            let isDarkMode = parent?.interactor.appInteractor.appSettings.enableBrowserDarkMode ?? false
             if isDarkMode {
                 DispatchQueue.main.async {
                     webView.evaluateJavaScript(self.parent?.interactor.darkThemeScript ?? "") { result, error in
@@ -222,7 +222,7 @@ struct WebView: UIViewRepresentable {
             }
             
             // Принудительно применяем тему после загрузки страницы для исправления бага с первым запуском
-            let isDarkMode = parent?.interactor.userDefaultsObserver.appSettings.enableBrowserDarkMode ?? false
+            let isDarkMode = parent?.interactor.appInteractor.appSettings.enableBrowserDarkMode ?? false
             applyTheme(isDarkMode: isDarkMode)
             
             print("DEBUG: Загрузка страницы завершена")
@@ -265,7 +265,6 @@ struct WebView: UIViewRepresentable {
             } else if keyPath == #keyPath(WKWebView.estimatedProgress) {
                 parent?.interactor.updateLoadingProgress(webView.estimatedProgress)
             } else if  keyPath == #keyPath(WKWebView.url) {
-                print("DEBUG: new url \(webView.url!.absoluteString)")
                 parent?.interactor.updateAddress(webView.url)
 //                parent?.interactor.goToUrl(string: webView.url!.absoluteString) //TODO: MAKE UPDATING ADDRESS BAR
             }

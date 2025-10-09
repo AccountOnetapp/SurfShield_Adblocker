@@ -49,6 +49,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     }
     
     let userDefaultsObserver = UserDefaultsObserver.shared
+    @Published var appInteractor = Executor.appInteractor
     private let rulesConverter = ContentBlockerService()
     private var resourceMonitor: ResourceMonitor?
     
@@ -75,7 +76,7 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     }
     
     func setStartPage() {
-        if userDefaultsObserver.appSettings.enableBrowserHistory, let lastVisitedUrl = userDefaultsObserver.userDefaultsService.load(URL.self, forKey: .lastVisitedURL) {
+        if appInteractor.appSettings.enableBrowserHistory, let lastVisitedUrl = userDefaultsObserver.userDefaultsService.load(URL.self, forKey: .lastVisitedURL) {
             self.url = lastVisitedUrl
         } else {
             self.url = URL(string: userDefaultsObserver.appSettings.startPage)!

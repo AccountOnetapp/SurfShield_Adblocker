@@ -11,7 +11,7 @@ import Combine
 final class AppInteractor: ObservableObject {
     private let contentBlockerRepository: ContentBlockerRepository
     private let safariExtensionChecker: SafariExtensionsChecker
-    private let userDefaultsService = UserDefaultsService.shared
+    let userDefaultsService = UserDefaultsService.shared
     private var cancellables = Set<AnyCancellable>()
     
     @Published public var appSettings: AppSettings
