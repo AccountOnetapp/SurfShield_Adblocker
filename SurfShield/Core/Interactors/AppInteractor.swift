@@ -17,8 +17,6 @@ final class AppInteractor: ObservableObject {
         self.contentBlockerRepository = contentBlockerRepository
         self.safariExtensionChecker = safariChecker
         self.appSettings = appSettings
-        
-//        initialize()
     }
     
     func appCheck() {
@@ -40,21 +38,15 @@ final class AppInteractor: ObservableObject {
         appSettings.isExtensionsEnabled = true
     }
     
+//    @MainActor
     //MARK: Blocker
     func applyBlocker(_ isOn: Bool) async {
         await contentBlockerRepository.applyBlocker(isOn)
-        
-        // Для struct нужно создать новую копию, чтобы сработал @Published
+        if !isOn {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+        }
         await MainActor.run {
-//            var updatedSettings = appSettings
-//            updatedSettings.isBlockerEnable = isOn
             appSettings.isBlockerEnable = isOn
         }
-    }
-    
-    private func initialize() {
-        
-        appSettings = userDefaultsService.load(AppSettings.self, forKey: .appSettings) ?? .default
-        
     }
 }

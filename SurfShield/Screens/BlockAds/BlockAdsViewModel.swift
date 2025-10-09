@@ -12,11 +12,11 @@ import Combine
 @MainActor
 class BlockAdsViewModel: ObservableObject {
     @Published var waveProgress: Double = 0
-    @Published var circleRotation: Double = 0
+    var circleRotation: Double = 0
     @Published var isEnabled: Bool = false
     @Published var isShowInstructions: Bool = false
     @Published var isProcess: Bool = false
-    @Published var waveHeight: CGFloat = 0
+    var waveHeight: CGFloat = 0
     @Published var isExtensionsEnabled: Bool = true
 //    let contentBlockerService = ContentBlockerService()
     let safariExtensionChecker = SafariExtensionsChecker()
@@ -36,12 +36,6 @@ class BlockAdsViewModel: ObservableObject {
     }
     
     func subscribe() {
-        // Подписка на isBlockerEnable
-        appInteractor.$appSettings
-            .map { $0.isBlockerEnable }
-            .print("DEBUG: Blocking state")
-            .assign(to: &$isEnabled)
-        
         // Подписка на isExtensionsEnabled
         appInteractor.$appSettings
             .map { $0.isExtensionsEnabled }
@@ -51,6 +45,9 @@ class BlockAdsViewModel: ObservableObject {
         appInteractor.$appSettings
             .map { $0.isBlockerEnable }
             .sink { [self] isEnabled in
+                withAnimation(.bouncy(duration: 0.2)) {
+                    self.isEnabled = isEnabled
+                }
                 if isEnabled {
                     startContinuousAnimation()
                 } else {
@@ -65,43 +62,45 @@ class BlockAdsViewModel: ObservableObject {
     /// Простое переключение блокировщика без анимации
     func simpleToggleBlocking() {
         Task {
+            animate()
             isProcess = true
-            
+            print("DEBUG: is process \(isProcess)")
             let newState = !isEnabled
             await appInteractor.applyBlocker(newState)
             print("DEBUG: Blocking state vm \(isEnabled)")
-            isProcess = false
-            
-        }
-    }
-    
-    func checkBlockingActivity() {
-        Task { @MainActor in
-            let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
-            guard isExtensionsEnabled else {
-                userDefaultsService.save(false, forKey: .adBlockerEnabled)
-                self.isExtensionsEnabled = false
-                self.isEnabled = false
-                return
-            }
-            
-            self.isExtensionsEnabled = true
-            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
-            self.isEnabled = isEnabled
-            if isEnabled {
-                startContinuousAnimation()
+            withAnimation(.bouncy(duration: 0.2)) {
+                isProcess = false
             }
         }
     }
     
-    func toggleBlocking() {
-        if !isProcess {
-            toggleAllBlocking()
-        } else {
-            cancelBlockingTask()
-        }
-    }
+//    func checkBlockingActivity() {
+//        Task { @MainActor in
+//            let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
+//            guard isExtensionsEnabled else {
+//                userDefaultsService.save(false, forKey: .adBlockerEnabled)
+//                self.isExtensionsEnabled = false
+//                self.isEnabled = false
+//                return
+//            }
+//            
+//            self.isExtensionsEnabled = true
+//            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
+//            self.isEnabled = isEnabled
+//            if isEnabled {
+//                startContinuousAnimation()
+//            }
+//        }
+//    }
     
+//    func toggleBlocking() {
+//        if !isProcess {
+//            toggleAllBlocking()
+//        } else {
+//            cancelBlockingTask()
+//        }
+//    }
+//    
     func showInstructions() {
         isShowInstructions.toggle()
     }

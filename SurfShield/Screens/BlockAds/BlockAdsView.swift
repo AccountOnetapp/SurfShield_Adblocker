@@ -18,7 +18,6 @@ struct BlockAdsView: View {
         content
             .onAppear {
                 if viewModel.isEnabled { viewModel.startContinuousAnimation() }
-//                viewModel.checkBlockingActivity()
             }
             .onDisappear {
 //                viewModel.cancelBlockingTask()
