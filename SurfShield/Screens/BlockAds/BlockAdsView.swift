@@ -19,15 +19,6 @@ struct BlockAdsView: View {
             .onAppear {
                 if viewModel.isEnabled { viewModel.startContinuousAnimation() }
             }
-            .onDisappear {
-//                viewModel.cancelBlockingTask()
-            }
-            .onChange(of: scenePhase) { phase in
-                if phase == .active {
-                    // Проверяем состояние расширений Safari при переходе приложения в активное состояние
-//                    viewModel.checkBlockingActivity()
-                }
-            }
             .sheet(isPresented: $viewModel.isShowInstructions) {
                 InstructionView()
                     .presentationDragIndicator(.visible)

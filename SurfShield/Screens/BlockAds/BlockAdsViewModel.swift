@@ -18,7 +18,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isProcess: Bool = false
     var waveHeight: CGFloat = 0
     @Published var isExtensionsEnabled: Bool = true
-//    let contentBlockerService = ContentBlockerService()
+    //    let contentBlockerService = ContentBlockerService()
     let safariExtensionChecker = SafariExtensionsChecker()
     
     let appInteractor = Executor.appInteractor
@@ -45,9 +45,7 @@ class BlockAdsViewModel: ObservableObject {
         appInteractor.$appSettings
             .map { $0.isBlockerEnable }
             .sink { [self] isEnabled in
-                withAnimation(.bouncy(duration: 0.2)) {
-                    self.isEnabled = isEnabled
-                }
+                self.isEnabled = isEnabled
                 if isEnabled {
                     startContinuousAnimation()
                 } else {
@@ -64,85 +62,83 @@ class BlockAdsViewModel: ObservableObject {
         Task {
             animate()
             isProcess = true
-            print("DEBUG: is process \(isProcess)")
             let newState = !isEnabled
             await appInteractor.applyBlocker(newState)
-            print("DEBUG: Blocking state vm \(isEnabled)")
             withAnimation(.bouncy(duration: 0.2)) {
                 isProcess = false
             }
         }
     }
     
-//    func checkBlockingActivity() {
-//        Task { @MainActor in
-//            let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
-//            guard isExtensionsEnabled else {
-//                userDefaultsService.save(false, forKey: .adBlockerEnabled)
-//                self.isExtensionsEnabled = false
-//                self.isEnabled = false
-//                return
-//            }
-//            
-//            self.isExtensionsEnabled = true
-//            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
-//            self.isEnabled = isEnabled
-//            if isEnabled {
-//                startContinuousAnimation()
-//            }
-//        }
-//    }
+    //    func checkBlockingActivity() {
+    //        Task { @MainActor in
+    //            let isExtensionsEnabled = await safariExtensionChecker.isExtensionEnabled()
+    //            guard isExtensionsEnabled else {
+    //                userDefaultsService.save(false, forKey: .adBlockerEnabled)
+    //                self.isExtensionsEnabled = false
+    //                self.isEnabled = false
+    //                return
+    //            }
+    //
+    //            self.isExtensionsEnabled = true
+    //            let isEnabled = userDefaultsService.load(Bool.self, forKey: .adBlockerEnabled) ?? false
+    //            self.isEnabled = isEnabled
+    //            if isEnabled {
+    //                startContinuousAnimation()
+    //            }
+    //        }
+    //    }
     
-//    func toggleBlocking() {
-//        if !isProcess {
-//            toggleAllBlocking()
-//        } else {
-//            cancelBlockingTask()
-//        }
-//    }
-//    
+    //    func toggleBlocking() {
+    //        if !isProcess {
+    //            toggleAllBlocking()
+    //        } else {
+    //            cancelBlockingTask()
+    //        }
+    //    }
+    //
     func showInstructions() {
         isShowInstructions.toggle()
     }
     
-    private func toggleAllBlocking() {
-        animate()
-        
-        // Сразу определяем новое состояние
-        let newState = !isEnabled
-        
-        blockingTask = Task {
-            if !newState {
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-            }
-            
-            if !Task.isCancelled {
-                // Применяем новое состояние через RulesConverter
-                await appInteractor.applyBlocker(newState)
-//                await contentBlockerService.applyBlockingState(newState)
-//                userDefaultsService.save(newState, forKey: .adBlockerEnabled)
-                await MainActor.run {
-                    // Обновляем состояние с анимацией
-                    withAnimation(.bouncy(duration: 0.2)) {
-                        isProcess = false
-                        isEnabled = newState
-                    }
-                    
-                    // Запускаем или останавливаем постоянную анимацию
-                    if newState {
-                        startContinuousAnimation()
-                    } else {
-                        stopContinuousAnimation()
-                    }
-                }
-            }
-        }
-    }
-
+//    private func toggleAllBlocking() {
+//        animate()
+//        
+//        // Сразу определяем новое состояние
+//        let newState = !isEnabled
+//        
+//        blockingTask = Task {
+//            if !newState {
+//                try? await Task.sleep(nanoseconds: 1_000_000_000)
+//            }
+//            
+//            if !Task.isCancelled {
+//                // Применяем новое состояние через RulesConverter
+//                await appInteractor.applyBlocker(newState)
+//                //                await contentBlockerService.applyBlockingState(newState)
+//                //                userDefaultsService.save(newState, forKey: .adBlockerEnabled)
+//                await MainActor.run {
+//                    // Обновляем состояние с анимацией
+//                    withAnimation(.bouncy(duration: 0.2)) {
+//                        isProcess = false
+//                        isEnabled = newState
+//                    }
+//                    
+//                    // Запускаем или останавливаем постоянную анимацию
+//                    if newState {
+//                        startContinuousAnimation()
+//                    } else {
+//                        stopContinuousAnimation()
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
     
     func animate() {
         animationID = UUID()
-
+        
         // Disable previous animation
         var transaction = Transaction()
         transaction.disablesAnimations = true
@@ -151,7 +147,7 @@ class BlockAdsViewModel: ObservableObject {
             waveHeight = 0
             waveProgress = 0
         }
-
+        
         withAnimation(.bouncy(duration: 0.2, extraBounce: 0.1)) {
             isProcess = true
         }
@@ -160,25 +156,25 @@ class BlockAdsViewModel: ObservableObject {
             self.waveProgress = 1.0
         }
         
-//        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-            self.circleRotation = 360
-//        }
+        //        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+        self.circleRotation = 360
+        //        }
     }
     
-    func cancelBlockingTask() {
-        blockingTask?.cancel()
-        blockingTask = nil
-        
-        // Обновляем состояние
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isProcess = false
-        }
-        
-        // Если блокировка не включена, останавливаем анимацию
-        if !isEnabled {
-            stopContinuousAnimation()
-        }
-    }
+//    func cancelBlockingTask() {
+//        blockingTask?.cancel()
+//        blockingTask = nil
+//        
+//        // Обновляем состояние
+//        withAnimation(.easeInOut(duration: 0.2)) {
+//            isProcess = false
+//        }
+//        
+//        // Если блокировка не включена, останавливаем анимацию
+//        if !isEnabled {
+//            stopContinuousAnimation()
+//        }
+//    }
     
     private func resetAnimations() {
         // Отменяем текущую анимацию
