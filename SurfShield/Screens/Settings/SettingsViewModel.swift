@@ -22,6 +22,16 @@ final class SettingsViewModel: ObservableObject {
         setupStatisticsObserver()
     }
     
+    func setAdvancedProtection(_ isOn: Bool) {
+        appInteractor.appSettings.advancedProtection = isOn
+        objectWillChange.send()
+    }
+    
+    func setBrowserDarkMode(_ isOn: Bool) {
+        appInteractor.appSettings.enableBrowserDarkMode = isOn
+        objectWillChange.send()
+    }
+    
     @MainActor
     public func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) {
         Task {

@@ -39,6 +39,7 @@ final class AppInteractor: ObservableObject {
             .sink { [weak self] newSettings in
                 guard let self = self else { return }
                 // Сохраняем в UserDefaults
+                print("DEBUG: app settings AP \(newSettings.advancedProtection)")
                 self.userDefaultsService.save(newSettings, forKey: .appSettings)
             }
             .store(in: &cancellables)

@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @StateObject var viewModel = SettingsViewModel()
-    
+    @EnvironmentObject var appState: AppState
     // Statistics
     @State private var isInfoExpanded = false
     
@@ -195,10 +195,14 @@ struct SettingsView: View {
                     title: "Advanced Protection",
                     subtitle: "Enhanced security features",
                     icon: "shield.lefthalf.filled",
-                    isOn: $viewModel.appInteractor.appSettings.advancedProtection,
+                    isOn: viewModel.appInteractor.appSettings.advancedProtection,
+                    set: { newValue in
+                        viewModel.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
+                            viewModel.setAdvancedProtection(newValue)
+                        }
+                    },
                     accentColor: .calmSecondary
                 )
-                
                 Divider()
                     .background(Color.tm.subTitle.opacity(0.2))
                 
@@ -315,7 +319,12 @@ struct SettingsView: View {
                     title: "Dark Theme",
                     subtitle: "Night mode browser",
                     icon: "moon.fill",
-                    isOn: $viewModel.appInteractor.appSettings.enableBrowserDarkMode,
+                    isOn: viewModel.appInteractor.appSettings.enableBrowserDarkMode,
+                    set: { newValue in
+                        viewModel.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
+                            viewModel.setBrowserDarkMode(newValue)
+                        }
+                    },
                     accentColor: .calm
                 )
 //                
@@ -577,6 +586,32 @@ struct ModernSectionCard<Content: View>: View {
     }
 }
 
+/// Современный переключатель с иконкой и описанием
+///
+/// Пример использования со стандартным Binding:
+/// ```swift
+/// ModernToggleRow(
+///     title: "Dark Mode",
+///     subtitle: "Enable dark theme",
+///     icon: "moon.fill",
+///     isOn: $isDarkMode,
+///     accentColor: .blue
+/// )
+/// ```
+///
+/// Пример использования с кастомным геттером/сеттером:
+/// ```swift
+/// ModernToggleRow(
+///     title: "Advanced Protection",
+///     subtitle: "Enhanced security",
+///     icon: "shield.fill",
+///     get: { viewModel.isProtectionEnabled },
+///     set: { newValue in
+///         viewModel.updateProtection(newValue)
+///     },
+///     accentColor: .green
+/// )
+/// ```
 struct ModernToggleRow: View {
     let title: String
     let subtitle: String
@@ -585,6 +620,7 @@ struct ModernToggleRow: View {
     let accentColor: Color
     let isDisabled: Bool
     
+    // Стандартный инициализатор с Binding
     init(
         title: String,
         subtitle: String,
@@ -599,6 +635,29 @@ struct ModernToggleRow: View {
         self._isOn = isOn
         self.accentColor = accentColor
         self.isDisabled = isDisabled
+    }
+    
+    // Инициализатор с кастомным геттером и сеттером
+    init(
+        title: String,
+        subtitle: String,
+        icon: String,
+        isOn: Bool,
+        set: @escaping (Bool) -> Void,
+        accentColor: Color,
+        isDisabled: Bool = false
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+        self.accentColor = accentColor
+        self.isDisabled = isDisabled
+        
+        // Создаем кастомный Binding с геттером и сеттером
+        self._isOn = Binding(
+            get: { isOn },
+            set: set
+        )
     }
     
     var body: some View {
