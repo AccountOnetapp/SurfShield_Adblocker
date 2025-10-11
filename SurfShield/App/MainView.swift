@@ -30,7 +30,6 @@ struct MainView: View {
             }
     }
     
-    
     @ViewBuilder
     var content: some View {
         switch appState.viewState {

@@ -86,7 +86,7 @@ struct PaywallView: View {
             )
             VerticalLabelView(
                 imageResource: .mining,
-                text: "Remove advertising",
+                text: "Stop \nmining",
                 padding: .smallExt
             )
         }
@@ -131,7 +131,7 @@ struct PaywallView: View {
     }
     
     var proposedText: some View {
-        Text("Try 3 days free, after $8.99/week\n Cancel anytime")
+        Text("Try 3 days free, after \(viewModel.price)/week\n Cancel anytime")
             .font(.sfProText(size: 15, weight: .medium))
             .multilineTextAlignment(.center)
             .foregroundStyle(.tm.subTitleSecondary)

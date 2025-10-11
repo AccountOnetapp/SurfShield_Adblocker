@@ -21,7 +21,6 @@ struct TabBarView: View {
         tabView
     }
     
-    
     var tabView: some View {
         TabView(selection: $selection,
                 content:  {

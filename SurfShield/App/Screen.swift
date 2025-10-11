@@ -11,7 +11,6 @@ enum Screen: Hashable, Identifiable {
     
     case paywall
     
-    
     var id: String {
         switch self {
         case .paywall:

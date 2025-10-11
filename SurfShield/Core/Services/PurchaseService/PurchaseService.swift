@@ -11,14 +11,35 @@ import StoreKit
 
 // MARK: - Errors
 
-enum PurchaseError: Error {
+enum PurchaseError: Error, LocalizedError {
     case noProducts
     case noProductWithThisId
     case purchaseFailed
     case restoreFailed
     case cancelled
     
-    /// Название ошибки для аналитики
+    /// Human-readable error description
+    var description: String {
+        switch self {
+        case .noProducts:
+            return "Failed to load products from App Store"
+        case .noProductWithThisId:
+            return "Failed to find subscription"
+        case .purchaseFailed:
+            return "Failed to complete purchase"
+        case .restoreFailed:
+            return "Failed to restore purchases"
+        case .cancelled:
+            return "Purchase cancelled by user"
+        }
+    }
+    
+    /// Localized error description (for system alerts)
+    var errorDescription: String? {
+        return description
+    }
+    
+    /// Error name for analytics
     var analyticsName: String {
         switch self {
         case .noProducts: return "no_products"
@@ -63,11 +84,7 @@ class PurchaseService {
     // ID приходит из Purchase Interactor из энума SubscriptionType
     func purchase(id: String) async throws -> ApphudAsyncPurchaseResult {
         do {
-            let products = try await Apphud.fetchProducts()
-            let product = products.first { $0.id == id }
-            
-            guard let product else { throw PurchaseError.noProductWithThisId }
-            
+            let product = try await getProduct(id: id)
             let asyncResult = await Apphud.purchase(product)
             
             guard asyncResult.error == nil else { throw asyncResult.error! }
@@ -76,6 +93,11 @@ class PurchaseService {
             print("DEBUG: purchase error \(error.localizedDescription)")
             throw PurchaseError.noProducts
         }
+    }
+    
+    @MainActor
+    func restore() {
+        
     }
     
     @MainActor
@@ -96,6 +118,20 @@ class PurchaseService {
             return products
         } catch {
             return []
+        }
+    }
+    
+    func getProduct(id: String) async throws -> Product {
+        do {
+            let products = try await Apphud.fetchProducts()
+            let product = products.first { $0.id == id }
+            if let product {
+                return product
+            } else {
+                throw PurchaseError.noProductWithThisId
+            }
+        } catch {
+            throw error
         }
     }
     

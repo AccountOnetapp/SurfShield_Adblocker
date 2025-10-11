@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import ApphudSDK
+import StoreKit
 
 class PurchaseRepository {
     //TODO: Implement PurchaseService
@@ -29,5 +30,10 @@ class PurchaseRepository {
     
     func isSubscriptionActive() -> Bool {
         return purchaseService.hasActiveSubscription()
+    }
+    
+    func getProduct(_ type: SubscriptionType) async throws -> Product {
+        throw PurchaseError.noProductWithThisId
+//        try await purchaseService.getProduct(id: type.id)
     }
 }
