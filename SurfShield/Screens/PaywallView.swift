@@ -45,6 +45,9 @@ struct PaywallView: View {
                         }
                     }
                 }
+                .errorAlert(error: $viewModel.error) {
+                    dismiss()
+                }
         }
     }
     

@@ -10,7 +10,7 @@ import Foundation
 final class PaywallViewModel: ObservableObject {
     let purchaseInteractor: PurchaseRepository = Executor.purchaseRepository
     @Published var price: String = ""
-    
+    @Published var error: Error?
     
     init() {
         getProduct()
@@ -29,7 +29,7 @@ final class PaywallViewModel: ObservableObject {
                 let product = try await purchaseInteractor.getProduct(.weekly)
                 self.price = product.displayPrice
             } catch {
-                
+                self.error = error
                 print("DEBUG: Error of fetch product \(error.localizedDescription)")
             }
         }
