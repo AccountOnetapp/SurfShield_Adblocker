@@ -15,6 +15,7 @@ enum UserDefaultsKeys: String, CaseIterable {
     case pageResources = "page_resources"
     case trafficStatistics = "traffic_statistics"
     case adBlockRules = "ad_block_rules"
+    case isFirstLoad = "isFirstLoad"
     case appSettings = "user_settings"
     case adBlockerEnabled = "adBlockerEnabled"
     case webViewBlockedStatistics = "webViewBlockedStatistics"

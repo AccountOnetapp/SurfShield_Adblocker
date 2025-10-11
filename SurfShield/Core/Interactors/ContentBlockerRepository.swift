@@ -9,12 +9,9 @@ import Foundation
 
 class ContentBlockerRepository {
     let contentBlockerService: ContentBlockerService
-    //    let safariExtensionChecker: SafariExtensionsChecker
-    //    let userDefaultsService = UserDefaultsService.shared
     
     init(blockerService: ContentBlockerService) {
         self.contentBlockerService = blockerService
-        //        self.safariExtensionChecker = safariChecker
     }
     
     func applyBlocker(_ isOn: Bool) async {

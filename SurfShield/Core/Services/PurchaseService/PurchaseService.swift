@@ -141,6 +141,12 @@ class PurchaseService {
     
     /// Проверить активную подписку
     func hasActiveSubscription() -> Bool {
+        let debugDisableSubscription = true
+        #if DEBUG
+        if debugDisableSubscription {
+            return false
+        }
+        #endif
         return Apphud.hasActiveSubscription()
     }
     

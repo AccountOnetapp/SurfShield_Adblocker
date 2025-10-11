@@ -24,7 +24,9 @@ struct MainView: View {
                 PaywallView()
             }
             .onChange(of: scenePhase) { newValue in
-                appInteractor.appCheck()
+                Task {
+                    await appInteractor.appCheck()
+                }
             }
     }
     
@@ -32,6 +34,8 @@ struct MainView: View {
     @ViewBuilder
     var content: some View {
         switch appState.viewState {
+        case .splash:
+            SplashScreenView()
         case .onboarding:
             OnboardingView()
         case .main:
@@ -48,7 +52,7 @@ struct MainView: View {
                 .onAppear {
                     if appState.isFirstLoad {
                         //MARK: Uncomment later after subscriptions implement
-//                        coordinator.fullScreenCover(to: .paywall)
+                        coordinator.fullScreenCover(to: .paywall)
                     }
                 }
         }

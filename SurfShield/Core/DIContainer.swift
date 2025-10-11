@@ -12,17 +12,17 @@ class DIContainer {
     let blockerService = ContentBlockerService()
     let safariChecker = SafariExtensionsChecker()
 //    let appSettings = AppSettings()
-    let purchaseInteractor: PurchaseRepository
+    let purchaseRepository: PurchaseRepository
     let appInteractor: AppInteractor
     
     
     init() {
         let appSettings = UserDefaultsService.shared.load(AppSettings.self, forKey: .appSettings) ?? .default
         
-        self.purchaseInteractor = PurchaseRepository(purchaseService: purchaseService)
+        self.purchaseRepository = PurchaseRepository(purchaseService: purchaseService)
         
         let blockerRepository = ContentBlockerRepository(blockerService: blockerService)
         
-        self.appInteractor = AppInteractor(contentBlockerRepository: blockerRepository, safariChecker: safariChecker, appSettings: appSettings)
+        self.appInteractor = AppInteractor(contentBlockerRepository: blockerRepository, purchaseRepository: purchaseRepository, safariChecker: safariChecker, appSettings: appSettings)
     }
 }

@@ -16,7 +16,6 @@ class PurchaseRepository {
     init(purchaseService: PurchaseService) {
         self.purchaseService = purchaseService
     }
-
     
     //TODO: Добавить возвращаемое значение
     func purchase(_ type: SubscriptionType) async -> Bool {
@@ -26,6 +25,10 @@ class PurchaseRepository {
         } catch {
             return false
         }
+    }
+    
+    func isSubscriptionActive() -> Bool {
+        return purchaseService.hasActiveSubscription()
     }
     
     @MainActor

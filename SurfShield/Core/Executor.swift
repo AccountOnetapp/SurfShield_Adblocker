@@ -11,7 +11,7 @@ class Executor {
     static private let container = DIContainer()
     
     static var purchaseInteractor: PurchaseRepository {
-        return container.purchaseInteractor
+        return container.purchaseRepository
     }
     
     static var appInteractor: AppInteractor {

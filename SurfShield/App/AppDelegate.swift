@@ -18,7 +18,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let idfv = UIDevice.current.identifierForVendor?.uuidString
         
         // Инициализация AppHud с IDF
-        Apphud.startManually(apiKey: Constants.apphudApiKey, deviceID: idfv)
+        Apphud.start(apiKey: Constants.apphudApiKey)
+//        Apphud.startManually(apiKey: Constants.apphudApiKey, deviceID: idfv)
         return true
     }
 }

@@ -102,7 +102,6 @@ struct BlockAdsView: View {
             .frame(width: 240)
     }
     
-    
     @ViewBuilder
     var blockAdsButton: some View {
         AnimatedBlockButton(
@@ -113,7 +112,7 @@ struct BlockAdsView: View {
             animationID: viewModel.animationID,
             onTap: {
                 // Haptic feedback
-//                    viewModel.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
+                    viewModel.checkPremiumAccess(showPaywall: $appState.isShowPaywall) {
                         print("DEBUG: Premium user - performing action")
                         // Здесь код для премиум пользователей
                         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
@@ -123,7 +122,7 @@ struct BlockAdsView: View {
                         } else {
                             viewModel.showInstructions()
                         }
-//                    }
+                    }
             }
         )
     }
