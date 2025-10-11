@@ -28,9 +28,8 @@ class PurchaseRepository {
         }
     }
     
-    func restore() async throws -> Bool {
-        let restored = try await purchaseService.restore()
-        return restored.hasActiveSubscriptions
+    func restore() async throws -> RestoreResult {
+        try await purchaseService.restore()
     }
     
     func isSubscriptionActive() -> Bool {

@@ -11,6 +11,7 @@ final class PaywallViewModel: ObservableObject {
     let purchaseInteractor: PurchaseRepository = Executor.purchaseRepository
     @Published var price: String = ""
     @Published var error: Error?
+    @Published var infoAlert: InfoAlert?
     
     init() {
         getProduct()
@@ -27,13 +28,27 @@ final class PaywallViewModel: ObservableObject {
         }
     }
     
-    func restore(isSuccess: @escaping (Bool) -> Void) {
+    func restore() {
         Task {
             do {
                 let result = try await purchaseInteractor.restore()
-                isSuccess(result)
+                await MainActor.run {
+                    if result.isSuccess {
+                        infoAlert = InfoAlert(
+                            title: "Success",
+                            text: result.message
+                        )
+                    } else {
+                        infoAlert = InfoAlert(
+                            title: "No Active Subscriptions",
+                            text: result.message
+                        )
+                    }
+                }
             } catch {
-                self.error = error
+                await MainActor.run {
+                    self.error = error
+                }
             }
         }
     }

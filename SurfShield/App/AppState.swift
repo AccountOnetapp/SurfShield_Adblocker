@@ -28,6 +28,7 @@ final class AppState: ObservableObject {
         appCheck()
     }
     
+    
     public func onboardingCompleted() {
         userDefaultsService.save(true, forKey: .onboardingCompleted)
         userDefaultsService.save(false, forKey: .isFirstLoad)
@@ -37,12 +38,12 @@ final class AppState: ObservableObject {
     }
     
     private func appCheck() {
-        Task {
+        Task { @MainActor in
             await appInteractor.appCheck()
             let isOnboardingShown = userDefaultsService.load(Bool.self, forKey: .onboardingCompleted) ?? false
             self.isFirstLoad = userDefaultsService.load(Bool.self, forKey: .isFirstLoad) ?? true
             withAnimation(.easeIn(duration: 0.3)) {
-                self.viewState = isOnboardingShown ? .main : .onboarding
+                    self.viewState = isOnboardingShown ? .main : .onboarding
             }
         }
     }

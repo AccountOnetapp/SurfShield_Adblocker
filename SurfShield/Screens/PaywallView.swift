@@ -7,9 +7,6 @@
 
 import SwiftUI
 
-
-
-
 struct PaywallView: View {
     @Environment(\.dismiss) var dismiss
     
@@ -36,9 +33,7 @@ struct PaywallView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
-                            viewModel.restore { isSuccess in
-                                dismiss()
-                            }
+                            viewModel.restore()
                         }) {
                             Text("Restore")
                                 .font(.system(size: 20, weight: .regular))
@@ -48,6 +43,12 @@ struct PaywallView: View {
                 }
                 .errorAlert(error: $viewModel.error) {
                     dismiss()
+                }
+                .infoAlert(alert: $viewModel.infoAlert) {
+                    // При успешном восстановлении закрываем paywall
+                    if viewModel.infoAlert?.title == "Success" {
+                        dismiss()
+                    }
                 }
         }
     }
