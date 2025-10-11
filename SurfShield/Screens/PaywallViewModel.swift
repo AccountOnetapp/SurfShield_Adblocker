@@ -18,8 +18,23 @@ final class PaywallViewModel: ObservableObject {
     
     func purchase(isSuccess: @escaping (Bool) -> Void) {
         Task {
-            let result = await purchaseInteractor.purchase(.weekly)
-            isSuccess(result)
+            do {
+                let result = try await purchaseInteractor.purchase(.weekly)
+                isSuccess(result)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+    
+    func restore(isSuccess: @escaping (Bool) -> Void) {
+        Task {
+            do {
+                let result = try await purchaseInteractor.restore()
+                isSuccess(result)
+            } catch {
+                self.error = error
+            }
         }
     }
     

@@ -59,26 +59,23 @@ struct PurchaseResult {
     let error: Error?
 }
 
+struct RestoreResult {
+    let subscriptions: [ApphudSubscription]
+    let isSuccess: Bool
+    let message: String
+    
+    var hasActiveSubscriptions: Bool {
+        subscriptions.contains { $0.isActive() }
+    }
+    
+    var activeCount: Int {
+        subscriptions.filter { $0.isActive() }.count
+    }
+}
+
 // MARK: - Service
 
 class PurchaseService {
-    
-    // MARK: - Purchase
-    @MainActor
-    /// Купить продукт
-    func purchase(_ product: ApphudProduct) async -> PurchaseResult {
-        await withCheckedContinuation { continuation in
-            Apphud.purchase(product) { result in
-                let purchaseResult = PurchaseResult(
-                    subscription: result.subscription,
-                    isSuccess: result.subscription?.isActive() ?? false,
-                    error: result.error
-                )
-                continuation.resume(returning: purchaseResult)
-            }
-        }
-    }
-    
     
     @MainActor
     // ID приходит из Purchase Interactor из энума SubscriptionType
@@ -96,25 +93,48 @@ class PurchaseService {
     }
     
     @MainActor
-    func restore() {
-        
+    /// Восстановить покупки и вернуть результат
+    func restore() async throws -> RestoreResult {
+        do {
+            let subscriptions = try await restorePurchases()
+            
+            // Проверяем, есть ли активные подписки
+            let activeSubscriptions = subscriptions.filter { $0.isActive() }
+            
+            if !activeSubscriptions.isEmpty {
+                print("✅ Restored \(activeSubscriptions.count) active subscription(s)")
+                return RestoreResult(
+                    subscriptions: activeSubscriptions,
+                    isSuccess: true,
+                    message: "Successfully restored \(activeSubscriptions.count) subscription(s)"
+                )
+            } else if !subscriptions.isEmpty {
+                // Есть подписки, но они неактивны
+                print("⚠️ Found subscriptions but none are active")
+                return RestoreResult(
+                    subscriptions: subscriptions,
+                    isSuccess: false,
+                    message: "No active subscriptions found"
+                )
+            } else {
+                // Подписок вообще нет
+                print("ℹ️ No subscriptions to restore")
+                return RestoreResult(
+                    subscriptions: [],
+                    isSuccess: false,
+                    message: "No purchases to restore"
+                )
+            }
+        } catch {
+            print("❌ Restore failed: \(error.localizedDescription)")
+            throw PurchaseError.restoreFailed
+        }
     }
     
     @MainActor
     func getProducts() async -> [Product] {
         do {
             let products = try await Apphud.fetchProducts()
-//            let groups = await Apphud.permissionGroups() ?? []
-//            let paywalls = await fetchPaywalls()
-            
-//            let pwproducts = paywalls.map { $0.products }
-//            let pwIds = paywalls.map { $0.identifier }
-//            let resultProducts = pwproducts.flatMap { $0 }.map({ $0.skProduct?.productIdentifier })
-//            let ids = groups.flatMap { $0.productIds }
-//            print("DEBUG: Products \(products)")
-//            print("DEBUG: PWProduct ids \(pwIds)")
-//            print("DEBUG: Products \(products)")
-            
             return products
         } catch {
             return []
@@ -165,7 +185,7 @@ class PurchaseService {
         try await withCheckedThrowingContinuation { continuation in
             Apphud.restorePurchases { subscriptions, _, error in
                 if error != nil {
-                    continuation.resume(throwing: PurchaseError.restoreFailed)
+                    continuation.resume(throwing: error!)
                 } else {
                     continuation.resume(returning: subscriptions ?? [])
                 }

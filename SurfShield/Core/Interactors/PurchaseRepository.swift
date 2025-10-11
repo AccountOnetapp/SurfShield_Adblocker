@@ -19,13 +19,18 @@ class PurchaseRepository {
     }
     
     //TODO: Добавить возвращаемое значение
-    func purchase(_ type: SubscriptionType) async -> Bool {
+    func purchase(_ type: SubscriptionType) async throws -> Bool {
         do {
             let purchaseResult = try await purchaseService.purchase(id: type.id)
             return purchaseResult.success
         } catch {
-            return false
+            throw error
         }
+    }
+    
+    func restore() async throws -> Bool {
+        let restored = try await purchaseService.restore()
+        return restored.hasActiveSubscriptions
     }
     
     func isSubscriptionActive() -> Bool {
@@ -33,7 +38,7 @@ class PurchaseRepository {
     }
     
     func getProduct(_ type: SubscriptionType) async throws -> Product {
-        throw PurchaseError.noProductWithThisId
-//        try await purchaseService.getProduct(id: type.id)
+//        throw PurchaseError.noProductWithThisId
+        try await purchaseService.getProduct(id: type.id)
     }
 }

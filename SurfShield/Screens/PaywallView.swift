@@ -36,8 +36,9 @@ struct PaywallView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
-                            dismiss()
-                            
+                            viewModel.restore { isSuccess in
+                                dismiss()
+                            }
                         }) {
                             Text("Restore")
                                 .font(.system(size: 20, weight: .regular))
