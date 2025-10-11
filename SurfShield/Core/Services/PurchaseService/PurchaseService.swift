@@ -79,22 +79,6 @@ class PurchaseService {
     
     // MARK: - Purchase
     @MainActor
-    /// Купить продукт
-    func purchase(_ product: ApphudProduct) async -> PurchaseResult {
-        await withCheckedContinuation { continuation in
-            Apphud.purchase(product) { result in
-                let purchaseResult = PurchaseResult(
-                    subscription: result.subscription,
-                    isSuccess: result.subscription?.isActive() ?? false,
-                    error: result.error
-                )
-                continuation.resume(returning: purchaseResult)
-            }
-        }
-    }
-    
-    
-    @MainActor
     // ID приходит из Purchase Interactor из энума SubscriptionType
     func purchase(id: String) async throws -> ApphudAsyncPurchaseResult {
         do {
@@ -149,6 +133,20 @@ class PurchaseService {
     }
     
     @MainActor
+    /// Восстановить покупки
+    private func restorePurchases() async throws -> [ApphudSubscription] {
+        try await withCheckedThrowingContinuation { continuation in
+            Apphud.restorePurchases { subscriptions, _, error in
+                if error != nil {
+                    continuation.resume(throwing: error!)
+                } else {
+                    continuation.resume(returning: subscriptions ?? [])
+                }
+            }
+        }
+    }
+    
+    @MainActor
     func getProducts() async -> [Product] {
         do {
             let products = try await Apphud.fetchProducts()
@@ -171,55 +169,15 @@ class PurchaseService {
             throw error
         }
     }
-    
-    // MARK: - Paywalls
-    /// Загрузить paywalls с сервера (асинхронно)
-    @MainActor
-    func fetchPaywalls() async -> [ApphudPaywall] {
-        await withCheckedContinuation { continuation in
-            Apphud.paywallsDidLoadCallback { paywalls, error in
-                if let error = error {
-                    print("❌ Ошибка загрузки paywalls: \(error)")
-                    continuation.resume(returning: [])
-                } else {
-                    continuation.resume(returning: paywalls)
-                }
-            }
-        }
-    }
-    
-    /// Получить все продукты из всех paywalls
-    @MainActor
-    func getAllProductsFromPaywalls() async -> [ApphudProduct] {
-        let paywalls = await fetchPaywalls()
-        return paywalls.flatMap { $0.products }
-    }
-
-    
-    @MainActor
-    /// Восстановить покупки
-    func restorePurchases() async throws -> [ApphudSubscription] {
-        try await withCheckedThrowingContinuation { continuation in
-            Apphud.restorePurchases { subscriptions, _, error in
-                if error != nil {
-                    continuation.resume(throwing: error!)
-                } else {
-                    continuation.resume(returning: subscriptions ?? [])
-                }
-            }
-        }
-    }
-    
     // MARK: - Status
-    
     /// Проверить активную подписку
     func hasActiveSubscription() -> Bool {
-        let debugDisableSubscription = true
-        #if DEBUG
-        if debugDisableSubscription {
-            return false
-        }
-        #endif
+//        let debugDisableSubscription = true
+//        #if DEBUG
+//        if debugDisableSubscription {
+//            return false
+//        }
+//        #endif
         return Apphud.hasActiveSubscription()
     }
     
@@ -260,14 +218,6 @@ class PurchaseService {
             print("DEBUG: products \(products)")
         } catch {
             print("DEBUG: error \(error.localizedDescription)")
-        }
-        
-    }
-    
-    /// Загрузить продукты через AppHud
-    func loadApphudProducts() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            
         }
     }
 }

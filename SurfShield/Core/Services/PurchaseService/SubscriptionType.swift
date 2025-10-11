@@ -14,7 +14,7 @@ enum SubscriptionType: String, CaseIterable {
     var id: String {
         switch self {
         case .weekly: "week_899_3dtrial"
-        case .yearly:   "year_8988"
+        case .yearly: "year_8988"
         }
     }
 }
