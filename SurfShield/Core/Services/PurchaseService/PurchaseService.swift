@@ -77,6 +77,23 @@ struct RestoreResult {
 
 class PurchaseService {
     
+    // MARK: - Purchase
+    @MainActor
+    /// Купить продукт
+    func purchase(_ product: ApphudProduct) async -> PurchaseResult {
+        await withCheckedContinuation { continuation in
+            Apphud.purchase(product) { result in
+                let purchaseResult = PurchaseResult(
+                    subscription: result.subscription,
+                    isSuccess: result.subscription?.isActive() ?? false,
+                    error: result.error
+                )
+                continuation.resume(returning: purchaseResult)
+            }
+        }
+    }
+    
+    
     @MainActor
     // ID приходит из Purchase Interactor из энума SubscriptionType
     func purchase(id: String) async throws -> ApphudAsyncPurchaseResult {

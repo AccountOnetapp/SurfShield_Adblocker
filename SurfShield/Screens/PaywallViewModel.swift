@@ -12,6 +12,7 @@ final class PaywallViewModel: ObservableObject {
     @Published var price: String = ""
     @Published var error: Error?
     @Published var infoAlert: InfoAlert?
+    @Published var isLoading: Bool = false
     
     init() {
         getProduct()
@@ -19,20 +20,37 @@ final class PaywallViewModel: ObservableObject {
     
     func purchase(isSuccess: @escaping (Bool) -> Void) {
         Task {
+            await MainActor.run {
+                isLoading = true
+            }
+            
             do {
                 let result = try await purchaseInteractor.purchase(.weekly)
-                isSuccess(result)
+                
+                await MainActor.run {
+                    isLoading = false
+                    isSuccess(result)
+                }
             } catch {
-                self.error = error
+                await MainActor.run {
+                    isLoading = false
+                    self.error = error
+                }
             }
         }
     }
     
     func restore() {
         Task {
+            await MainActor.run {
+                isLoading = true
+            }
+            
             do {
                 let result = try await purchaseInteractor.restore()
                 await MainActor.run {
+                    isLoading = false
+                    
                     if result.isSuccess {
                         infoAlert = InfoAlert(
                             title: "Success",
@@ -47,6 +65,7 @@ final class PaywallViewModel: ObservableObject {
                 }
             } catch {
                 await MainActor.run {
+                    isLoading = false
                     self.error = error
                 }
             }

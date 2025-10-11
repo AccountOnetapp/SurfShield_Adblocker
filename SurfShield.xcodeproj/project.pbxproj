@@ -135,6 +135,7 @@
 		8EADC1192E6F319300B52000 /* BrowserTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EADC1182E6F319300B52000 /* BrowserTheme.swift */; };
 		8EB16CBC2E9AC9DA00F35F6A /* ErrorAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB16CBB2E9AC9DA00F35F6A /* ErrorAlertModifier.swift */; };
 		8EB16CBE2E9AF3B300F35F6A /* InfoAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB16CBD2E9AF3B300F35F6A /* InfoAlertModifier.swift */; };
+		8EB16CC02E9AF79E00F35F6A /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB16CBF2E9AF79E00F35F6A /* LoaderView.swift */; };
 		8EB7913C2E967B6F0000A4A6 /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8EB7913B2E967B6F0000A4A6 /* ApphudSDK */; };
 		8EB7913F2E96822E0000A4A6 /* PurchaseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB7913E2E96822E0000A4A6 /* PurchaseRepository.swift */; };
 		8EB791412E9682BB0000A4A6 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791402E9682BB0000A4A6 /* DIContainer.swift */; };
@@ -572,6 +573,7 @@
 		8EADC1182E6F319300B52000 /* BrowserTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserTheme.swift; sourceTree = "<group>"; };
 		8EB16CBB2E9AC9DA00F35F6A /* ErrorAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertModifier.swift; sourceTree = "<group>"; };
 		8EB16CBD2E9AF3B300F35F6A /* InfoAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlertModifier.swift; sourceTree = "<group>"; };
+		8EB16CBF2E9AF79E00F35F6A /* LoaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
 		8EB7913E2E96822E0000A4A6 /* PurchaseRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseRepository.swift; sourceTree = "<group>"; };
 		8EB791402E9682BB0000A4A6 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		8EB791422E9682DD0000A4A6 /* PurchaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseService.swift; sourceTree = "<group>"; };
@@ -781,6 +783,7 @@
 			isa = PBXGroup;
 			children = (
 				8E0384D12E5E4B3F001D5E9D /* BackgroundGradient.swift */,
+				8EB16CBF2E9AF79E00F35F6A /* LoaderView.swift */,
 				8E6A74202E919EEC00486954 /* MainButton.swift */,
 				8E6A74222E928BCD00486954 /* BorderedButton.swift */,
 				8EB16CBB2E9AC9DA00F35F6A /* ErrorAlertModifier.swift */,
@@ -2179,6 +2182,7 @@
 				8ECF280B2E59BAFE000A5748 /* SurfShieldApp.swift in Sources */,
 				8EB791462E9684910000A4A6 /* Executor.swift in Sources */,
 				8EAD12352E59CAFE000A1235 /* AppDelegate.swift in Sources */,
+				8EB16CC02E9AF79E00F35F6A /* LoaderView.swift in Sources */,
 				8EBB25C22E61C7C700E29966 /* SafariVersion.swift in Sources */,
 				8E0384CF2E5E4939001D5E9D /* SettingsView.swift in Sources */,
 				8EB791412E9682BB0000A4A6 /* DIContainer.swift in Sources */,

@@ -50,6 +50,7 @@ struct PaywallView: View {
                         dismiss()
                     }
                 }
+                .loader(isLoading: $viewModel.isLoading, message: "Processing...")
         }
     }
     
