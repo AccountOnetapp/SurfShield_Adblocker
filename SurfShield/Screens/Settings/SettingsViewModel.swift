@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+import SwiftUI
 import Combine
 
 final class SettingsViewModel: ObservableObject {
@@ -20,6 +20,13 @@ final class SettingsViewModel: ObservableObject {
     
     init() {
         setupStatisticsObserver()
+    }
+    
+    @MainActor
+    public func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) {
+        Task {
+            await appInteractor.checkPremiumAccess(showPaywall: showPaywall, action: action)
+        }
     }
     
     public func openAppStore() {

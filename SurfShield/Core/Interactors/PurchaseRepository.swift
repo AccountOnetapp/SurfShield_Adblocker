@@ -30,18 +30,4 @@ class PurchaseRepository {
     func isSubscriptionActive() -> Bool {
         return purchaseService.hasActiveSubscription()
     }
-    
-    @MainActor
-    ///Проверяет на присутствие подписки, если она есть, то выполняется блок action, если нет, то тоглится showPaywall ( Обязательно нужно привязывать переменную которая тригерит paywall )
-    func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) async {
-        let hasPremium = purchaseService.hasActiveSubscription()
-        let products = await purchaseService.getProducts()
-        if hasPremium {
-            // Есть подписка - выполняем действие
-            action()
-        } else {
-            // Нет подписки - показываем paywall
-            showPaywall.wrappedValue = true
-        }
-    }
 }

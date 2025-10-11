@@ -18,13 +18,7 @@ class BlockAdsViewModel: ObservableObject {
     @Published var isProcess: Bool = false
     var waveHeight: CGFloat = 0
     @Published var isExtensionsEnabled: Bool = true
-    //    let contentBlockerService = ContentBlockerService()
-    let safariExtensionChecker = SafariExtensionsChecker()
-    
     let appInteractor = Executor.appInteractor
-    
-    let userDefaultsService = UserDefaultsService.shared
-    let purchaseInteractor = Executor.purchaseInteractor
     private var blockingTask: Task<Void, Never>?
     private var continuousAnimationTask: Task<Void, Never>?
     var animationID = UUID() // Для отслеживания текущей анимации
@@ -225,7 +219,7 @@ class BlockAdsViewModel: ObservableObject {
     @MainActor
     public func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) {
         Task {
-            await purchaseInteractor.checkPremiumAccess(showPaywall: showPaywall, action: action)
+            await appInteractor.checkPremiumAccess(showPaywall: showPaywall, action: action)
         }
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 final class AppInteractor: ObservableObject {
     private let contentBlockerRepository: ContentBlockerRepository
@@ -51,6 +52,21 @@ final class AppInteractor: ObservableObject {
         }
     }
     
+    @MainActor
+    ///Проверяет на присутствие подписки, если она есть, то выполняется блок action, если нет, то тоглится showPaywall ( Обязательно нужно привязывать переменную которая тригерит paywall )
+    func checkPremiumAccess(showPaywall: Binding<Bool>, action: @escaping () -> Void) async {
+        let hasPremium = purchaseRepository.isSubscriptionActive()
+//        let products = await purchaseService.getProducts()
+        if hasPremium {
+            // Есть подписка - выполняем действие
+            action()
+        } else {
+            // Нет подписки - показываем paywall
+            showPaywall.wrappedValue = true
+        }
+    }
+    
+    @MainActor
     private func disablePremiumFeatures() async {
         await contentBlockerRepository.applyBlocker(false)
         appSettings.isBlockerEnable = false
@@ -80,5 +96,4 @@ final class AppInteractor: ObservableObject {
         }
         appSettings.isBlockerEnable = isOn
     }
-    
 }
