@@ -115,7 +115,7 @@ struct FirstOnboardingScreen: View {
                 .multilineTextAlignment(.center)
                 .padding(.vertical, 42)
             // Подзаголовок
-            Text("Before we can start, SufrShield extensions need to be enabled in Safari settings")
+            Text("Before we can start, SurfShield extensions need to be enabled in Safari settings")
                 .font(.sfProText(size: 16, weight: .regular))
                 .foregroundColor(.tm.subTitle)
                 .multilineTextAlignment(.center)
