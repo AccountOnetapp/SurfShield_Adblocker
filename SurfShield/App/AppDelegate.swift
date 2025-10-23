@@ -20,6 +20,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Инициализация AppHud с IDF
         Apphud.start(apiKey: Constants.apphudApiKey)
 //        Apphud.startManually(apiKey: Constants.apphudApiKey, deviceID: idfv)
+        
         return true
     }
 }

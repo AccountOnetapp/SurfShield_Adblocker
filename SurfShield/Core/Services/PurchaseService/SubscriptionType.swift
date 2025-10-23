@@ -9,12 +9,12 @@ import Foundation
 
 enum SubscriptionType: String, CaseIterable {
     case weekly
-    case yearly
+    // case yearly // Убрано - не используется
     
     var id: String {
         switch self {
         case .weekly: "week_899_3dtrial"
-        case .yearly: "year_8988"
+        // case .yearly: "year_8988" // Убрано - не используется
         }
     }
 }
