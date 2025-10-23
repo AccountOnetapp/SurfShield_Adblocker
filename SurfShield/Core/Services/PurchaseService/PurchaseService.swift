@@ -81,14 +81,31 @@ class PurchaseService {
     @MainActor
     // ID приходит из Purchase Interactor из энума SubscriptionType
     func purchase(id: String) async throws -> ApphudAsyncPurchaseResult {
+        print("\n💳 === НАЧАЛО ПОКУПКИ ===\n")
+        print("DEBUG: Покупаем подписку с ID: \(id)")
+        
         do {
             let product = try await getProduct(id: id)
+            print("DEBUG: Продукт найден: \(product.displayName) - \(product.displayPrice)")
+            
             let asyncResult = await Apphud.purchase(product)
             
-            guard asyncResult.error == nil else { throw asyncResult.error! }
+            print("DEBUG: Результат покупки:")
+            print("  - Success: \(asyncResult.success)")
+            print("  - Error: \(asyncResult.error?.localizedDescription ?? "nil")")
+            print("  - Subscription: \(asyncResult.subscription?.productId ?? "nil")")
+            
+            guard asyncResult.error == nil else { 
+                print("❌ Ошибка покупки: \(asyncResult.error!.localizedDescription)")
+                throw asyncResult.error! 
+            }
+            
+            print("✅ Покупка успешна!")
+            print("\n💳 === КОНЕЦ ПОКУПКИ ===\n")
+            
             return asyncResult
         } catch {
-            print("DEBUG: purchase error \(error.localizedDescription)")
+            print("❌ DEBUG: purchase error \(error.localizedDescription)")
             throw PurchaseError.noProducts
         }
     }
@@ -170,21 +187,142 @@ class PurchaseService {
         }
     }
     // MARK: - Status
+    @MainActor
     /// Проверить активную подписку
-    func hasActiveSubscription() -> Bool {
+    func hasActiveSubscription() async -> Bool {
 //        let debugDisableSubscription = true
 //        #if DEBUG
 //        if debugDisableSubscription {
 //            return false
 //        }
 //        #endif
-        return Apphud.hasActiveSubscription()
+        
+        // Детальная отладка статуса подписки
+        print("\n🔍 === ПРОВЕРКА СТАТУСА ПОДПИСКИ ===\n")
+        
+        let userID = Apphud.userID()
+        print("DEBUG: AppHud User ID: \(userID)")
+        
+        let hasActive = Apphud.hasActiveSubscription()
+        print("DEBUG: hasActiveSubscription(): \(hasActive)")
+        
+        let subscription = Apphud.subscription()
+        print("DEBUG: Current subscription: \(subscription?.productId ?? "nil")")
+        print("DEBUG: Subscription status: \(subscription?.status.rawValue ?? "nil")")
+        print("DEBUG: Subscription isActive: \(subscription?.isActive() ?? false)")
+        
+        let allSubscriptions = Apphud.subscriptions() ?? []
+        print("DEBUG: All subscriptions count: \(allSubscriptions.count)")
+        for (index, sub) in allSubscriptions.enumerated() {
+            print("DEBUG: Subscription \(index): \(sub.productId) - \(sub.status.rawValue) - Active: \(sub.isActive())")
+        }
+        
+        // Проверяем через StoreKit напрямую (самая надежная проверка)
+        let storeKitHasActive = await checkStoreKitSubscription()
+        print("DEBUG: StoreKit hasActive: \(storeKitHasActive)")
+        
+        // Проверяем все подписки напрямую
+        let hasActiveSubscriptions = allSubscriptions.contains { $0.isActive() }
+        print("DEBUG: Any subscription isActive(): \(hasActiveSubscriptions)")
+        
+        // Используем максимально надежную проверку для продакшена
+        // StoreKit - самый надежный источник истины
+        let finalResult = storeKitHasActive || hasActive || hasActiveSubscriptions
+        print("DEBUG: Final result (StoreKit || AppHud || Subscriptions): \(finalResult)")
+        
+        print("\n🔍 === КОНЕЦ ПРОВЕРКИ СТАТУСА ===\n")
+        
+        return finalResult
+    }
+    
+    /// Проверка подписки через StoreKit напрямую (максимально надежная для продакшена)
+    @MainActor
+    private func checkStoreKitSubscription() async -> Bool {
+        print("DEBUG: === ПРОВЕРКА STOREKIT ===")
+        
+        do {
+            // 1. Проверяем активные транзакции (самый надежный способ)
+            var hasActiveTransaction = false
+            var activeTransactions: [String] = []
+            
+            for await result in Transaction.currentEntitlements {
+                if case .verified(let transaction) = result {
+                    let isActive = transaction.revocationDate == nil
+                    print("DEBUG: Transaction \(transaction.productID): \(isActive ? "ACTIVE" : "REVOKED")")
+                    
+                    if isActive {
+                        hasActiveTransaction = true
+                        activeTransactions.append(transaction.productID)
+                    }
+                }
+            }
+            
+            print("DEBUG: Active transactions: \(activeTransactions)")
+            print("DEBUG: Has active transaction: \(hasActiveTransaction)")
+            
+            // 2. Дополнительная проверка через продукты
+            let products = try await Apphud.fetchProducts()
+            print("DEBUG: StoreKit products count: \(products.count)")
+            
+            var hasSubscriptionProduct = false
+            for product in products {
+                if let subscription = product.subscription {
+                    print("DEBUG: Subscription product: \(product.id) - \(product.displayPrice)")
+                    print("DEBUG: Subscription period: \(subscription.subscriptionPeriod)")
+                    hasSubscriptionProduct = true
+                }
+            }
+            
+            print("DEBUG: Has subscription products: \(hasSubscriptionProduct)")
+            
+            // 3. Финальный результат
+            let result = hasActiveTransaction
+            print("DEBUG: StoreKit final result: \(result)")
+            print("DEBUG: === КОНЕЦ ПРОВЕРКИ STOREKIT ===")
+            
+            return result
+            
+        } catch {
+            print("❌ DEBUG: StoreKit check error: \(error.localizedDescription)")
+            print("DEBUG: === КОНЕЦ ПРОВЕРКИ STOREKIT (ERROR) ===")
+            return false
+        }
     }
     
     @MainActor
     /// Получить текущую подписку
     func getSubscription() -> ApphudSubscription? {
         return Apphud.subscription()
+    }
+    
+    /// Альтернативная проверка активной подписки (более надежная)
+    @MainActor
+    func hasActiveSubscriptionAlternative() async -> Bool {
+        print("\n🔄 === АЛЬТЕРНАТИВНАЯ ПРОВЕРКА ПОДПИСКИ ===\n")
+        
+        // 1. Проверяем статус без синхронизации
+        print("DEBUG: Проверка без синхронизации")
+        
+        // 2. Проверяем через AppHud
+        let apphudActive = Apphud.hasActiveSubscription()
+        print("DEBUG: AppHud hasActive: \(apphudActive)")
+        
+        // 3. Проверяем через StoreKit напрямую
+        let storeKitActive = await checkStoreKitSubscription()
+        print("DEBUG: StoreKit hasActive: \(storeKitActive)")
+        
+        // 4. Проверяем все подписки
+        let subscriptions = Apphud.subscriptions() ?? []
+        let hasActiveSub = subscriptions.contains { $0.isActive() }
+        print("DEBUG: Any subscription active: \(hasActiveSub)")
+        
+        // Возвращаем true если хотя бы один метод показывает активную подписку
+        let result = apphudActive || storeKitActive || hasActiveSub
+        print("DEBUG: Final result: \(result)")
+        
+        print("\n🔄 === КОНЕЦ АЛЬТЕРНАТИВНОЙ ПРОВЕРКИ ===\n")
+        
+        return result
     }
     
     @MainActor

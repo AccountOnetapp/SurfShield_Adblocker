@@ -32,8 +32,14 @@ class PurchaseRepository {
         try await purchaseService.restore()
     }
     
-    func isSubscriptionActive() -> Bool {
-        return purchaseService.hasActiveSubscription()
+    @MainActor
+    func isSubscriptionActive() async -> Bool {
+        return await purchaseService.hasActiveSubscription()
+    }
+    
+    /// Альтернативная проверка подписки (более надежная)
+    func isSubscriptionActiveAlternative() async -> Bool {
+        return await purchaseService.hasActiveSubscriptionAlternative()
     }
     
     func getProduct(_ type: SubscriptionType) async throws -> Product {
