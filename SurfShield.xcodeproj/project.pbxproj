@@ -143,6 +143,7 @@
 		8EB791462E9684910000A4A6 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791452E9684910000A4A6 /* Executor.swift */; };
 		8EB791492E96DBC20000A4A6 /* SubscriptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */; };
 		8EB7914B2E96E8900000A4A6 /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB7914A2E96E8900000A4A6 /* PaywallViewModel.swift */; };
+		8EBA0ED42EDC39B8004C1FBB /* ContentBlockerServiceNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA0ED32EDC39B8004C1FBB /* ContentBlockerServiceNew.swift */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -580,6 +581,7 @@
 		8EB791452E9684910000A4A6 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
 		8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionType.swift; sourceTree = "<group>"; };
 		8EB7914A2E96E8900000A4A6 /* PaywallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewModel.swift; sourceTree = "<group>"; };
+		8EBA0ED32EDC39B8004C1FBB /* ContentBlockerServiceNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerServiceNew.swift; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -862,6 +864,7 @@
 			isa = PBXGroup;
 			children = (
 				8EBA84072E5BBA0900206493 /* ContentBlockerService.swift */,
+				8EBA0ED32EDC39B8004C1FBB /* ContentBlockerServiceNew.swift */,
 				8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */,
 				8EBB25802E61C77500E29966 /* ContentConverter */,
 			);
@@ -2121,6 +2124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EC73F9C2E69AD4300EAA93F /* WebViewPanel.swift in Sources */,
+				8EBA0ED42EDC39B8004C1FBB /* ContentBlockerServiceNew.swift in Sources */,
 				8EC396BA2E7175CC00D340E1 /* PaywallView.swift in Sources */,
 				8E7B5E532E61D70700D5E817 /* BlockerEntryEncoder.swift in Sources */,
 				8E6A741B2E9185B500486954 /* ScrollableScrollView.swift in Sources */,

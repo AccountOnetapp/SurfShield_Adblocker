@@ -8,13 +8,14 @@
 import Foundation
 
 class ContentBlockerRepository {
-    let contentBlockerService: ContentBlockerService
+    let contentBlockerService: ContentBlockerServiceNew
     
-    init(blockerService: ContentBlockerService) {
+    init(blockerService: ContentBlockerServiceNew) {
         self.contentBlockerService = blockerService
     }
     
     func applyBlocker(_ isOn: Bool) async {
-        await contentBlockerService.applyBlockingState(isOn)
+//        await contentBlockerService.applyBlockingState(isOn)
+        await contentBlockerService.enableBlocker(isOn: isOn)
     }
 }
