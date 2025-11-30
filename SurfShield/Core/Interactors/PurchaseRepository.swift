@@ -34,8 +34,7 @@ class PurchaseRepository {
     
     @MainActor
     func isSubscriptionActive() async -> Bool {
-//        return await purchaseService.hasActiveSubscription()
-                                    return true
+        return await purchaseService.hasActiveSubscription()
     }
     
     /// Альтернативная проверка подписки (более надежная)
