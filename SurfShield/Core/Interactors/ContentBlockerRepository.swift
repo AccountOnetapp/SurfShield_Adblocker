@@ -8,9 +8,9 @@
 import Foundation
 
 class ContentBlockerRepository {
-    let contentBlockerService: ContentBlockerServiceNew
+    let contentBlockerService: ContentBlockerService
     
-    init(blockerService: ContentBlockerServiceNew) {
+    init(blockerService: ContentBlockerService) {
         self.contentBlockerService = blockerService
     }
     

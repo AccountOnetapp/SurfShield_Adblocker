@@ -1,359 +1,219 @@
-//
-//  RulesConverter.swift
-//  SufrShield
-//
-//  Created by Артур Кулик on 25.08.2025.
-//
 import Foundation
 import SafariServices
 
-
-/// Модуль блокировщика рекламы
-public class ContentBlockerService {
-    // MARK: Internal Properties
+class ContentBlockerService {
     private let groupID: String = Constants.adblockGroupId
-    private let extensionsBundles: [String] = Constants.BlockExtenesionBundleIds.all
+    private let extensionsBundles: String = Constants.BlockExtenesionBundleIds.adblocker.rawValue
+    private let maxRules = 150000 // Лимит правил для Safari
+    
+    var fileName: String {
+        return "domains"
+    }
+    
+    var filePath: String {
+        guard let path = Bundle.main.path(forResource: fileName, ofType: "txt") else { return "" }
+        return path
+    }
     
     /// Получить URL файла правил с fallback к bundle
     /// Используется в расширениях
-    public func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
-        return type.filePath
-    }
-    // MARK: - Public Methods
-    
-    /// Сохраняет пустые правила (отключает блокировщик)
-    public func saveEmptyRules() async {
-        print("🔄 Создаем пустые правила для отключения блокировщика...")
-        
-        let emptyRuleArray = [self.createEmptyRule()]
-        
-        guard let emptyRulesJSON = self.convertRulesToJSON(emptyRuleArray) else {
-            print("❌ Ошибка создания пустых правил")
-            return
-        }
-        
-        await saveEmptyRules(emptyRulesJSON)
-        
-        print("🔄 Перезагружаем расширения после сохранения пустых правил...")
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-        print("✅ Пустые правила применены ко всем расширениям")
+    func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
+        return getFilePath(groupID: groupID)
     }
     
-    /// Применяет или отменяет правила блокировки в зависимости от состояния
-    public func applyBlockingState(_ isEnabled: Bool) async {
-        print("🔄 Применяем состояние блокировщика: \(isEnabled ? "включен" : "выключен")")
+    func enableBlocker(isOn: Bool) async {
+        print("\n" + String(repeating: "=", count: 60))
+        print("🛡️  БЛОКИРОВЩИК РЕКЛАМЫ: \(isOn ? "ВКЛЮЧЕНИЕ" : "ОТКЛЮЧЕНИЕ")")
+        print(String(repeating: "=", count: 60))
         
-        if isEnabled {
-            await enableContentBlocker()
+        if isOn {
+            await enable()
         } else {
-            await generateEmptyRules()
+            await disable()
         }
     }
-
-    //MARK: Main Method
-    private func enableContentBlocker() async  {
-        // Проверяем есть ли кэшированные правила
-        if let cachedRules = loadCachedRules() {
-            print("✅ Найдены кэшированные правила, применяем их...")
-            await saveConvertedRulesToGroup(cachedRules)
-            await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-            print("✅ Кэшированные правила применены")
+    
+    func enable() async {
+        print("✅ СТАТУС: Включаем блокировщик рекламы...")
+        print("📍 Путь к файлу правил: \(filePath)")
+        
+        guard !filePath.isEmpty else {
+            print("❌ ОШИБКА: Файл domains.txt не найден")
+            print("❌ СТАТУС: Блокировщик НЕ ВКЛЮЧЕН (ошибка загрузки файла)")
             return
         }
         
-        // Если нет кэша - конвертируем и сохраняем
-        print("🔄 Кэш не найден, конвертируем правила...")
-        await convertAndSaveRules()
-    }
-    
-    /// Сохраняет уже сконвертированные правила (включает блокировщик)
-    /// - Parameter convertedRules: массив сконвертированных правил в JSON формате
-    private func saveConvertedRules(_ convertedRules: [String]) async {
-        await saveConvertedRulesToGroup(convertedRules)
-        
-        print("🔄 Перезагружаем расширения после сохранения сконвертированных правил...")
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-        print("✅ Сконвертированные правила применены ко всем расширениям")
-    }
-    
-    
-    /// Конвертирует правила и сохраняет в кэш
-    private func convertAndSaveRules() async {
-        guard let rulesPath = Bundle.main.path(forResource: "adblock_rules2", ofType: "txt") else {
-            print("❌ Файл adblock_rules2.txt не найден в bundle")
-            return
-        }
-        
-        let rulesString = try! String(contentsOfFile: rulesPath, encoding: .utf8)
+        print("📖 Читаем файл с доменами...")
+        let rulesString = try! String(contentsOfFile: filePath, encoding: .utf8)
         let lines = rulesString.components(separatedBy: .newlines)
-        let chunkedRules = lines.chunked(by: 140000)
-        var resultArray: [String] = []
+            .filter { !$0.isEmpty }
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
         
-        print("📊 Конвертируем \(lines.count) правил...")
+        // Ограничиваем количество правил лимитом Safari
+        let limitedLines = Array(lines.prefix(maxRules))
         
-        for (index, chunkedRule) in chunkedRules.enumerated() {
-            let result: ConversionResult = ContentBlockerConverter().convertArray(
-                   rules: chunkedRule,
-                   safariVersion: SafariVersion.autodetect(),
-                   advancedBlocking: true,
-                   maxJsonSizeBytes: nil,
-                   progress: nil
-               )
-            resultArray.append(result.safariRulesJSON)
+        print("📊 ИНФОРМАЦИЯ: Всего доменов в файле: \(lines.count)")
+        print("📊 ИНФОРМАЦИЯ: Будет создано правил: \(limitedLines.count) (лимит: \(maxRules))")
+        if lines.count > maxRules {
+            print("⚠️  ВНИМАНИЕ: Количество доменов превышает лимит, будут использованы первые \(maxRules)")
+        }
+        print("🔄 Начинаем конвертацию доменов в правила блокировки...")
+        
+        var rules = [[String:Any]]()
+        
+        for line in limitedLines {
+            // Экранируем специальные символы в домене для regex
+            let escapedDomain = NSRegularExpression.escapedPattern(for: line)
+            
+            let rule = [
+                "trigger" : [
+                    "url-filter": "^https?:/+([^/:]+\\.)?\(escapedDomain)[:/]",
+                    "load-type": [
+                        "third-party",
+                        "first-party"
+                    ]
+                ],
+                "action": [
+                    "type": "block"
+                ]
+            ] as [String : Any]
+            
+            rules.append(rule)
         }
         
-        // Сохраняем в кэш и применяем
-        saveRulesToCache(resultArray)
-        await saveConvertedRulesToGroup(resultArray)
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
+        print("✅ Конвертация завершена: создано \(rules.count) правил")
         
-        print("✅ Правила сконвертированы, сохранены в кэш и применены")
-    }
-    
-    /// Генерирует пустые правила для отключения блокировки
-    private func generateEmptyRules() async {
-        print("🔄 Создаем пустые правила для отключения блокировки...")
-        
-        let emptyRuleArray = [self.createEmptyRule()]
-        
-        guard let emptyRulesJSON = self.convertRulesToJSON(emptyRuleArray) else {
-            print("❌ Ошибка создания пустых правил")
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: rules, options: [.prettyPrinted]),
+              let jsonString = String(data: jsonData, encoding: .utf8) else {
+            print("❌ ОШИБКА: Не удалось конвертировать правила в JSON")
+            print("❌ СТАТУС: Блокировщик НЕ ВКЛЮЧЕН (ошибка конвертации)")
             return
         }
         
-        // Используем новый метод для сохранения пустых правил
-        await saveEmptyRules(emptyRulesJSON)
+        print("💾 Размер JSON данных: \(jsonData.count) байт")
         
-        print("🔄 Перезагружаем расширения после создания пустых правил...")
-        await self.reloadExtensions(bundles: self.extensionsBundles, maxRetries: self.extensionsBundles.count)
-        print("✅ Пустые правила применены ко всем расширениям")
-    }
-    
-    /// Сохраняет пустые правила с маркировкой
-    /// - Parameter emptyRulesJSON: JSON строка с пустыми правилами
-    private func saveEmptyRules(_ emptyRulesJSON: String) async {
-        print("💾 Сохраняем пустые правила в App Group...")
-        
-        for ruleType in RulesType.allCases {
-            ruleType.writeRules(emptyRulesJSON, emptyRules: true, groupID: self.groupID)
-            print("✅ Пустые правила сохранены для \(ruleType.rawValue)")
+        // Используем getFilePath для получения правильного пути к файлу
+        guard let fileURL = getFilePath(groupID: groupID) else {
+            print("❌ ОШИБКА: Не удалось получить путь к App Group")
+            print("❌ СТАТУС: Блокировщик НЕ ВКЛЮЧЕН (ошибка доступа к App Group)")
+            return
         }
-    }
-    
-    /// Сохраняет уже сконвертированные правила (приватный метод)
-    /// - Parameter convertedRules: массив сконвертированных правил в JSON формате
-    private func saveConvertedRulesToGroup(_ convertedRules: [String]) async {
-        print("💾 Сохраняем сконвертированные правила в App Group...")
         
-        for (index, ruleType) in RulesType.allCases.enumerated() {
-            if let rules = convertedRules[safe: index] {
-                ruleType.writeRules(rules, emptyRules: false, groupID: groupID)
-                print("✅ Сконвертированные правила сохранены для \(ruleType.rawValue)")
+        print("📁 Сохраняем правила в: \(fileURL.path)")
+        let fileManager = FileManager.default
+        
+        do {
+            // Сохраняем JSON строку в файл
+            try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            // Принудительная синхронизация файловой системы
+            let fileHandle = try FileHandle(forWritingTo: fileURL)
+            try fileHandle.synchronize()
+            try fileHandle.close()
+            
+            // Проверяем, что файл действительно создался
+            if fileManager.fileExists(atPath: fileURL.path) {
+                let attributes = try? fileManager.attributesOfItem(atPath: fileURL.path)
+                let fileSize = attributes?[.size] as? Int64 ?? 0
+                print("✅ Файл успешно сохранен")
+                print("   📊 Размер файла: \(fileSize) байт (\(String(format: "%.2f", Double(fileSize) / 1024.0)) KB))")
+                print("   📊 Количество правил в файле: \(rules.count)")
             } else {
-                // Если для этого типа нет правил, создаем пустые
-                let emptyRuleArray = [createEmptyRule()]
-                if let jsonString = convertRulesToJSON(emptyRuleArray) {
-                    ruleType.writeRules(jsonString, emptyRules: true, groupID: groupID)
-                    print("✅ Пустые правила сохранены для \(ruleType.rawValue) (нет сконвертированных)")
-                }
+                print("❌ ОШИБКА: Файл не найден после записи")
+                print("❌ СТАТУС: Блокировщик НЕ ВКЛЮЧЕН (ошибка сохранения)")
+                return
             }
-        }
-    }
-    
-    /// Сохраняет JSON в файл для просмотра
-    private func saveJSONToFile(json: String) {
-        do {
-            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            let fileName = "safari_rules_\(Date().timeIntervalSince1970).json"
-            let fileURL = documentsPath.appendingPathComponent(fileName)
             
-            try json.write(to: fileURL, atomically: true, encoding: .utf8)
+            // Перезагружаем расширение
+            print("🔄 Перезагружаем расширение adBlock...")
+            print("   📦 Bundle ID: \(extensionsBundles)")
+            try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: extensionsBundles)
+            print("✅ Расширение успешно перезагружено")
             
-            print("💾 JSON сохранен в файл: \(fileURL.path)")
-            print("📁 Путь к файлу: \(fileURL.path)")
+            print("\n" + String(repeating: "=", count: 60))
+            print("✅ СТАТУС: БЛОКИРОВЩИК РЕКЛАМЫ ВКЛЮЧЕН")
+            print("   📊 Активных правил: \(rules.count)")
+            print("   📁 Файл правил: \(fileURL.path)")
+            print("   📦 Расширение: \(extensionsBundles)")
+            print(String(repeating: "=", count: 60) + "\n")
             
         } catch {
-            print("❌ Ошибка при сохранении JSON: \(error)")
+            print("❌ ОШИБКА: \(error.localizedDescription)")
+            print("❌ СТАТУС: Блокировщик НЕ ВКЛЮЧЕН (ошибка: \(error))")
+            print(String(repeating: "=", count: 60) + "\n")
         }
     }
     
-    // MARK: - Cache Methods
-    
-    /// Сохраняет сконвертированные правила в кэш
-    /// - Parameter rules: массив сконвертированных правил
-    private func saveRulesToCache(_ rules: [String]) {
-        let fileManager = FileManager.default
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
-            print("❌ Не удалось получить доступ к App Group для кэша")
-            return
-        }
+    func disable() async {
+        print("❌ СТАТУС: Отключаем блокировщик рекламы...")
         
-        let cacheURL = groupURL.appendingPathComponent("cached_rules.json")
-        
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: rules, options: .prettyPrinted)
-            try jsonData.write(to: cacheURL)
-            print("✅ Правила сохранены в кэш: \(cacheURL.path)")
-        } catch {
-            print("❌ Ошибка сохранения правил в кэш: \(error)")
-        }
-    }
-    
-    /// Загружает сконвертированные правила из кэша
-    /// - Returns: массив сконвертированных правил или nil, если кэш пуст
-    private func loadCachedRules() -> [String]? {
-        let fileManager = FileManager.default
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
-            print("❌ Не удалось получить доступ к App Group для кэша")
-            return nil
-        }
-        
-        let cacheURL = groupURL.appendingPathComponent("cached_rules.json")
-        
-        guard fileManager.fileExists(atPath: cacheURL.path) else {
-            print("📋 Кэшированные правила не найдены")
-            return nil
-        }
-        
-        do {
-            let jsonData = try Data(contentsOf: cacheURL)
-            let rules = try JSONSerialization.jsonObject(with: jsonData) as? [String]
-            print("✅ Кэшированные правила загружены")
-            return rules
-        } catch {
-            print("❌ Ошибка загрузки кэшированных правил: \(error)")
-            return nil
-        }
-    }
-    
-    /// Очищает кэш правил
-    private func clearRulesCache() {
-        let fileManager = FileManager.default
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
-            print("❌ Не удалось получить доступ к App Group для кэша")
-            return
-        }
-        
-        let cacheURL = groupURL.appendingPathComponent("cached_rules.json")
-        
-        do {
-            if fileManager.fileExists(atPath: cacheURL.path) {
-                try fileManager.removeItem(at: cacheURL)
-                print("✅ Кэш правил очищен")
-            }
-        } catch {
-            print("❌ Ошибка очистки кэша правил: \(error)")
-        }
-    }
- 
-    // MARK: - Private Methods
-    
-    // Добавляем недостающие вспомогательные методы
-    private func createEmptyRule() -> [String: Any] {
-        return [
+        // Создаем пустое правило для отключения блокировщика
+        let emptyRules = [[
             "trigger": [
                 "url-filter": "^https?://never-existing-domain-for-adblocker-disabled\\.com/.*"
             ],
             "action": [
                 "type": "block"
             ]
-        ]
-    }
-    
-    private func convertRulesToJSON(_ rules: [[String: Any]]) -> String? {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: rules, options: .prettyPrinted)
-            return String(data: jsonData, encoding: .utf8)
-        } catch {
-            print("❌ Ошибка конвертации правил в JSON: \(error)")
-            return nil
-        }
-    }
-    
-    private func reloadExtensions(bundles: [String], maxRetries: Int) async {
-        guard !bundles.isEmpty else { return }
+        ] as [String : Any]]
         
-        print("🔄 Начинаем параллельную перезагрузку \(bundles.count) расширений...")
-
+        print("🔄 Создаем пустые правила для отключения...")
         
-//        for bundle in bundles {
-        await reloadSingleExtension(bundle: bundles.first!, maxRetries: 1)
-//        }
-        
-        print("✅ Завершена перезагрузка всех расширений")
-    }
-    
-    /// Перезагружает одно расширение с повторными попытками
-    private func reloadSingleExtension(bundle: String, maxRetries: Int) async {
-        var attempts = 0
-        
-        while attempts < maxRetries {
-            attempts += 1
-            do {
-                try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: bundle)
-                print("✅ Расширение \(bundle) успешно перезагружено (попытка \(attempts)/\(maxRetries))")
-                return
-            } catch {
-                print("❌ Попытка - Ошибка перезагрузки расширения \(bundle):")
-            }
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: emptyRules, options: [.prettyPrinted]),
+              let jsonString = String(data: jsonData, encoding: .utf8) else {
+            print("❌ ОШИБКА: Не удалось создать пустые правила")
+            print("❌ СТАТУС: Блокировщик НЕ ОТКЛЮЧЕН (ошибка создания правил)")
+            return
         }
         
-        print("⚠️ Не удалось перезагрузить расширение \(bundle) после \(maxRetries) попыток")
-    }
-}
-
-/// Тип екстеншена блокировщика
-public enum RulesType: String, Codable, CaseIterable {
-    case adBlock
-    case privacy
-    case banners
-    case trackers
-    case advanced
-    case secure
-    case basic
-    
-    /// Получить URL по каторому находится файл для определенного экстеншна
-    /// - Returns: URL по каторому находится файл
-    internal var filePath: URL? {
-        let fileManager = FileManager.default
-        // Используй App Group вместо Documents
-        guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.adblockGroupId) else {
-            return nil
+        guard let fileURL = getFilePath(groupID: groupID) else {
+            print("❌ ОШИБКА: Не удалось получить путь к App Group")
+            print("❌ СТАТУС: Блокировщик НЕ ОТКЛЮЧЕН (ошибка доступа к App Group)")
+            return
         }
-        let fileURL = groupURL.appendingPathComponent("\(self.rawValue).json")
-        return fileURL
-    }
-    
-    private var fileName: String {
-        return self.rawValue + ".json"
-    }
-
-    internal func writeRules(_ rules: String, emptyRules: Bool, groupID: String) {
-        guard let filePath = getFilePath(groupID: groupID) else {
-            print("❌ Не удалось получить путь для \(self.rawValue)")
-            return 
-        }
+        
+        print("📁 Сохраняем пустые правила в: \(fileURL.path)")
         let fileManager = FileManager.default
         
         do {
-            // Синхронная запись с принудительной синхронизацией
-            try rules.write(to: filePath, atomically: true, encoding: .utf8)
+            // Сохраняем пустые правила
+            try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
             
             // Принудительная синхронизация файловой системы
-            let fileHandle = try FileHandle(forWritingTo: filePath)
+            let fileHandle = try FileHandle(forWritingTo: fileURL)
             try fileHandle.synchronize()
             try fileHandle.close()
             
-            // Проверяем, что файл действительно создался и имеет правильный размер
-            if fileManager.fileExists(atPath: filePath.path) {
-                let attributes = try? fileManager.attributesOfItem(atPath: filePath.path)
+            if fileManager.fileExists(atPath: fileURL.path) {
+                let attributes = try? fileManager.attributesOfItem(atPath: fileURL.path)
                 let fileSize = attributes?[.size] as? Int64 ?? 0
-                print("✅ \(self.rawValue) успешно сохранен: \(filePath.path) (размер: \(fileSize) байт)")
+                print("✅ Пустые правила сохранены")
+                print("   📊 Размер файла: \(fileSize) байт")
+                print("   📊 Количество правил: 1 (пустое правило)")
             } else {
-                print("❌ \(self.rawValue) файл не найден после записи: \(filePath.path)")
+                print("❌ ОШИБКА: Файл не найден после записи")
+                print("❌ СТАТУС: Блокировщик НЕ ОТКЛЮЧЕН (ошибка сохранения)")
+                return
             }
+            
+            // Перезагружаем расширение
+            print("🔄 Перезагружаем расширение adBlock...")
+            print("   📦 Bundle ID: \(extensionsBundles)")
+            try await SFContentBlockerManager.reloadContentBlocker(withIdentifier: extensionsBundles)
+            print("✅ Расширение успешно перезагружено")
+            
+            print("\n" + String(repeating: "=", count: 60))
+            print("❌ СТАТУС: БЛОКИРОВЩИК РЕКЛАМЫ ОТКЛЮЧЕН")
+            print("   📊 Активных правил: 0 (пустое правило)")
+            print("   📁 Файл правил: \(fileURL.path)")
+            print("   📦 Расширение: \(extensionsBundles)")
+            print(String(repeating: "=", count: 60) + "\n")
+            
         } catch {
-            print("❌ Ошибка записи \(self.rawValue): \(error.localizedDescription)")
+            print("❌ ОШИБКА: \(error.localizedDescription)")
+            print("❌ СТАТУС: Блокировщик НЕ ОТКЛЮЧЕН (ошибка: \(error))")
+            print(String(repeating: "=", count: 60) + "\n")
         }
     }
     
@@ -362,7 +222,16 @@ public enum RulesType: String, Codable, CaseIterable {
         guard let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
             return nil
         }
-        let fileURL = groupURL.appendingPathComponent("\(self.rawValue).json")
+        let fileURL = groupURL.appendingPathComponent("adBlock.json")
         return fileURL
     }
+}
+public enum RulesType: String, Codable, CaseIterable {
+    case adBlock
+    case privacy
+    case banners
+    case trackers
+    case advanced
+    case secure
+    case basic
 }

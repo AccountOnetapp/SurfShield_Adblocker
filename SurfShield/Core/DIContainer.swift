@@ -9,7 +9,7 @@ import Foundation
 
 class DIContainer {
     let purchaseService = PurchaseService()
-    let blockerService = ContentBlockerServiceNew()
+    let blockerService = ContentBlockerService()
     let safariChecker = SafariExtensionsChecker()
 //    let appSettings = AppSettings()
     let purchaseRepository: PurchaseRepository
