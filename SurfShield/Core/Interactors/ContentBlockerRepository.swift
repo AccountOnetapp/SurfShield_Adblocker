@@ -11,7 +11,11 @@ class ContentBlockerRepository {
     private let contentBlockerAccepter: ContentBlockerAccepter
     
     init() {
-        self.contentBlockerAccepter = ContentBlockerAccepter.makeDefault()
+        self.contentBlockerAccepter = ContentBlockerAccepter(
+            appGroupID: Constants.adblockGroupId,
+            rulesFileName: "adblock_rules.json",
+            extensionBundleIDs: [Constants.BlockExtenesionBundleIds.adblocker.rawValue]
+        )
     }
     
     func applyBlocker(_ isOn: Bool) async {
