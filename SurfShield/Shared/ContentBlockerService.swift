@@ -17,7 +17,22 @@ public class ContentBlockerService {
     /// Получить URL файла правил с fallback к bundle
     /// Используется в расширениях
     public func getExtensionFileURLWithFallback(forType type: RulesType) -> URL? {
-        return type.filePath
+        let fileManager = FileManager.default
+        
+        // 1. Сначала проверяем файл в AppGroup
+        if let appGroupURL = type.filePath, fileManager.fileExists(atPath: appGroupURL.path) {
+            print("✅ Используем файл из AppGroup: \(appGroupURL.path)")
+            return appGroupURL
+        }
+        
+        // 2. Fallback к blockerList.json в bundle расширения
+        if let bundleURL = Bundle.main.url(forResource: "blockerList", withExtension: "json") {
+            print("⚠️ Файл в AppGroup не найден, используем blockerList.json из bundle")
+            return bundleURL
+        }
+        
+        print("❌ Не найден ни файл в AppGroup, ни blockerList.json в bundle")
+        return type.filePath // Возвращаем хотя бы путь к AppGroup
     }
     // MARK: - Public Methods
     
@@ -274,11 +289,15 @@ public class ContentBlockerService {
         guard !bundles.isEmpty else { return }
         
         print("🔄 Начинаем параллельную перезагрузку \(bundles.count) расширений...")
-
         
-//        for bundle in bundles {
-        await reloadSingleExtension(bundle: bundles.first!, maxRetries: 1)
-//        }
+        // Перезагружаем все расширения параллельно
+        await withTaskGroup(of: Void.self) { group in
+            for bundle in bundles {
+                group.addTask {
+                    await self.reloadSingleExtension(bundle: bundle, maxRetries: maxRetries)
+                }
+            }
+        }
         
         print("✅ Завершена перезагрузка всех расширений")
     }

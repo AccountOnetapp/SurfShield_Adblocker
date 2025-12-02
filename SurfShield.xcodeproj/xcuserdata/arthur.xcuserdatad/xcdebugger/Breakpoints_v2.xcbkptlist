@@ -3,4 +3,69 @@
    uuid = "3151133A-AEBC-4775-9A2F-D1AFF4E93298"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B0A1FBA8-DB0F-439A-942E-1DB841C0CA53"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SurfShield/Core/Interactors/ContentBlockerRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "applyBlocker(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B0A1FBA8-DB0F-439A-942E-1DB841C0CA53 - 63060f94de4b9ab0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for SurfShield.ContentBlockerRepository.applyBlocker(Swift.Bool) async -&gt; ()"
+                  moduleName = "SurfShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SurfShield/SurfShield/Core/Interactors/ContentBlockerRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "90">
+               </Location>
+               <Location
+                  uuid = "B0A1FBA8-DB0F-439A-942E-1DB841C0CA53 - fafaee03077f38a9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for SurfShield.ContentBlockerRepository.applyBlocker(Swift.Bool) async -&gt; ()"
+                  moduleName = "SurfShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SurfShield/SurfShield/Core/Interactors/ContentBlockerRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "34">
+               </Location>
+               <Location
+                  uuid = "B0A1FBA8-DB0F-439A-942E-1DB841C0CA53 - f92564ef41356b2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for SurfShield.ContentBlockerRepository.applyBlocker(Swift.Bool) async -&gt; ()"
+                  moduleName = "SurfShield"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/arthur/Xcode/Nikolas/SurfShield/SurfShield/Core/Interactors/ContentBlockerRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "39">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

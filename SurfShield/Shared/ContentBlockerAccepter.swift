@@ -1,6 +1,6 @@
 //
 //  ContentBlockerAccepter.swift
-//  Veilo
+//  SurfShield
 //
 //  Created by Claude on 01.12.2025.
 //
@@ -9,29 +9,33 @@ import Foundation
 import SafariServices
 
 /// Сервис для быстрого применения готовых JSON правил блокировки
-/// Использует предварительно конвертированные правила из bundle,
-/// минуя долгий процесс конвертации
+/// Загружает adblock_rules.json из корня проекта и применяет к расширениям
 final class ContentBlockerAccepter {
     
     // MARK: - Properties
     
     private let appGroupID: String
-    private let ruleSets: [RuleSetInfo]
+    private let rulesFileName: String
+    private let extensionBundleIDs: [String]
     private var currentTask: Task<Bool, Never>?
     
-    // MARK: - Models
-    
-    struct RuleSetInfo {
-        let identifier: String
-        let extensionBundleID: String
-        let jsonFileName: String
-    }
+    // Маппинг bundle IDs на имена файлов RulesType
+    private static let bundleIDToRulesType: [String: String] = [
+        "com.surfshield.adblocker.adblockerextension": "adBlock",
+        "com.surfshield.adblocker.privacyextension": "privacy",
+        "com.surfshield.adblocker.bannersextension": "banners",
+        "com.surfshield.adblocker.trackersextension": "trackers",
+        "com.surfshield.adblocker.advancedextension": "advanced",
+        "com.surfshield.adblocker.secureextension": "secure",
+        "com.surfshield.adblocker.basicextension": "basic"
+    ]
     
     // MARK: - Initialization
     
-    init(appGroupID: String, ruleSets: [RuleSetInfo]) {
+    init(appGroupID: String, rulesFileName: String, extensionBundleIDs: [String]) {
         self.appGroupID = appGroupID
-        self.ruleSets = ruleSets
+        self.rulesFileName = rulesFileName
+        self.extensionBundleIDs = extensionBundleIDs
     }
     
     // MARK: - Public Methods
@@ -53,8 +57,11 @@ final class ContentBlockerAccepter {
                 return false
             }
             
-            // 1. Сохраняем все JSON файлы в AppGroup (синхронно)
-            let saveResults = saveAllRulesToAppGroup()
+            // 1. Загружаем и сохраняем правила из adblock_rules.json
+            guard self.saveRulesToAppGroup() else {
+                print("❌ Не удалось сохранить правила")
+                return false
+            }
             
             // Проверяем отмену после сохранения
             guard !Task.isCancelled else {
@@ -62,10 +69,10 @@ final class ContentBlockerAccepter {
                 return false
             }
             
-            print("✅ Все правила сохранены в AppGroup")
+            print("✅ Правила сохранены в AppGroup")
             
             // 2. Перезагружаем Safari расширения (асинхронно)
-            await reloadAllExtensions()
+            await self.reloadAllExtensions()
             
             print("✅ Блокировщик применен!")
             return true
@@ -91,27 +98,32 @@ final class ContentBlockerAccepter {
                 return false
             }
             
-            // Записываем пустые правила (заглушки)
-            let emptyRule = createEmptyRule()
+            // Записываем пустые правила (заглушки) для всех расширений
+            let emptyRule = self.createEmptyRule()
             
-            for ruleSet in ruleSets {
+            for bundleID in self.extensionBundleIDs {
                 guard !Task.isCancelled else {
                     print("⚠️ Операция отменена")
                     return false
                 }
                 
-                if let fileURL = getAppGroupFileURL(for: ruleSet.identifier) {
+                guard let rulesTypeName = Self.bundleIDToRulesType[bundleID] else {
+                    print("⚠️ Не найден маппинг для bundle ID: \(bundleID)")
+                    continue
+                }
+                
+                if let fileURL = self.getAppGroupFileURL(forRulesType: rulesTypeName) {
                     do {
                         try emptyRule.write(to: fileURL, atomically: true, encoding: .utf8)
-                        print("✅ Отключен \(ruleSet.identifier)")
+                        print("✅ Пустые правила сохранены для \(rulesTypeName).json")
                     } catch {
-                        print("❌ Ошибка отключения \(ruleSet.identifier): \(error)")
+                        print("❌ Ошибка отключения \(rulesTypeName): \(error)")
                     }
                 }
             }
             
             // Перезагружаем расширения
-            await reloadAllExtensions()
+            await self.reloadAllExtensions()
             
             print("✅ Блокировщик отключен!")
             return true
@@ -130,84 +142,103 @@ final class ContentBlockerAccepter {
     
     // MARK: - Private Methods
     
-    /// Сохраняет все правила в AppGroup
-    private func saveAllRulesToAppGroup() -> [Bool] {
-        var results: [Bool] = []
-        
-        for ruleSet in ruleSets {
-            let result = saveRuleToAppGroup(ruleSet: ruleSet)
-            results.append(result)
-        }
-        
-        return results
-    }
-    
-    /// Сохраняет конкретный набор правил в AppGroup
-    private func saveRuleToAppGroup(ruleSet: RuleSetInfo) -> Bool {
+    /// Сохраняет правила из adblock_rules.json в AppGroup для всех расширений
+    private func saveRulesToAppGroup() -> Bool {
         // 1. Загружаем JSON из bundle
-        guard let jsonString = loadPreconvertedJSON(fileName: ruleSet.jsonFileName) else {
-            print("❌ Не найден JSON файл: \(ruleSet.jsonFileName)")
+        guard let jsonString = loadAdBlockRulesJSON() else {
+            print("❌ Не найден файл: \(rulesFileName)")
             return false
         }
         
-        // 2. Получаем путь в AppGroup
-        guard let targetURL = getAppGroupFileURL(for: ruleSet.identifier) else {
-            print("❌ Не удалось получить URL для AppGroup")
-            return false
+        print("✅ Загружен файл \(rulesFileName) (\(jsonString.count) символов)")
+        
+        // 2. Сохраняем для каждого расширения
+        var allSuccess = true
+        for bundleID in extensionBundleIDs {
+            guard let rulesTypeName = Self.bundleIDToRulesType[bundleID] else {
+                print("⚠️ Не найден маппинг для bundle ID: \(bundleID)")
+                continue
+            }
+            
+            guard let targetURL = getAppGroupFileURL(forRulesType: rulesTypeName) else {
+                print("❌ Не удалось получить URL для \(rulesTypeName)")
+                allSuccess = false
+                continue
+            }
+            
+            // 3. Записываем файл
+            do {
+                try jsonString.write(to: targetURL, atomically: true, encoding: .utf8)
+                
+                // Синхронизация файла
+                let fileHandle = try FileHandle(forWritingTo: targetURL)
+                try fileHandle.synchronize()
+                try fileHandle.close()
+                
+                let fileSize = (try? FileManager.default.attributesOfItem(atPath: targetURL.path))?[.size] as? Int64 ?? 0
+                print("✅ Сохранено для \(rulesTypeName).json (\(fileSize) байт)")
+            } catch {
+                print("❌ Ошибка записи для \(rulesTypeName): \(error)")
+                allSuccess = false
+            }
         }
         
-        // 3. Записываем файл
-        do {
-            try jsonString.write(to: targetURL, atomically: true, encoding: .utf8)
-            
-            // Синхронизация файла
-            let fileHandle = try FileHandle(forWritingTo: targetURL)
-            try fileHandle.synchronize()
-            try fileHandle.close()
-            
-            let fileSize = (try? FileManager.default.attributesOfItem(atPath: targetURL.path))?[.size] as? Int64 ?? 0
-            print("✅ Загружено правил \(ruleSet.identifier) (\(fileSize) байт)")
-            
-            return true
-        } catch {
-            print("❌ Ошибка записи \(ruleSet.identifier): \(error)")
-            return false
-        }
+        return allSuccess
     }
     
-    /// Загружает готовый JSON из bundle приложения
-    private func loadPreconvertedJSON(fileName: String) -> String? {
-        guard let jsonPath = Bundle.main.path(forResource: fileName, ofType: "json") else {
+    /// Загружает JSON правила из adblock_rules.json в корне проекта
+    private func loadAdBlockRulesJSON() -> String? {
+        // Пробуем загрузить из bundle (без расширения, т.к. указываем его явно)
+        let fileNameWithoutExtension = rulesFileName.replacingOccurrences(of: ".json", with: "")
+        
+        guard let jsonPath = Bundle.main.path(forResource: fileNameWithoutExtension, ofType: "json") else {
+            print("❌ Не найден файл \(rulesFileName) в bundle")
             return nil
         }
         
         do {
             let jsonString = try String(contentsOfFile: jsonPath, encoding: .utf8)
             
-            // Валидация
+            // Базовая валидация JSON
             guard !jsonString.isEmpty,
                   jsonString.contains("\"trigger\""),
                   jsonString.contains("\"action\"") else {
-                print("⚠️ JSON файл \(fileName) невалидный")
+                print("⚠️ JSON файл \(rulesFileName) невалидный или пустой")
                 return nil
             }
             
             return jsonString
         } catch {
-            print("❌ Ошибка чтения \(fileName): \(error)")
+            print("❌ Ошибка чтения \(rulesFileName): \(error)")
             return nil
         }
     }
     
-    /// Получает URL файла в AppGroup
-    private func getAppGroupFileURL(for identifier: String) -> URL? {
+    /// Получает URL файла в AppGroup для конкретного типа правил
+    /// - Parameter rulesType: Имя типа правил (например, "adBlock", "privacy")
+    private func getAppGroupFileURL(forRulesType rulesType: String) -> URL? {
         guard let groupURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: appGroupID
         ) else {
             return nil
         }
         
-        return groupURL.appendingPathComponent("\(identifier).json")
+        return groupURL.appendingPathComponent("\(rulesType).json")
+    }
+    
+    /// Получает URL файла в AppGroup по bundle ID (для обратной совместимости)
+    private func getAppGroupFileURL(for bundleID: String) -> URL? {
+        guard let groupURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else {
+            return nil
+        }
+        
+        // Извлекаем имя расширения из bundle ID (например, "adblockerextension" из "com.surfshield.adblocker.adblockerextension")
+        let components = bundleID.components(separatedBy: ".")
+        let fileName = components.last ?? "rules"
+        
+        return groupURL.appendingPathComponent("\(fileName).json")
     }
     
     /// Создает пустое правило (заглушку) для отключения блокировщика
@@ -234,9 +265,9 @@ final class ContentBlockerAccepter {
     /// Перезагружает все Safari расширения
     private func reloadAllExtensions() async {
         await withTaskGroup(of: Void.self) { group in
-            for ruleSet in ruleSets {
+            for bundleID in extensionBundleIDs {
                 group.addTask {
-                    await self.reloadExtension(bundleID: ruleSet.extensionBundleID)
+                    await self.reloadExtension(bundleID: bundleID)
                 }
             }
         }
@@ -271,44 +302,15 @@ final class ContentBlockerAccepter {
 
 extension ContentBlockerAccepter {
     
-    /// Создает инстанс с конфигурацией для Veilo
+    /// Создает инстанс с конфигурацией для SurfShield
+    /// Загружает adblock_rules.json и применяет ко всем расширениям
     static func makeDefault() -> ContentBlockerAccepter {
-        let ruleSets: [RuleSetInfo] = [
-            RuleSetInfo(
-                identifier: Constants.RuleSets.adBlock.identifier,
-                extensionBundleID: Constants.RuleSets.adBlock.extensionBundleID,
-                jsonFileName: Constants.RuleSets.adBlock.outputFileName
-            ),
-            RuleSetInfo(
-                identifier: Constants.RuleSets.privacy.identifier,
-                extensionBundleID: Constants.RuleSets.privacy.extensionBundleID,
-                jsonFileName: Constants.RuleSets.privacy.outputFileName
-            ),
-            RuleSetInfo(
-                identifier: Constants.RuleSets.banners.identifier,
-                extensionBundleID: Constants.RuleSets.banners.extensionBundleID,
-                jsonFileName: Constants.RuleSets.banners.outputFileName
-            ),
-            RuleSetInfo(
-                identifier: Constants.RuleSets.trackers.identifier,
-                extensionBundleID: Constants.RuleSets.trackers.extensionBundleID,
-                jsonFileName: Constants.RuleSets.trackers.outputFileName
-            ),
-            RuleSetInfo(
-                identifier: Constants.RuleSets.advanced.identifier,
-                extensionBundleID: Constants.RuleSets.advanced.extensionBundleID,
-                jsonFileName: Constants.RuleSets.advanced.outputFileName
-            ),
-            RuleSetInfo(
-                identifier: Constants.RuleSets.basic.identifier,
-                extensionBundleID: Constants.RuleSets.basic.extensionBundleID,
-                jsonFileName: Constants.RuleSets.basic.outputFileName
-            )
-        ]
+        let extensionBundleIDs = Constants.BlockExtenesionBundleIds.all
         
         return ContentBlockerAccepter(
             appGroupID: Constants.adblockGroupId,
-            ruleSets: ruleSets
+            rulesFileName: "adblock_rules.json",
+            extensionBundleIDs: extensionBundleIDs
         )
     }
 }

@@ -9,12 +9,18 @@ import Foundation
 
 class ContentBlockerRepository {
     let contentBlockerService: ContentBlockerService
+    let contentBlockerAccepter = ContentBlockerAccepter(appGroupID: Constants.adblockGroupId, rulesFileName: "adblock_rules", extensionBundleIDs: [Constants.BlockExtenesionBundleIds.adblocker.rawValue])
     
     init(blockerService: ContentBlockerService) {
         self.contentBlockerService = blockerService
     }
     
     func applyBlocker(_ isOn: Bool) async {
-        await contentBlockerService.applyBlockingState(isOn)
+        if isOn {
+            await contentBlockerAccepter.applyBlockingRules()
+        } else {
+            await contentBlockerAccepter.disableBlockingRules()
+        }
+//        await contentBlockerService.applyBlockingState(isOn)
     }
 }
