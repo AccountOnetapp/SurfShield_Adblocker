@@ -190,12 +190,12 @@ class PurchaseService {
     @MainActor
     /// Проверить активную подписку
     func hasActiveSubscription() async -> Bool {
-//        let debugDisableSubscription = true
-//        #if DEBUG
-//        if debugDisableSubscription {
-//            return false
-//        }
-//        #endif
+        let debugDisableSubscription = false
+        #if DEBUG
+        if debugDisableSubscription {
+            return false
+        }
+        #endif
         
         // Детальная отладка статуса подписки
         print("\n🔍 === ПРОВЕРКА СТАТУСА ПОДПИСКИ ===\n")

@@ -19,16 +19,8 @@ final class ContentBlockerAccepter {
     private let extensionBundleIDs: [String]
     private var currentTask: Task<Bool, Never>?
     
-    // Маппинг bundle IDs на имена файлов RulesType
-    private static let bundleIDToRulesType: [String: String] = [
-        "com.surfshield.adblocker.adblockerextension": "adBlock",
-        "com.surfshield.adblocker.privacyextension": "privacy",
-        "com.surfshield.adblocker.bannersextension": "banners",
-        "com.surfshield.adblocker.trackersextension": "trackers",
-        "com.surfshield.adblocker.advancedextension": "advanced",
-        "com.surfshield.adblocker.secureextension": "secure",
-        "com.surfshield.adblocker.basicextension": "basic"
-    ]
+    // Имя файла правил для adblocker расширения
+    private static let adBlockRulesType = "adBlock"
     
     // MARK: - Initialization
     
@@ -98,28 +90,25 @@ final class ContentBlockerAccepter {
                 return false
             }
             
-            // Записываем пустые правила (заглушки) для всех расширений
+            // Записываем пустые правила (заглушки) для adblocker расширения
             let emptyRule = self.createEmptyRule()
             
-            for bundleID in self.extensionBundleIDs {
-                guard !Task.isCancelled else {
-                    print("⚠️ Операция отменена")
+            guard !Task.isCancelled else {
+                print("⚠️ Операция отменена")
+                return false
+            }
+            
+            if let fileURL = self.getAppGroupFileURL(forRulesType: Self.adBlockRulesType) {
+                do {
+                    try emptyRule.write(to: fileURL, atomically: true, encoding: .utf8)
+                    print("✅ Пустые правила сохранены для \(Self.adBlockRulesType).json")
+                } catch {
+                    print("❌ Ошибка отключения \(Self.adBlockRulesType): \(error)")
                     return false
                 }
-                
-                guard let rulesTypeName = Self.bundleIDToRulesType[bundleID] else {
-                    print("⚠️ Не найден маппинг для bundle ID: \(bundleID)")
-                    continue
-                }
-                
-                if let fileURL = self.getAppGroupFileURL(forRulesType: rulesTypeName) {
-                    do {
-                        try emptyRule.write(to: fileURL, atomically: true, encoding: .utf8)
-                        print("✅ Пустые правила сохранены для \(rulesTypeName).json")
-                    } catch {
-                        print("❌ Ошибка отключения \(rulesTypeName): \(error)")
-                    }
-                }
+            } else {
+                print("❌ Не удалось получить URL для \(Self.adBlockRulesType)")
+                return false
             }
             
             // Перезагружаем расширения
@@ -142,7 +131,7 @@ final class ContentBlockerAccepter {
     
     // MARK: - Private Methods
     
-    /// Сохраняет правила из adblock_rules.json в AppGroup для всех расширений
+    /// Сохраняет правила из adblock_rules.json в AppGroup для adblocker расширения
     private func saveRulesToAppGroup() -> Bool {
         // 1. Загружаем JSON из bundle
         guard let jsonString = loadAdBlockRulesJSON() else {
@@ -152,38 +141,28 @@ final class ContentBlockerAccepter {
         
         print("✅ Загружен файл \(rulesFileName) (\(jsonString.count) символов)")
         
-        // 2. Сохраняем для каждого расширения
-        var allSuccess = true
-        for bundleID in extensionBundleIDs {
-            guard let rulesTypeName = Self.bundleIDToRulesType[bundleID] else {
-                print("⚠️ Не найден маппинг для bundle ID: \(bundleID)")
-                continue
-            }
-            
-            guard let targetURL = getAppGroupFileURL(forRulesType: rulesTypeName) else {
-                print("❌ Не удалось получить URL для \(rulesTypeName)")
-                allSuccess = false
-                continue
-            }
-            
-            // 3. Записываем файл
-            do {
-                try jsonString.write(to: targetURL, atomically: true, encoding: .utf8)
-                
-                // Синхронизация файла
-                let fileHandle = try FileHandle(forWritingTo: targetURL)
-                try fileHandle.synchronize()
-                try fileHandle.close()
-                
-                let fileSize = (try? FileManager.default.attributesOfItem(atPath: targetURL.path))?[.size] as? Int64 ?? 0
-                print("✅ Сохранено для \(rulesTypeName).json (\(fileSize) байт)")
-            } catch {
-                print("❌ Ошибка записи для \(rulesTypeName): \(error)")
-                allSuccess = false
-            }
+        // 2. Сохраняем правила для adblocker расширения
+        guard let targetURL = getAppGroupFileURL(forRulesType: Self.adBlockRulesType) else {
+            print("❌ Не удалось получить URL для \(Self.adBlockRulesType)")
+            return false
         }
         
-        return allSuccess
+        // 3. Записываем файл
+        do {
+            try jsonString.write(to: targetURL, atomically: true, encoding: .utf8)
+            
+            // Синхронизация файла
+            let fileHandle = try FileHandle(forWritingTo: targetURL)
+            try fileHandle.synchronize()
+            try fileHandle.close()
+            
+            let fileSize = (try? FileManager.default.attributesOfItem(atPath: targetURL.path))?[.size] as? Int64 ?? 0
+            print("✅ Сохранено для \(Self.adBlockRulesType).json (\(fileSize) байт)")
+            return true
+        } catch {
+            print("❌ Ошибка записи для \(Self.adBlockRulesType): \(error)")
+            return false
+        }
     }
     
     /// Загружает JSON правила из adblock_rules.json в корне проекта
@@ -226,21 +205,6 @@ final class ContentBlockerAccepter {
         return groupURL.appendingPathComponent("\(rulesType).json")
     }
     
-    /// Получает URL файла в AppGroup по bundle ID (для обратной совместимости)
-    private func getAppGroupFileURL(for bundleID: String) -> URL? {
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: appGroupID
-        ) else {
-            return nil
-        }
-        
-        // Извлекаем имя расширения из bundle ID (например, "adblockerextension" из "com.surfshield.adblocker.adblockerextension")
-        let components = bundleID.components(separatedBy: ".")
-        let fileName = components.last ?? "rules"
-        
-        return groupURL.appendingPathComponent("\(fileName).json")
-    }
-    
     /// Создает пустое правило (заглушку) для отключения блокировщика
     private func createEmptyRule() -> String {
         let emptyRule: [[String: Any]] = [
@@ -262,15 +226,9 @@ final class ContentBlockerAccepter {
         return "[]"
     }
     
-    /// Перезагружает все Safari расширения
+    /// Перезагружает adblocker расширение
     private func reloadAllExtensions() async {
-        await withTaskGroup(of: Void.self) { group in
-            for bundleID in extensionBundleIDs {
-                group.addTask {
-                    await self.reloadExtension(bundleID: bundleID)
-                }
-            }
-        }
+        await self.reloadExtension(bundleID: Constants.BlockExtenesionBundleIds.adblocker.rawValue)
     }
     
     /// Перезагружает конкретное Safari расширение
@@ -303,14 +261,12 @@ final class ContentBlockerAccepter {
 extension ContentBlockerAccepter {
     
     /// Создает инстанс с конфигурацией для SurfShield
-    /// Загружает adblock_rules.json и применяет ко всем расширениям
+    /// Загружает adblock_rules.json и применяет к adblocker расширению
     static func makeDefault() -> ContentBlockerAccepter {
-        let extensionBundleIDs = Constants.BlockExtenesionBundleIds.all
-        
         return ContentBlockerAccepter(
             appGroupID: Constants.adblockGroupId,
             rulesFileName: "adblock_rules.json",
-            extensionBundleIDs: extensionBundleIDs
+            extensionBundleIDs: [Constants.BlockExtenesionBundleIds.adblocker.rawValue]
         )
     }
 }

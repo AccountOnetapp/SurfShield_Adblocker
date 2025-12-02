@@ -50,7 +50,6 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     
     let userDefaultsObserver = UserDefaultsObserver.shared
     @Published var appInteractor = Executor.appInteractor
-    private let rulesConverter = ContentBlockerService()
     private var resourceMonitor: ResourceMonitor?
     
     init() {
@@ -153,9 +152,8 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
     // MARK: - Rules Loading
     
     func loadAdBlockRules() -> String? {
-        
-        guard let rulesURL = rulesConverter.getExtensionFileURLWithFallback(forType: .adBlock) else {
-            print("❌ Не удалось получить URL для типа ")
+        guard let rulesURL = getAdBlockRulesURL() else {
+            print("❌ Не удалось получить URL для правил adBlock")
             return nil
         }
         
@@ -165,9 +163,32 @@ class WebViewInteractor: WebViewObservables, WebViewActions, ObservableObject {
             let content = try String(contentsOf: rulesURL, encoding: .utf8)
             return content
         } catch {
-            print("❌ Ошибка загрузки правил : \(error)")
+            print("❌ Ошибка загрузки правил: \(error)")
             return nil
         }
+    }
+    
+    /// Получает URL файла правил adBlock с fallback к bundle
+    private func getAdBlockRulesURL() -> URL? {
+        let fileManager = FileManager.default
+        
+        // 1. Сначала проверяем файл в AppGroup
+        if let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.adblockGroupId) {
+            let appGroupURL = groupURL.appendingPathComponent("adBlock.json")
+            if fileManager.fileExists(atPath: appGroupURL.path) {
+                print("✅ Используем файл из AppGroup: \(appGroupURL.path)")
+                return appGroupURL
+            }
+        }
+        
+        // 2. Fallback к blockerList.json в bundle
+        if let bundleURL = Bundle.main.url(forResource: "blockerList", withExtension: "json") {
+            print("⚠️ Файл в AppGroup не найден, используем blockerList.json из bundle")
+            return bundleURL
+        }
+        
+        print("❌ Не найден ни файл в AppGroup, ни blockerList.json в bundle")
+        return nil
     }
     
     /// Получает ResourceMonitor для настройки WebView
