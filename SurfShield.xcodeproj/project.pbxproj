@@ -120,9 +120,6 @@
 		8E7B5E5C2E61D7B100D5E817 /* SafariRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5E5B2E61D7B100D5E817 /* SafariRegex.swift */; };
 		8E7B5E5D2E61D7B100D5E817 /* SafariRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5E5B2E61D7B100D5E817 /* SafariRegex.swift */; };
 		8E7B5E5F2E61D7B100D5E817 /* SafariRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7B5E5B2E61D7B100D5E817 /* SafariRegex.swift */; };
-		8E7B5E612E61DAB000D5E817 /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */; };
-		8E7B5E622E61DAB000D5E817 /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */; };
-		8E7B5E642E61DAB000D5E817 /* adblock_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */; };
 		8E848FE12E74A09100B03CF0 /* codemagic.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 8E848FE02E74A09100B03CF0 /* codemagic.yaml */; };
 		8E8FFB402E68159900F20BF0 /* InternetBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */; };
 		8E8FFB432E68163D00F20BF0 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8FFB422E68163D00F20BF0 /* WebView.swift */; };
@@ -143,6 +140,8 @@
 		8EB791462E9684910000A4A6 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791452E9684910000A4A6 /* Executor.swift */; };
 		8EB791492E96DBC20000A4A6 /* SubscriptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */; };
 		8EB7914B2E96E8900000A4A6 /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB7914A2E96E8900000A4A6 /* PaywallViewModel.swift */; };
+		8EB912AC2EDEE80700B3CCDC /* adblock_rules.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB912AB2EDEE80700B3CCDC /* adblock_rules.json */; };
+		8EB912AE2EDEE8DA00B3CCDC /* ContentBlockerAccepter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB912AD2EDEE8DA00B3CCDC /* ContentBlockerAccepter.swift */; };
 		8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EBA83FC2E5BB15600206493 /* blockerList.json */; };
 		8EBA83FF2E5BB15600206493 /* ContentBlockerRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */; };
 		8EBA84032E5BB15600206493 /* adblocker.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8EBA83FA2E5BB15600206493 /* adblocker.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -561,7 +560,6 @@
 		8E7B5E4D2E61D70600D5E817 /* BlockerEntryEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockerEntryEncoder.swift; sourceTree = "<group>"; };
 		8E7B5E4E2E61D70700D5E817 /* BlockerEntryFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockerEntryFactory.swift; sourceTree = "<group>"; };
 		8E7B5E5B2E61D7B100D5E817 /* SafariRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafariRegex.swift; sourceTree = "<group>"; };
-		8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adblock_rules.txt; sourceTree = "<group>"; };
 		8E848FE02E74A09100B03CF0 /* codemagic.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = codemagic.yaml; sourceTree = SOURCE_ROOT; };
 		8E8FFB3F2E68159900F20BF0 /* InternetBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetBrowserView.swift; sourceTree = "<group>"; };
 		8E8FFB422E68163D00F20BF0 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -580,6 +578,8 @@
 		8EB791452E9684910000A4A6 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
 		8EB791482E96DBC20000A4A6 /* SubscriptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionType.swift; sourceTree = "<group>"; };
 		8EB7914A2E96E8900000A4A6 /* PaywallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewModel.swift; sourceTree = "<group>"; };
+		8EB912AB2EDEE80700B3CCDC /* adblock_rules.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = adblock_rules.json; sourceTree = SOURCE_ROOT; };
+		8EB912AD2EDEE8DA00B3CCDC /* ContentBlockerAccepter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockerAccepter.swift; sourceTree = "<group>"; };
 		8EBA83FA2E5BB15600206493 /* adblocker.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = adblocker.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBA83FC2E5BB15600206493 /* blockerList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = blockerList.json; sourceTree = "<group>"; };
 		8EBA83FE2E5BB15600206493 /* ContentBlockerRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockerRequestHandler.swift; sourceTree = "<group>"; };
@@ -862,6 +862,7 @@
 			isa = PBXGroup;
 			children = (
 				8EBA84072E5BBA0900206493 /* ContentBlockerService.swift */,
+				8EB912AD2EDEE8DA00B3CCDC /* ContentBlockerAccepter.swift */,
 				8EBA84102E5BBA1000206493 /* AdBlockerStateManager.swift */,
 				8EBB25802E61C77500E29966 /* ContentConverter */,
 			);
@@ -1150,7 +1151,7 @@
 				8EE1428E2E6B14A400918447 /* test_rules.txt */,
 				8E78603C2E650542000C7CB5 /* adblock_rules2.txt */,
 				8E9F1AEF2E5C8C8B0093C76B /* SurfShield.entitlements */,
-				8E7B5E602E61DAB000D5E817 /* adblock_rules.txt */,
+				8EB912AB2EDEE80700B3CCDC /* adblock_rules.json */,
 				8ECF28182E59BC33000A5748 /* App */,
 				8EB791442E9684780000A4A6 /* Core */,
 				8EC4E9102E6F072500822E21 /* Models */,
@@ -1526,7 +1527,6 @@
 				8E7B5E172E61D39B00D5E817 /* common.bin in Resources */,
 				8E7B5E1B2E61D39B00D5E817 /* asterisk.bin in Resources */,
 				8E7B5E1F2E61D39B00D5E817 /* negated.bin in Resources */,
-				8E7B5E622E61DAB000D5E817 /* adblock_rules.txt in Resources */,
 				8E7B5E232E61D39B00D5E817 /* version.txt in Resources */,
 				8EBA83FD2E5BB15600206493 /* blockerList.json in Resources */,
 			);
@@ -1575,7 +1575,6 @@
 				8E7B5E192E61D39B00D5E817 /* common.bin in Resources */,
 				8E7B5E1D2E61D39B00D5E817 /* asterisk.bin in Resources */,
 				8E7B5E212E61D39B00D5E817 /* negated.bin in Resources */,
-				8E7B5E642E61DAB000D5E817 /* adblock_rules.txt in Resources */,
 				8E7B5E252E61D39B00D5E817 /* version.txt in Resources */,
 				8EC786EC2E5C64F30024A55C /* blockerList.json in Resources */,
 			);
@@ -1610,7 +1609,7 @@
 				8E3275D82E71A69A007ABA09 /* LaunchScreen.storyboard in Resources */,
 				8E7B5E1A2E61D39B00D5E817 /* asterisk.bin in Resources */,
 				8EF3E7E22E708BBA0090F1AD /* Images.xcassets in Resources */,
-				8E7B5E612E61DAB000D5E817 /* adblock_rules.txt in Resources */,
+				8EB912AC2EDEE80700B3CCDC /* adblock_rules.json in Resources */,
 				8E9B72792E5B32D500070683 /* Assets.xcassets in Resources */,
 				8EF3E7E92E70CB980090F1AD /* SF-Pro-Text-Bold.otf in Resources */,
 				8EF3E7EA2E70CB980090F1AD /* SF-Pro-Text-Medium.otf in Resources */,
@@ -2171,6 +2170,7 @@
 				8EBB25892E61C79500E29966 /* ContentBlockerConverterVersion.swift in Sources */,
 				8EBB25AE2E61C7C700E29966 /* NetworkRuleParser.swift in Sources */,
 				8EE69D072E6F0F0F00BA1BF1 /* SettingsViewModel.swift in Sources */,
+				8EB912AE2EDEE8DA00B3CCDC /* ContentBlockerAccepter.swift in Sources */,
 				8EBB25912E61C79500E29966 /* WebExtensionHelpers.swift in Sources */,
 				8EC73F9E2E69D90900EAA93F /* BrowserNavigationButton.swift in Sources */,
 				8E7B5E482E61D6EE00D5E817 /* CompilationResult.swift in Sources */,
